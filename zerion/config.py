@@ -1,0 +1,203 @@
+# config.py
+"""
+Central configuration for Mark-X Lite.
+
+All settings are read from environment variables (optionally loaded from a
+.env file if python-dotenv is installed). Nothing here touches the network
+or the filesystem beyond reading env vars, so importing this module is free.
+"""
+
+import os
+
+# Configuration is imported very early by most modules. Environment values are
+# therefore parsed defensively here: a typo must degrade to the documented
+# default and appear in validate(), never prevent Zerion from starting.
+_PARSE_WARNINGS: list[str] = []
+
+
+def _env_int(name: str, default: int, minimum: int | None = None) -> int:
+    raw = os.getenv(name, str(default)).strip()
+    try:
+        value = int(raw)
+    except ValueError:
+        _PARSE_WARNINGS.append(f"{name}={raw!r} is not an integer; using {default}.")
+        return default
+    if minimum is not None and value < minimum:
+        _PARSE_WARNINGS.append(f"{name}={value} is below {minimum}; using {default}.")
+        return default
+    return value
+
+
+def _env_float(name: str, default: float, minimum: float | None = None,
+               maximum: float | None = None) -> float:
+    raw = os.getenv(name, str(default)).strip()
+    try:
+        value = float(raw)
+    except ValueError:
+        _PARSE_WARNINGS.append(f"{name}={raw!r} is not a number; using {default}.")
+        return default
+    if (minimum is not None and value < minimum) or (maximum is not None and value > maximum):
+        _PARSE_WARNINGS.append(f"{name}={value} is outside [{minimum}, {maximum}]; using {default}.")
+        return default
+    return value
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    # python-dotenv is optional; if it's missing we just rely on real
+    # environment variables (export FOO=bar before running).
+    pass
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# ---------------------------------------------------------------------------
+# Gemini-only provider selection
+# ---------------------------------------------------------------------------
+LLM_PROVIDER = "gemini"
+_SUPPORTED_PROVIDERS = ("gemini",)
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+# Configurable only: runtime code never embeds a model identifier.
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3-flash-lite")
+GEMINI_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
+
+# ---------------------------------------------------------------------------
+# Paths
+# ---------------------------------------------------------------------------
+PROMPT_PATH = os.path.join(BASE_DIR, "prompt.txt")
+MEMORY_PATH = os.path.join(BASE_DIR, "memory", "memory.json")
+
+# ---------------------------------------------------------------------------
+# Voice output (optional, Gemini-powered)
+# ---------------------------------------------------------------------------
+# Speech is fully optional. If the API key, network, or an audio player is
+# unavailable, the assistant keeps working via the keyboard/terminal only.
+VOICE_ENABLED = os.getenv("VOICE_ENABLED", "true").strip().lower() in (
+    "1", "true", "yes", "on"
+)
+
+# Kept for backward compatibility with older env files.
+SPEECH_ENABLED = VOICE_ENABLED
+
+VOICE_PROVIDER = os.getenv("VOICE_PROVIDER", "gemini").strip().lower()
+GEMINI_TTS_MODEL = os.getenv("GEMINI_TTS_MODEL", "gemini-2.5-flash-preview-tts")
+
+
+def gemini_tts_supported() -> bool:
+    """Conservative local guard: only explicitly named TTS models reach TTS.
+    Checks for a "-tts" suffix (Gemini's actual naming convention, e.g.
+    "gemini-2.5-flash-preview-tts") rather than a bare substring match --
+    a substring check would also match names like "not-a-tts-model" that
+    contain "tts" without actually being a TTS model."""
+    model = GEMINI_TTS_MODEL.strip().lower()
+    return model.endswith("-tts") or model.endswith("tts")
+
+# One of Gemini's 30 prebuilt voice names (e.g. Kore, Puck, Charon, Zephyr).
+# Charon is selected as the default calm, lower-register Gemini voice.
+VOICE_NAME = os.getenv("VOICE_NAME", "Charon")
+
+# "normal", "slow", or "fast" — expressed to Gemini TTS as a natural-language
+# pacing instruction, since the API has no separate numeric speed parameter.
+VOICE_SPEED = os.getenv("VOICE_SPEED", "normal").strip().lower()
+
+# Gemini TTS auto-detects language from the text; this is kept for a future
+# explicit-language use case and to satisfy the configuration surface.
+VOICE_LANGUAGE = os.getenv("VOICE_LANGUAGE", "auto")
+
+# 0.0-1.0. Playback volume isn't controllable per-clip through every backend
+# player, so this is applied only where the player supports it (e.g. mpv).
+VOICE_VOLUME = _env_float("VOICE_VOLUME", 1.0, minimum=0.0, maximum=1.0)
+
+# Cache generated audio by a hash of the text, so repeated phrases don't
+# re-hit the API. Cached files persist across runs; disable if disk-averse.
+VOICE_CACHE = os.getenv("VOICE_CACHE", "true").strip().lower() in (
+    "1", "true", "yes", "on"
+)
+
+# ---------------------------------------------------------------------------
+# Misc
+# ---------------------------------------------------------------------------
+REQUEST_TIMEOUT = _env_int("REQUEST_TIMEOUT", 30, minimum=1)
+MAX_HISTORY = _env_int("MAX_HISTORY", 5, minimum=0)
+
+# ---------------------------------------------------------------------------
+# Planning engine
+# ---------------------------------------------------------------------------
+# The Planner adds one extra LLM call per turn (to decide simple vs.
+# multi-step) before the normal chat call. On a rate-limited free-tier
+# model this roughly doubles API usage per turn, so it's opt-in.
+PLANNER_ENABLED = os.getenv("PLANNER_ENABLED", "false").strip().lower() in (
+    "1", "true", "yes", "on"
+)
+
+# Skip the decomposition call entirely for very short messages (greetings,
+# one-word replies) — these are essentially never multi-step requests, so
+# this avoids paying the extra LLM call on the most common kind of turn.
+PLANNER_MIN_WORDS = _env_int("PLANNER_MIN_WORDS", 4, minimum=0)
+
+# ---------------------------------------------------------------------------
+# Self-Critic
+# ---------------------------------------------------------------------------
+# The Self-Critic reviews a draft chat response before it's sent, using
+# cheap structural checks plus this turn's reasoning confidence, and
+# rewrites it once if a real issue is found. Fully optional: when
+# disabled, main.py's pipeline is unchanged from before the critic existed.
+ENABLE_SELF_CRITIC = os.getenv("ENABLE_SELF_CRITIC", "true").strip().lower() in (
+    "1", "true", "yes", "on"
+)
+
+# Below this confidence, review() flags the response for improvement even
+# if no structural issue was found. Matches the range
+# cognition.reasoning.CognitiveReasoningEngine.reason() actually produces
+# (.35 floor, .9 ceiling).
+LOW_CONFIDENCE_THRESHOLD = _env_float("LOW_CONFIDENCE_THRESHOLD", 0.45, minimum=0.0, maximum=1.0)
+
+# A response shorter than this (after stripping) is flagged as too short
+# to be a useful answer.
+MINIMUM_RESPONSE_LENGTH = _env_int("MINIMUM_RESPONSE_LENGTH", 3, minimum=0)
+
+# Hard ceiling on improve passes per turn. The critic never re-reviews its
+# own output, so this is a defensive cap, not a normal retry loop -- at
+# most this many api.call_llm() calls happen for the critic in one turn.
+MAXIMUM_IMPROVEMENT_ATTEMPTS = _env_int("MAXIMUM_IMPROVEMENT_ATTEMPTS", 1, minimum=0)
+
+# ---------------------------------------------------------------------------
+# Startup validation
+# ---------------------------------------------------------------------------
+
+def validate() -> list:
+    """Return a list of human-readable warnings about missing/incomplete
+    configuration. Never raises — callers decide how loudly to report."""
+    warnings = list(_PARSE_WARNINGS)
+    warnings.extend([
+        f"Text model: {GEMINI_MODEL}",
+        f"Speech model: {GEMINI_TTS_MODEL}",
+        f"TTS supported: {'YES' if gemini_tts_supported() else 'NO'}",
+        f"Self-Critic: {'enabled' if ENABLE_SELF_CRITIC else 'disabled'}",
+    ])
+
+    if LLM_PROVIDER not in _SUPPORTED_PROVIDERS:
+        warnings.append(
+            f"Unknown LLM_PROVIDER '{LLM_PROVIDER}' (supported: {', '.join(_SUPPORTED_PROVIDERS)}); "
+            f"falling back to gemini."
+        )
+
+    if not GEMINI_API_KEY:
+        warnings.append("GEMINI_API_KEY is not set.")
+    if not GEMINI_MODEL.strip():
+        warnings.append("GEMINI_MODEL is empty.")
+
+    if not os.path.exists(PROMPT_PATH):
+        warnings.append(f"prompt.txt not found at {PROMPT_PATH}.")
+    if VOICE_PROVIDER != "gemini":
+        warnings.append(f"VOICE_PROVIDER must be gemini; got {VOICE_PROVIDER!r}.")
+    if VOICE_ENABLED and VOICE_PROVIDER == "gemini" and not GEMINI_API_KEY:
+        warnings.append("VOICE_ENABLED is true but GEMINI_API_KEY is not set — speech is disabled.")
+    if VOICE_ENABLED and VOICE_PROVIDER == "gemini" and not gemini_tts_supported():
+        warnings.append(f"GEMINI_TTS_MODEL '{GEMINI_TTS_MODEL}' is not explicitly a TTS model — speech is disabled.")
+    if REQUEST_TIMEOUT <= 0:
+        warnings.append(f"REQUEST_TIMEOUT is {REQUEST_TIMEOUT} (must be positive); using it as-is may hang.")
+    if MAX_HISTORY < 0:
+        warnings.append(f"MAX_HISTORY is {MAX_HISTORY} (must be >= 0).")
+
+    return warnings

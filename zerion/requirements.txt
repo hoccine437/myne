@@ -1,0 +1,17 @@
+# Core (required)
+requests
+python-dotenv
+
+# Voice output (optional) uses Gemini's TTS API via `requests` (already
+# required above) plus Python's stdlib `wave` module — no extra packages.
+# Set VOICE_ENABLED=true and GEMINI_API_KEY to use it.
+#
+# For playback you also need one CLI audio player already on PATH:
+#   Termux (Android): pkg install termux-api   (provides termux-media-player)
+#   Linux/desktop:    install mpv, ffplay, aplay, or paplay
+
+# psutil (optional) — used by the memory_usage, cpu_info, battery_status,
+# and process_list tools for richer data. Without it, memory_usage and
+# cpu_info fall back to /proc parsing (Linux/Termux); process_list and
+# battery_status report unavailable rather than failing.
+# psutil
