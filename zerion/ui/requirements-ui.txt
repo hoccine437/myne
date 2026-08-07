@@ -1,0 +1,7 @@
+# UI bridge dependencies (the Core itself needs only requirements.txt)
+fastapi>=0.115
+uvicorn[standard]>=0.30
+
+# optional: richer telemetry for the System Status panel (CPU freq,
+# per-process data, battery). Without it the bridge falls back to /proc.
+psutil

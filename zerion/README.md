@@ -55,6 +55,19 @@ python main.py
 Type `exit`, `quit`, or `stop` to end the session. Type `mute` to reset the
 current conversation context without exiting.
 
+## Web UI (adaptive workspace)
+
+An official browser interface — an adaptive "AI Operating System" workspace —
+is available as an additive layer over this Core (no Core behavior changes;
+the UI is a front-end adapter over the same engines):
+
+```bash
+pip install -r ui/requirements-ui.txt
+python -m ui.server --host 0.0.0.0 --port 8765
+```
+
+See [UI.md](UI.md) for architecture, the event contract, and verification.
+
 ## Voice output (optional)
 
 Voice is off by default. Mark-X Lite speaks replies aloud using Gemini's

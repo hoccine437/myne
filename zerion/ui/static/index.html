@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="obsidian" data-device="desktop" data-orientation="landscape" data-pointer="fine">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#05070d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Zerion — AI Operating System</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='none' stroke='%2366e3ff' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%2366e3ff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/static/css/base.css">
+<link rel="stylesheet" href="/static/css/layout.css">
+<link rel="stylesheet" href="/static/css/panels.css">
+<link rel="stylesheet" href="/static/css/workspace.css">
+</head>
+<body>
+<a class="skip-link" href="#workspace-root">Skip to workspace</a>
+<a class="skip-link" href="#command-input">Skip to command input</a>
+
+<div id="app" class="app" role="application" aria-label="Zerion AI Operating System">
+
+  <!-- ===================== HEADER ===================== -->
+  <header id="app-header" class="app-header">
+    <div class="brand" aria-label="Zerion">
+      <span class="brand-mark" aria-hidden="true"><span class="brand-dot"></span></span>
+      <span class="brand-name">ZERION</span>
+      <span class="brand-sub" id="brand-version" title="Core version"></span>
+    </div>
+
+    <div class="header-center">
+      <div id="core-state-pill" class="core-state-pill" role="status" aria-live="polite">
+        <span class="state-dot" aria-hidden="true"></span>
+        <span id="core-state-label">Initializing</span>
+      </div>
+      <div id="workspace-chip" class="workspace-chip" title="Adaptive workspace">
+        <span class="chip-icon" aria-hidden="true">◈</span>
+        <span id="workspace-chip-label">Workspace</span>
+      </div>
+    </div>
+
+    <nav class="header-actions" aria-label="Interface tools">
+      <button id="btn-explorer" class="icon-btn" data-i18n-title="explorer" title="File Explorer (Ctrl+E)" aria-label="File Explorer">
+        <svg viewBox="0 0 24 24"><path d="M3 5a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      </button>
+      <button id="btn-logs" class="icon-btn" title="Logs (Ctrl+L)" aria-label="Logs">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16v3H4zm0 5h16v3H4zm0 5h16v3H4zm0 5h10v3H4z"/></svg>
+      </button>
+      <button id="btn-memory" class="icon-btn" title="Memory Inspector (Ctrl+M)" aria-label="Memory Inspector">
+        <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.4-1.2 3.9-2.3 5.2-.9 1-1.7 1.9-1.7 3.3V19a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-1.5c0-1.4-.8-2.3-1.7-3.3C6.2 12.9 5 11.4 5 9a7 7 0 0 1 7-7z"/></svg>
+      </button>
+      <button id="btn-devtools" class="icon-btn" title="Developer Mode (Ctrl+J)" aria-label="Developer Mode">
+        <svg viewBox="0 0 24 24"><path d="M8.7 6.3 3 12l5.7 5.7 1.4-1.4L5.8 12l4.3-4.3zm6.6 0-1.4 1.4 4.3 4.3-4.3 4.3 1.4 1.4L21 12z"/></svg>
+      </button>
+      <button id="btn-monitor" class="icon-btn" title="Second-display monitor view" aria-label="Open monitor view">
+        <svg viewBox="0 0 24 24"><path d="M3 4h18a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1h-7v2h3v2H7v-2h3v-2H3a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg>
+      </button>
+      <button id="btn-fullscreen" class="icon-btn" title="Fullscreen (F11)" aria-label="Toggle fullscreen" aria-pressed="false">
+        <svg viewBox="0 0 24 24"><path d="M4 9V4h5v2H6v3zm11-5h5v5h-2V6h-3zM4 15h2v3h3v2H4zm16 0v5h-5v-2h3v-3z"/></svg>
+      </button>
+      <button id="btn-settings" class="icon-btn" title="Settings (Ctrl+,)" aria-label="Settings">
+        <svg viewBox="0 0 24 24"><path d="M12 8.5A3.5 3.5 0 1 0 12 15.5 3.5 3.5 0 0 0 12 8.5zm9 5.1-.9 2.2-2.3-.4a7.6 7.6 0 0 1-1 1.7l.9 2.1-1.8 1.4-1.7-1.6c-.7.2-1.4.3-2.2.3s-1.5-.1-2.2-.3l-1.7 1.6-1.8-1.4.9-2.1a7.6 7.6 0 0 1-1-1.7l-2.3.4L3 13.6c0-.1 1.5-2.3 1.5-2.3L3 9l.9-2.2 2.3.4c.3-.7.6-1.3 1-1.7L6.3 3.4l1.8-1.4 1.7 1.6c.7-.2 1.4-.3 2.2-.3s1.5.1 2.2.3l1.7-1.6 1.8 1.4-.9 2.1c.4.4.7 1 1 1.7l2.3-.4L21 9z" transform="scale(0.95)"/></svg>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ===================== MAIN GRID ===================== -->
+  <main id="app-main" class="app-main">
+
+    <!-- LEFT: System Status -->
+    <aside id="panel-left" class="side-panel side-left" aria-label="System status" data-drawer="left">
+      <div class="panel-grabber" aria-hidden="true"></div>
+      <div class="side-panel-inner">
+        <section class="glass section" aria-labelledby="sys-title">
+          <h2 id="sys-title" class="section-title"><span data-i18n="systemStatus">System Status</span></h2>
+          <div id="gauges" class="gauges">
+            <div class="gauge" id="gauge-cpu">
+              <div class="gauge-head"><span class="gauge-label">CPU</span><span class="gauge-value" id="cpu-value">—</span></div>
+              <div class="gauge-track"><div class="gauge-fill" id="cpu-bar"></div></div>
+              <canvas class="sparkline" id="cpu-spark" width="220" height="26" aria-hidden="true"></canvas>
+            </div>
+            <div class="gauge" id="gauge-ram">
+              <div class="gauge-head"><span class="gauge-label">RAM</span><span class="gauge-value" id="ram-value">—</span></div>
+              <div class="gauge-track"><div class="gauge-fill" id="ram-bar"></div></div>
+              <canvas class="sparkline" id="ram-spark" width="220" height="26" aria-hidden="true"></canvas>
+            </div>
+          </div>
+          <dl class="fact-grid">
+            <div class="fact"><dt>Model</dt><dd id="fact-model" class="mono">—</dd></div>
+            <div class="fact"><dt data-i18n="memory">Memory</dt><dd id="fact-memory" class="mono">—</dd></div>
+            <div class="fact"><dt>Network</dt><dd id="fact-network" class="mono">—</dd></div>
+            <div class="fact"><dt data-i18n="uptime">Uptime</dt><dd id="fact-uptime" class="mono">—</dd></div>
+          </dl>
+        </section>
+
+        <section class="glass section grow" aria-labelledby="agents-title">
+          <h2 id="agents-title" class="section-title"><span data-i18n="activeAgents">Active Agents</span>
+            <span class="section-badge" id="agents-count"></span></h2>
+          <ul id="agents-list" class="agents-list" role="list"></ul>
+        </section>
+      </div>
+    </aside>
+
+    <!-- CENTER: Orb + adaptive workspace -->
+    <section id="center-col" class="center-col">
+      <div id="orb-stage" class="orb-stage">
+        <canvas id="orb-canvas" aria-label="Zerion Core visualization" role="img"></canvas>
+        <div id="orb-caption" class="orb-caption" aria-hidden="true"></div>
+      </div>
+      <div id="workspace-root" class="workspace-root" tabindex="-1">
+        <!-- workspace mode views are injected here by workspace.js -->
+      </div>
+    </section>
+
+    <!-- RIGHT: Insight -->
+    <aside id="panel-right" class="side-panel side-right" aria-label="Insight: goals, tasks, decisions" data-drawer="right">
+      <div class="panel-grabber" aria-hidden="true"></div>
+      <div class="side-panel-inner">
+        <section class="glass section" aria-labelledby="goal-title" id="goal-section">
+          <h2 id="goal-title" class="section-title"><span data-i18n="currentGoal">Current Goal</span></h2>
+          <p id="goal-text" class="goal-text">No active goal.</p>
+          <div id="goal-counters" class="goal-counters"></div>
+        </section>
+
+        <section class="glass section grow" aria-labelledby="tasks-title" id="tasks-section">
+          <h2 id="tasks-title" class="section-title"><span data-i18n="activeTasks">Active Tasks</span>
+            <span class="section-badge" id="tasks-count"></span></h2>
+          <ul id="tasks-list" class="tasks-list" role="list">
+            <li class="empty-hint" data-i18n="noTasks">No running plan.</li>
+          </ul>
+        </section>
+
+        <section class="glass section" aria-labelledby="tools-title" id="tools-section">
+          <h2 id="tools-title" class="section-title"><span data-i18n="runningTools">Running Tools</span></h2>
+          <ul id="running-tools" class="running-tools" role="list">
+            <li class="empty-hint" data-i18n="idle">Idle.</li>
+          </ul>
+        </section>
+
+        <section class="glass section" aria-labelledby="decisions-title">
+          <h2 id="decisions-title" class="section-title"><span data-i18n="recentDecisions">Recent Decisions</span></h2>
+          <ul id="decisions-list" class="feed-list" role="list"></ul>
+        </section>
+
+        <section class="glass section" aria-labelledby="notes-title">
+          <h2 id="notes-title" class="section-title"><span data-i18n="notifications">Notifications</span></h2>
+          <ul id="notifications-list" class="feed-list" role="list"></ul>
+        </section>
+      </div>
+    </aside>
+  </main>
+
+  <!-- ===================== BOTTOM DOCK ===================== -->
+  <footer id="dock" class="dock">
+    <div id="dock-resize" class="dock-resize" role="separator" aria-orientation="horizontal" aria-label="Resize dock"></div>
+    <div class="dock-body">
+      <section id="chat-panel" class="dock-panel chat-panel" aria-label="Conversation">
+        <div id="chat-scroll" class="chat-scroll" aria-live="polite" aria-relevant="additions">
+          <div id="chat-stream" class="chat-stream"></div>
+        </div>
+        <button id="chat-jump" class="chat-jump" aria-label="Jump to latest">↓</button>
+      </section>
+      <section id="terminal-panel" class="dock-panel terminal-panel hidden" aria-label="Terminal">
+        <div class="terminal-head">
+          <span class="terminal-title">TERMINAL</span>
+          <span class="terminal-hint">runs through the Core tool policy · confirm required</span>
+          <button id="terminal-clear" class="mini-btn" aria-label="Clear terminal">clear</button>
+          <button id="terminal-close" class="mini-btn" aria-label="Close terminal">✕</button>
+        </div>
+        <div id="terminal-scroll" class="terminal-scroll" aria-live="polite"><div id="terminal-stream" class="terminal-stream mono"></div></div>
+        <form id="terminal-form" class="terminal-form">
+          <span class="terminal-prompt mono">$</span>
+          <input id="terminal-input" class="terminal-input mono" type="text" autocomplete="off"
+                 spellcheck="false" aria-label="Terminal command" placeholder="command and arguments…">
+        </form>
+      </section>
+    </div>
+
+    <!-- Command bar -->
+    <form id="command-bar" class="command-bar glass" aria-label="Command input">
+      <button type="button" id="btn-voice" class="icon-btn cmd-btn" title="Voice input (hold to talk)" aria-label="Voice input" aria-pressed="false">
+        <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-2.08A7 7 0 0 0 19 12z"/></svg>
+      </button>
+      <div class="cmd-input-wrap">
+        <div id="attach-chips" class="attach-chips" aria-live="polite"></div>
+        <textarea id="command-input" rows="1" data-i18n-ph="askZerion"
+                  placeholder="Ask Zerion anything — or type / for commands"
+                  aria-label="Message Zerion" autocomplete="off"></textarea>
+        <div id="cmd-autocomplete" class="cmd-autocomplete hidden" role="listbox" aria-label="Commands"></div>
+      </div>
+      <button type="button" id="btn-terminal-toggle" class="icon-btn cmd-btn" title="Terminal (Ctrl+`)" aria-label="Toggle terminal" aria-pressed="false">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zm3.3 5.3 3 3-3 3 1.4 1.4 4.4-4.4-4.4-4.4zM12 16h6v2h-6z"/></svg>
+      </button>
+      <button type="button" id="btn-dock-toggle" class="icon-btn cmd-btn" title="Collapse/expand dock" aria-label="Collapse or expand dock" aria-pressed="true">
+        <svg viewBox="0 0 24 24"><path d="M12 8l6 6-1.4 1.4L12 10.8l-4.6 4.6L6 14z"/></svg>
+      </button>
+      <button type="submit" id="btn-send" class="send-btn" aria-label="Send message" title="Send (Enter)">
+        <svg viewBox="0 0 24 24"><path d="M3 20v-6l8-2-8-2V4l19 8z"/></svg>
+      </button>
+    </form>
+  </footer>
+
+  <!-- ===================== FLOATING LAYER ===================== -->
+  <div id="floating-layer" class="floating-layer" aria-live="off"></div>
+
+  <!-- Confirmation dialog -->
+  <div id="confirm-overlay" class="confirm-overlay hidden" role="alertdialog"
+       aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-message">
+    <div class="confirm-card glass-strong">
+      <h3 id="confirm-title">Approval required</h3>
+      <p id="confirm-message"></p>
+      <pre id="confirm-params" class="confirm-params mono hidden"></pre>
+      <div class="confirm-actions">
+        <button id="confirm-yes" class="btn btn-danger">Approve</button>
+        <button id="confirm-no" class="btn btn-ghost">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toasts + touch edge handles -->
+  <div id="toast-region" class="toast-region" aria-live="polite"></div>
+  <div id="edge-left" class="edge-handle edge-left" aria-hidden="true"></div>
+  <div id="edge-right" class="edge-handle edge-right" aria-hidden="true"></div>
+  <div id="connection-banner" class="connection-banner hidden" role="alert">Connection lost — reconnecting…</div>
+</div>
+
+<noscript><div style="color:#cfe;font-family:sans-serif;padding:2rem">Zerion requires JavaScript.</div></noscript>
+<script type="module" src="/static/js/main.js"></script>
+</body>
+</html>
