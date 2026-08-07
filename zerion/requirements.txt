@@ -1,17 +1,27 @@
-# Core (required)
-requests
-python-dotenv
+# Zerion Core (required) — terminal front end, agents, skills, tools,
+# 24/7 runtime. All pure-Python, wheel-safe on desktop linux and Termux/ARM64.
+requests>=2.31
+python-dotenv>=1.0
 
-# Voice output (optional) uses Gemini's TTS API via `requests` (already
-# required above) plus Python's stdlib `wave` module — no extra packages.
-# Set VOICE_ENABLED=true and GEMINI_API_KEY to use it.
-#
-# For playback you also need one CLI audio player already on PATH:
+# --- Web UI -------------------------------------------------------------
+# For the full product experience (browser UI, /ws bridge, REST panels):
+#   pip install -r ui/requirements-ui.txt
+# On Termux, uvicorn[standard]'s uvloop/httptools and pydantic-core compile
+# natively — install the toolchain first:  pkg install clang make rust
+# (or run `python -m ui.server` after the extras install on any host).
+
+# Voice output uses Gemini's TTS API via `requests` (already required above)
+# plus Python's stdlib `wave` module — no extra Python packages. Playback
+# needs one CLI audio player on PATH:
 #   Termux (Android): pkg install termux-api   (provides termux-media-player)
-#   Linux/desktop:    install mpv, ffplay, aplay, or paplay
+#   Linux/desktop:    mpv, ffplay, aplay, or paplay
 
-# psutil (optional) — used by the memory_usage, cpu_info, battery_status,
-# and process_list tools for richer data. Without it, memory_usage and
-# cpu_info fall back to /proc parsing (Linux/Termux); process_list and
-# battery_status report unavailable rather than failing.
-# psutil
+# psutil (optional but recommended) — richer CPU/RAM/process/battery data
+# for tools and the UI System Status panel. Without it those fall back to
+# /proc parsing (Linux/Termux) or report "unavailable" instead of failing.
+# NOTE: psutil compiles from source on Termux — needs: pkg install clang make
+# psutil>=5.9
+
+# pytest — only needed to run the test suite (`python -m pytest tests/ -q`);
+# the test files are stdlib-unittest based but the harness expects pytest.
+# pytest>=8

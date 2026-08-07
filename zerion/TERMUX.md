@@ -43,9 +43,13 @@ python -m runtime --install-autostart termux --yes
 
 ## Platform behavior audit result (static + simulated profile)
 
-Probes verified without a physical device (simulated Termux env: `PREFIX`
-set, no Termux binaries):
-
+- dependencies: requests, python-dotenv — pure-Python, pip-installable on
+  Termux ARM64, **no native builds required** for the Core (SQLite is Python
+  stdlib). The UI extras (fastapi + uvicorn[standard] + psutil) compile small
+  native pieces on Termux — if and only if you install them there, run
+  `pkg install clang make rust` first. `python setup.py --no-ui` provisions
+  the lightest phone-safe profile. **No PyTorch/NumPy/OpenCV/native GGUF
+  runtimes anywhere in the dependency graph.**
 - `phone.device` correctly detects `is_termux/is_android/is_mobile` and
   reports sensor availability honestly (None/unknown when unprobed)
 - runtime health monitor keeps the phone subsystem enabled on Termux
@@ -56,10 +60,10 @@ set, no Termux binaries):
   guarded by `os.name == 'posix'`
 - no desktop-only absolute paths in the Core; memory/knowledge stores are
   project-relative
-- dependencies: requests, python-dotenv, fastapi, uvicorn, psutil — all
-  pure-Python and pip-installable on Termux ARM64; **no native builds
-  required** (no PyTorch/NumPy/OpenCV/cryptography dependencies anywhere
-  in the project; SQLite is Python stdlib)
+
+(The dependency detail now lives in the audit-result section above — the
+quick summary: core = pure Python; UI extras compile native pieces on
+Termux and need `pkg install clang make rust`.)
 
 ## Documented operating mode (24/7 on Android)
 
