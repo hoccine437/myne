@@ -9,3 +9,4 @@ zerion/knowledge/*.db
 zerion/knowledge/*.db-journal
 zerion/knowledge/*.db-wal
 zerion/runtime/run/
+ZERION_FINAL.zip
