@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased — Core stabilization pass
+- Full-core audit (127 modules) + integration verification: new fenced
+  guarantees in tests/test_integration_map.py (every module imports; all
+  critical pipeline modules stay reachable from main.py; the documented
+  dormant set changes only deliberately) and tests/test_main_integration.py
+  (real run_loop E2E over a scripted provider: memory persist+recall, fast
+  planner, self-critic, tool routing, confirmation gate, planner, idle
+  maintenance, clean exit).
+- Relocated .env.example to the package root; removed a leftover extraction
+  directory; promoted memory/ to a regular package (additive __init__.py).
+- Verified signal-driven shutdown and the multi-threaded memory-writer lock.
+- No Core behavior changed; main.py and the constitution corpus are untouched
+  (hash-locked). Full suite: 109 passed.
+
 ## Unreleased — 24/7 runtime + startup greeting (additive layer)
 - Added `runtime/` package: long-lived service lifecycle (`python -m runtime`)
   with single-instance flock lockfile, structured JSONL logging with rotation,
