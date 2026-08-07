@@ -44,6 +44,8 @@ export const store = {
     connected: false,
   },
 
+  boot: null,               // hello/bootstrap payload (welcome readiness etc.)
+
   runtime: {
     workspace: "chat",      // adaptive workspace mode
     focus: false,

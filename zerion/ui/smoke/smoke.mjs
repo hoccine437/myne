@@ -238,6 +238,15 @@ FakeWS.last.close();
 await new Promise(r => setTimeout(r, 30));
 check("offline banner shown", !$("#connection-banner").classList.contains("hidden"));
 
+console.log("\n— welcome experience…");
+await new Promise(r => setTimeout(r, 60));
+check("welcome overlay shown on first run", !!$("#welcome-title"));
+check("readiness rows rendered", $$("#welcome-title").length === 1 && document.body.textContent.includes("READINESS"));
+const enterBtn = [...document.querySelectorAll("button")].find(b => b.textContent === "Enter Zerion");
+enterBtn?.click();
+await new Promise(r => setTimeout(r, 30));
+check("welcome persists dismissal", window.localStorage.getItem("zerion.welcomed.v1") === "1");
+
 console.log("\n— smart layout engine (device classification)…");
 const { classify, applyProfile } = await import("file://" + STATIC + "/js/core/device.js");
 function setViewport(w, hgt, coarse = false) {

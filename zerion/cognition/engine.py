@@ -12,7 +12,18 @@ class CognitiveEngine:
   decision=self.constitution.evaluate('reason')
   gap=self.curiosity.detect(goal)
   if gap:self.curiosity.record(gap)
-  return CognitiveContext(goal,select_mode(goal),gap,decision.reason)
+  mode=select_mode(goal)
+  # Personality rules ride the same prompt channel (reasoning_rules) main.py
+  # already feeds the model — real behavioral influence, not a label change.
+  try:
+   import personality
+   persona_rules=personality.persona_rules()
+  except Exception:
+   persona_rules=()
+  if persona_rules:
+   from dataclasses import replace
+   mode=replace(mode,rules=tuple(mode.rules)+tuple(persona_rules))
+  return CognitiveContext(goal,mode,gap,decision.reason)
  def propose_capability(self,goal:str,observed_limit:str)->dict:
   """Proposal only; Phase 5 remains responsible for review/test/deployment."""
   return {'goal':goal,'problem':observed_limit,'action':'propose','requires_approval':True,

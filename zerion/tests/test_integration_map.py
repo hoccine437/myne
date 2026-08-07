@@ -62,6 +62,7 @@ KNOWN_DORMANT_PREFIXES = (
     "runtime",         # 24/7 service daemon (own entry point)
     "ui",              # WebUI front-end (own entry point)
     "setup",           # first-run bootstrap CLI (own entry point)
+    "second_audit",    # release-gate audit tool (own entry point, dev-only)
 )
 
 
@@ -112,8 +113,8 @@ def _build_graph():
     return known, edges
 
 
-def _reachable(edges, start):
-    seen, stack = set(), [start]
+def _reachable(edges, *starts):
+    seen, stack = set(), list(starts)
     while stack:
         m = stack.pop()
         if m in seen or m not in edges:
@@ -138,10 +139,12 @@ class ImportSweepTests(unittest.TestCase):
 
     def test_only_allowlisted_modules_unreachable(self):
         known, edges = _build_graph()
-        main_reach = _reachable(edges, "main")
-        for m in list(known):
-            if m.startswith("tools.") and m.split(".")[1] not in ("base", "manager", "registry"):
-                main_reach.add(m)  # discovered dynamically by tools/registry
+        # Tools are discovered dynamically by tools/registry — so every tool
+        # module (and its import tree, e.g. agents/, phone/device.py) counts
+        # as reachable from main through the Tool Manager.
+        tool_modules = [m for m in known
+                        if m.startswith("tools.") and m.split(".")[1] not in ("base", "manager", "registry")]
+        main_reach = _reachable(edges, "main", *tool_modules)
         unexpected = [
             m for m in sorted(known - main_reach)
             if not any(m.startswith(prefix) for prefix in KNOWN_DORMANT_PREFIXES)

@@ -64,6 +64,7 @@ export function connect() {
         serverSettings: msg.data.settings || {},
         tools: msg.data.tools || [],
       });
+      store.boot = msg.data;
       emit("hello", msg.data);
       return;
     }

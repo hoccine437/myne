@@ -1,5 +1,36 @@
 # Changelog
 
+## 1.0.0 — Final release candidate built & verified
+- Phone body: phone/device.py host probe (platform/arch/screen/RAM/storage/
+  battery/network/sensors, Termux-rich, desktop psutil//proc fallback) +
+  tools/device_state_tool.py — the Core knows what it runs on.
+- Agents: new agents/ package — five fixed types (researcher/coder/
+  verifier/controller/monitor), dynamically instantiated instances,
+  resource-bounded pool (capacity from cores+RAM, per-type caps), whitelist
+  enforcement (nothing destructive without the supervised path), delegation,
+  aggregation, restart budget, reaping; exposed via tools/agent_tools.py.
+- Skills: 10 additional routable domain packs (mathematics, physics,
+  chemistry, health information, legal information, culinary, languages,
+  history, mechanical engineering, writing) + skill_route/skill_list tools;
+  legacy four-domain routing preserved byte-for-byte behaviorally.
+- Smart brain: cognition/reasoning.py emits multi-path hypothesis scaffolds
+  for analytic goals (evidence-led/context-gap/environment-led, bounded,
+  revisable, evidence-tagged); confidence stays evidence-bounded (.35–.90).
+- Personality: personality.py NORMAL/SERIOUS with real prompt-channel effect
+  (persona rules ride reasoning_rules into the model context) + natural
+  phrase + slash command switching, persisted in long-term memory; safety
+  boundaries explicitly remain active.
+- Gemini transport verified offline (mocked): auth, request shape, 401/403,
+  429 w/ Retry-After, timeout, network failure, malformed replies; TTS
+  payload contract (AUDIO modality, prebuilt voice) + PCM→WAV integrity.
+- UI: first-run welcome experience (fast, readiness-driven, skippable).
+- second_audit.py: release-gate audit tool (19 checks: integrity, imports,
+  secrets, runtime behaviors, service lifecycle, full suite, mobile compat).
+- Verification: 157 backend tests, 61 UI smoke checks, full second audit
+  PASSED. Gemini audio playback + physical Android execution: NOT VERIFIED
+  (no audio hardware / no physical device in the build environment) —
+  see FINAL_RELEASE.md for the honest verification matrix.
+
 ## Unreleased — Core stabilization pass
 - Full-core audit (127 modules) + integration verification: new fenced
   guarantees in tests/test_integration_map.py (every module imports; all

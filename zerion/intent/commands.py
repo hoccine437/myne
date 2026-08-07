@@ -19,20 +19,51 @@ from intent.history import action_history
 
 COMMANDS = {
     "/status", "/tools", "/memory", "/history", "/goals",
-    "/plugins", "/debug", "/help", "/plan",
+    "/plugins", "/debug", "/help", "/plan", "/serious", "/normal",
+}
+
+# Persona switches also accept the natural-language (exact-phrase) forms —
+# exact matches only, so genuine requests that merely start with "start…"
+# still flow to the normal pipeline untouched.
+_PHRASE_COMMANDS = {
+    "start serious mode": "/serious",
+    "stop serious mode": "/normal",
+    "end serious mode": "/normal",
+    "start normal mode": "/normal",
+    "serious mode on": "/serious",
+    "serious mode off": "/normal",
 }
 
 
 def is_command(user_text: str) -> bool:
-    first_word = user_text.strip().lower().split()[0] if user_text.strip() else ""
+    stripped = (user_text or "").strip()
+    if not stripped:
+        return False
+    if stripped.lower() in _PHRASE_COMMANDS:
+        return True
+    first_word = stripped.lower().split()[0]
     return first_word in COMMANDS
 
 
 def handle(user_text: str, session, memory: dict) -> str:
     """Execute a slash command and return the text to display. Assumes
     is_command(user_text) was already True."""
-    parts = user_text.strip().split()
-    cmd = parts[0].lower()
+    stripped = user_text.strip()
+    lowered_full = stripped.lower()
+    if lowered_full in _PHRASE_COMMANDS:
+        cmd = _PHRASE_COMMANDS[lowered_full]
+    else:
+        cmd = ""
+    parts = stripped.split()
+    cmd = cmd or parts[0].lower()
+
+    if cmd == "/serious":
+        import personality
+        return personality.set_mode(personality.SERIOUS)
+
+    if cmd == "/normal":
+        import personality
+        return personality.set_mode(personality.NORMAL)
 
     if cmd == "/help":
         return (

@@ -60,6 +60,11 @@ async function boot() {
   initVoice();
   initMonitorButton();
 
+  // welcome experience: once, on hello payload, never blocking the UI
+  const { maybeShowWelcome } = await import("./modules/welcome.js");
+  window.__zerionBus = { on };
+  on("hello", () => maybeShowWelcome());
+
   // header panel buttons
   document.getElementById("btn-explorer").addEventListener("click", () => toggle("explorer"));
   document.getElementById("btn-logs").addEventListener("click", () => toggle("logs"));

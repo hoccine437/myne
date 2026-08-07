@@ -147,6 +147,18 @@ registerPanel("settings", {
         `drop in a tool file and it's discovered automatically.`),
     ));
 
+    /* ---- welcome ---- */
+    wrap.appendChild(h("div", { class: "settings-group" },
+      h("h4", {}, "Welcome"),
+      row("Welcome screen", "shown on first run; reopens from here", h("button", {
+        class: "mini-btn", type: "button",
+        onclick: async () => {
+          const w = await import("./welcome.js");
+          w.resetWelcome(); w.show();
+        },
+      }, "Show again")),
+    ));
+
     clear(body); body.appendChild(wrap);
 
     return null;
