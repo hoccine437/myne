@@ -5,3 +5,6 @@ __pycache__/
 node_modules/
 zerion/memory/*.bak
 .last_run_tmp*
+zerion/knowledge/*.db
+zerion/knowledge/*.db-journal
+zerion/knowledge/*.db-wal
