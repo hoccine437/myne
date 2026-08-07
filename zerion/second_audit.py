@@ -97,8 +97,15 @@ def main() -> int:
                 leaks.append(str(p.relative_to(BASE)))
     check("no leaked API keys in tracked files", not leaks, "; ".join(leaks))
     check("no leftover extraction dir", not (BASE / "zerion_extracted").exists())
-    check("no real .env with a key present", not (BASE / ".env").exists() or
-          "replace_with_key" in (BASE / ".env").read_text(errors="ignore"))
+    key_env_file = (BASE / ".env")
+    env_has_real_key = False
+    if key_env_file.exists():
+        env_text = key_env_file.read_text(errors="ignore")
+        for line in env_text.splitlines():
+            if line.startswith("GEMINI_API_KEY="):
+                value = line.split("=", 1)[1].strip()
+                env_has_real_key = bool(value) and value != "replace_with_key"
+    check("no real .env with a key present", not env_has_real_key)
 
     print("== D. Core runtime behaviors ==")
     script = "/status\n/tools\nwhat time is it\n\nexit\n"

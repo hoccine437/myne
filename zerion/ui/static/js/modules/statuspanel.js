@@ -74,6 +74,30 @@ function renderModelFacts() {
   if (version && store.core.version) version.textContent = "v" + store.core.version;
 }
 
+/* 24/7 runtime service surface — the heartbeat is read-only ops data;
+   this is what connects /api/status to the System Status panel. */
+let runtimeRow = null;
+async function refreshRuntimeStatus() {
+  try {
+    const { runtime } = await (await import("../core/net.js")).api("/api/status");
+    const grid = document.querySelector(".fact-grid");
+    if (!grid) return;
+    if (!runtime) {
+      runtimeRow?.remove(); runtimeRow = null;
+      return;
+    }
+    if (!runtimeRow) {
+      runtimeRow = document.createElement("div");
+      runtimeRow.className = "fact";
+      runtimeRow.innerHTML = "<dt>Service</dt><dd class='mono'></dd>";
+      grid.appendChild(runtimeRow);
+    }
+    const dd = runtimeRow.querySelector("dd");
+    dd.textContent = `${runtime.state} · ${runtime.health?.overall ?? "?"} · ${Math.round(runtime.uptime_s || 0)}s`;
+    dd.title = "24/7 runtime heartbeat (runtime/run/heartbeat.json)";
+  } catch { /* service layer optional */ }
+}
+
 let memoryFact = "";
 on("core:memory_update", () => { refreshMemoryFact(); });
 
@@ -110,7 +134,9 @@ function renderAgents(agents) {
 export function initStatusPanel() {
   on("core:metrics", renderMetrics);
   on("core:agents", (d) => renderAgents(d.agents || {}));
-  on("hello", () => { renderModelFacts(); refreshMemoryFact(); });
+  on("hello", () => { renderModelFacts(); refreshMemoryFact(); refreshRuntimeStatus(); });
+  refreshRuntimeStatus();
+  setInterval(refreshRuntimeStatus, 15000);
   // agents dim back to standby on a timer even without new events
   setInterval(() => {
     if (Object.keys(store.runtime.agents).length) renderAgents(store.runtime.agents);

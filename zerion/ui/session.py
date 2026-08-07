@@ -480,6 +480,7 @@ class ZerionUISession:
         #     reasoning → runtime intelligence (same order as main.py) ---
         t0 = time.monotonic()
         self._agent("Knowledge", "active", "retrieving context")
+        self._state("searching", "retrieving memory and knowledge")
         long_term_memory = load_memory()
         memory_for_prompt = minimal_memory_for_prompt(long_term_memory)
         retrieved = self.knowledge.retrieve_context(text, limit=5)
@@ -627,11 +628,13 @@ class ZerionUISession:
 
         # --- memory + learning (mirrors main.py) -------------------------
         if memory_update and isinstance(memory_update, dict):
+            self._state("updating", "writing long-term memory")
             update_memory(memory_update)
             bus.emit("memory_update", {"keys": list(memory_update.keys())})
 
         try:
             self._agent("Learning", "active", "recording experience")
+            self._state("learning", "consolidating experience")
             self.learning.learn_task(text, response or "", elapsed=time.monotonic() - started_at)
             self.capabilities.learn(text, "normal LLM response", bool(response),
                                     .65 if response else .3)

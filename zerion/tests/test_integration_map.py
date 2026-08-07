@@ -62,7 +62,8 @@ KNOWN_DORMANT_PREFIXES = (
     "runtime",         # 24/7 service daemon (own entry point)
     "ui",              # WebUI front-end (own entry point)
     "setup",           # first-run bootstrap CLI (own entry point)
-    "second_audit",    # release-gate audit tool (own entry point, dev-only)
+    "second_audit",        # release-gate audit tool (own entry point, dev-only)
+    "connectivity_audit",  # final-gate connectivity audit (own entry point, dev-only)
 )
 
 

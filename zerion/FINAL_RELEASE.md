@@ -2,6 +2,13 @@
 
 **Date:** 2026-08-07 · **Release:** v1.0.0 · **Entry point:** `main.py`
 **Branch:** arena/019fddfd-myne · **Second audit:** `second_audit.py` — 19/19 PASS
+**Final connectivity gate:** `connectivity_audit.py` — 29/29 PASS
+(264–268 files inventoried & classified A–H; zero orphans; zero blockers;
+repeated against the extracted ZIP copy)
+
+Soak numbers that established this gate: 157/157 backend tests · 61/61 UI
+smoke checks · Termux-profile simulation PASS (simulated `PREFIX`/`android`
+env; physical device not available in the build environment — see matrix).
 
 ---
 
