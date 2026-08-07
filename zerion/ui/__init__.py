@@ -1,9 +1,10 @@
 # ui/__init__.py
 """Zerion WebUI — the official adaptive interface for the Zerion Core.
 
-This package is a *front-end adapter*. It stands next to ``terminal.py``
-(and main.py's loop) as an alternative presentation layer over the exact
-same Core engines:
+This package IS the default presentation layer: `python main.py` boots it
+(the legacy terminal adapter was retired; main.py carries an inline
+minimal REPL for UI-less hosts). It's a front-end adapter over the exact
+same Core engines as main.py's loop:
 
     intent.engine, intent.commands, planner, tools.manager, llm,
     knowledge, learning, cognition, capabilities, intelligence,

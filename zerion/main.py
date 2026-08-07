@@ -1,6 +1,11 @@
 # main.py
-"""
-Mark-X Lite — terminal-first AI assistant.
+"""Mark-X Lite — Zerion's official production entry point.
+
+Since the final release the Web UI is the default front end:
+`python main.py` boots the adaptive browser workspace (and can also run
+under `python -m runtime` for 24/7 service mode). A minimal built-in
+legacy REPL remains for UI-less hosts (`--terminal`), or when the UI
+extras are not installed.
 
 Same conversation loop, memory handling, and intent contract as the
 original Mark-X, minus the GUI and desktop-automation layers that don't
@@ -8,6 +13,9 @@ belong on Termux / low-resource Linux.
 """
 
 import config
+import os
+import sys
+import threading
 import time
 from core import logging as log
 from llm import get_llm_output
@@ -21,7 +29,6 @@ from constitution.constitution import ConstitutionEngine
 from intelligence.runtime import RuntimeIntelligence
 from intelligence.critic import self_critic
 from phone.engine import PhoneIntelligence
-from terminal import TerminalUI
 from speech import speak, speech_status
 from tools.manager import tool_manager
 from planner import planner as planning_engine
@@ -138,7 +145,7 @@ def minimal_memory_for_prompt(memory: dict) -> dict:
     return {k: v for k, v in result.items() if v}
 
 
-def _render_plan_summary(summary: dict, ui: TerminalUI):
+def _render_plan_summary(summary: dict, ui):
     """Turn a planner execution summary into a short spoken/printed
     report — which steps ran, which failed, overall outcome."""
     tasks = summary.get("tasks", [])
@@ -158,7 +165,7 @@ def _render_plan_summary(summary: dict, ui: TerminalUI):
     speak(msg)
 
 
-def handle_intent(intent: str, parameters: dict, response: str, ui: TerminalUI, session: SessionMemory):
+def handle_intent(intent: str, parameters: dict, response: str, ui, session: SessionMemory):
     """
     Dispatch non-chat intents. Legacy GUI-era intents (open_app,
     send_message) are still acknowledged but not executed, exactly as
@@ -193,7 +200,7 @@ def handle_intent(intent: str, parameters: dict, response: str, ui: TerminalUI, 
         speak(response)
 
 
-def run_loop(ui: TerminalUI):
+def run_loop(ui):
     session = SessionMemory()
     # Phase 4 is additive: legacy memory and all existing engines remain intact.
     knowledge = KnowledgeManager()
@@ -482,14 +489,152 @@ def run_loop(ui: TerminalUI):
                 speak(response)
 
 
+# ---------------------------------------------------------------------------
+# Entry point — UI-first
+# ---------------------------------------------------------------------------
+
+class _UIUnavailable(RuntimeError):
+    pass
+
+
+class _MinimalTerminalUI:
+    """Inline legacy adapter (terminal.py was retired). The full terminal
+    persona is gone; this is a functional stdin/stdout surface for hosts
+    without the UI extras. All Core behavior still flows through run_loop
+    unchanged."""
+
+    def write_log(self, text: str) -> None:
+        print(text)
+
+    def start_speaking(self) -> None:
+        pass
+
+    def stop_speaking(self) -> None:
+        pass
+
+    def get_input(self, prompt: str = "You: ") -> str:
+        try:
+            return input(prompt)
+        except (EOFError, KeyboardInterrupt):
+            print()
+            return "exit"
+
+
+def _run_legacy_terminal() -> None:
+    print("Mark-X Lite (legacy terminal) — type 'exit' to quit.")
+    print(speech_status())
+    # Ready announcement: constitution loaded + config validated already —
+    # deliver the startup greeting exactly once (voice when available,
+    # text otherwise). The Web UI path greets from ui.server's lifespan
+    # hook instead; the once-guard prevents doubles either way.
+    try:
+        from runtime import greeting
+        greeting.deliver_startup_greeting(memory=load_memory(), text_channel=print,
+                                          blocking=False)
+    except Exception:
+        pass
+    ui = _MinimalTerminalUI()
+    try:
+        run_loop(ui)
+    except KeyboardInterrupt:
+        print("\nGoodbye.")
+
+
+def _arg_value(args: list, flag: str) -> str:
+    try:
+        i = args.index(flag)
+        return args[i + 1]
+    except (ValueError, IndexError):
+        return ""
+
+
+def _maybe_open_browser(port: int) -> None:
+    """Best-effort auto-open of the UI after the server is up. Never blocks
+    startup; silent on headless hosts."""
+    import threading
+    import webbrowser
+
+    host_is_public = os.environ.get("ZERION_UI_PUBLIC", "").strip().lower() in ("1", "true", "yes", "on")
+    url = f"http://127.0.0.1:{port}/" if not host_is_public else f"http://localhost:{port}/"
+
+    def _open():
+        time.sleep(1.2)  # let uvicorn bind first
+        try:
+            if os.environ.get("PREFIX", "").find("com.termux") >= 0:
+                import shutil
+                import subprocess
+                if shutil.which("termux-open-url"):
+                    subprocess.run(["termux-open-url", url], timeout=5,
+                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                return
+            if sys.stdout.isatty() or os.environ.get("DISPLAY"):
+                webbrowser.open(url)
+        except Exception:
+            pass
+
+    threading.Thread(target=_open, name="zerion-browser-open", daemon=True).start()
+
+
+def _run_ui(args) -> None:
+    host = _arg_value(args, "--host") or os.getenv("ZERION_UI_HOST", "0.0.0.0")
+    port_raw = _arg_value(args, "--port") or os.getenv("ZERION_UI_PORT", "8765")
+    try:
+        port = int(port_raw)
+    except ValueError:
+        print(f"[startup] invalid --port {port_raw!r}; using 8765")
+        port = 8765
+    try:
+        import uvicorn
+        import ui.server as ui_server
+    except ImportError as exc:
+        raise _UIUnavailable(
+            "Web UI extras are not installed "
+            f"({exc.name or exc}). Install with: pip install -r ui/requirements-ui.txt — "
+            "or use `python main.py --terminal` for the minimal built-in REPL.")
+
+    print(f"Zerion UI — {ui_server._bootstrap_payload()['name']} "
+          f"v{ui_server._bootstrap_payload()['version']}")
+    print(f"Serving on http://{host}:{port}  (Ctrl+C to stop)")
+    if not os.environ.get("ZERION_UI_NO_AUTOOPEN"):
+        _maybe_open_browser(port)
+
+    # uvicorn's stock run() only handles SIGINT; map SIGTERM to the same
+    # graceful should_exit path so service managers / `pkill` stop us cleanly.
+    uconfig = uvicorn.Config(ui_server.app, host=host, port=port, log_level="warning")
+    server = uvicorn.Server(uconfig)
+    import signal as _signal
+
+    def _graceful(signum, frame):
+        server.should_exit = True
+
+    if threading.current_thread() is threading.main_thread():
+        _signal.signal(_signal.SIGTERM, _graceful)
+        _signal.signal(_signal.SIGINT, _graceful)
+    server.run()
+
+
 def main():
+    args = sys.argv[1:]
+    if "--help" in args or "-h" in args:
+        print("Usage: python main.py [--host H] [--port P] [--terminal]")
+        print("  default       start the Web UI (adaptive workspace)")
+        print("  --terminal    built-in minimal REPL (no UI extras needed)")
+        return
+
     # Load and integrity-check once at startup; all normal requests reuse cache.
     ConstitutionEngine.load()
     for warning in config.validate():
         print(f"[configuration] {warning}")
-    ui = TerminalUI()
+
+    if "--terminal" in args or "--legacy" in args:
+        _run_legacy_terminal()
+        return
+
     try:
-        run_loop(ui)
+        _run_ui(args)
+    except _UIUnavailable as e:
+        print(str(e))
+        _run_legacy_terminal()
     except KeyboardInterrupt:
         print("\nGoodbye.")
 

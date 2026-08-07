@@ -4,7 +4,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 import time, uuid
 # Paths are project-relative. Prefix matching protects whole core directories.
-PROTECTED_PATHS=("main.py","constitution/constitution.txt","constitution/constitution.py","constitution/constitution.lock","constitution/protected.lock","config.py","prompt.txt","terminal.py","speech.py","api.py","memory/","intent/","planner/","providers/","core/", ".env")
+PROTECTED_PATHS=("main.py","constitution/constitution.txt","constitution/constitution.py","constitution/constitution.lock","constitution/protected.lock","config.py","prompt.txt","speech.py","api.py","memory/","intent/","planner/","providers/","core/", ".env")
 def normalize(path:str)->str:
  p=Path(path)
  if p.is_absolute() or '..' in p.parts: raise ValueError("path must be a safe project-relative path")

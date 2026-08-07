@@ -43,7 +43,7 @@ CRITICAL_PIPELINE = [
     "intelligence.runtime",      # runtime intelligence
     "intelligence.critic",       # self-critic
     "phone.engine",              # phone body
-    "terminal",                  # terminal front-end
+    "personality",               # normal/serious persona switch
     "speech",                    # voice output
     "tools.manager",             # tool routing + confirmation flow
     "planner",                   # planning engine package
@@ -60,7 +60,6 @@ KNOWN_DORMANT_PREFIXES = (
     "testing",         # test-runner service used by evolution + tests
     "constitution.evolution",  # evolution policy glue (used by phase5 path)
     "runtime",         # 24/7 service daemon (own entry point)
-    "ui",              # WebUI front-end (own entry point)
     "setup",           # first-run bootstrap CLI (own entry point)
     "second_audit",        # release-gate audit tool (own entry point, dev-only)
     "connectivity_audit",  # final-gate connectivity audit (own entry point, dev-only)

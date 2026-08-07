@@ -108,14 +108,42 @@ def main() -> int:
     check("no real .env with a key present", not env_has_real_key)
 
     print("== D. Core runtime behaviors ==")
+    # the minimal legacy REPL path
     script = "/status\n/tools\nwhat time is it\n\nexit\n"
-    r = subprocess.run(py + ["main.py"], input=script, capture_output=True, text=True,
-                       cwd=BASE, timeout=90)
-    check("main.py full loop, rc=0", r.returncode == 0, r.stderr[-300:])
+    r = subprocess.run(py + ["main.py", "--terminal"], input=script, capture_output=True,
+                       text=True, cwd=BASE, timeout=90)
+    check("main.py --terminal full loop, rc=0", r.returncode == 0, r.stderr[-300:])
     check("no tracebacks in loop", "Traceback" not in r.stdout)
     check("graceful keyless degradation", "system error" in r.stdout or "Commands:" in r.stdout)
+    check("startup greeting fires on terminal mode",
+          "online and ready" in r.stdout or "Gemini voice" in r.stdout)
 
-    proc = subprocess.Popen(py + ["main.py"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+    # the default = UI mode: bind, serve, graceful SIGTERM
+    port_sock = __import__("socket").socket()
+    port_sock.bind(("127.0.0.1", 0))
+    ui_port = port_sock.getsockname()[1]
+    port_sock.close()
+    env = dict(os.environ, ZERION_UI_NO_AUTOOPEN="1", ZERION_UI_PORT=str(ui_port))
+    proc = subprocess.Popen(py + ["main.py"], stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT, text=True, cwd=BASE, env=env)
+    try:
+        served = False
+        deadline = time.time() + 20
+        while time.time() < deadline and proc.poll() is None:
+            try:
+                import urllib.request
+                with urllib.request.urlopen(f"http://127.0.0.1:{ui_port}/", timeout=1.5) as http:
+                    served = b"ZERION" in http.read()
+                    break
+            except Exception:
+                time.sleep(0.25)
+        check("main.py default = Web UI serving", served)
+    finally:
+        proc.send_signal(signal.SIGTERM)
+        out, _ = proc.communicate(timeout=15)
+    check("main.py UI mode: graceful SIGTERM shutdown", proc.returncode == 0, out[-200:])
+
+    proc = subprocess.Popen(py + ["main.py", "--terminal"], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT, text=True, cwd=BASE)
     time.sleep(2.0)
     proc.send_signal(signal.SIGINT)

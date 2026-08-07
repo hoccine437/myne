@@ -1,7 +1,7 @@
 # Project Structure
 
 ```text
-main.py                 Official terminal entry point
+main.py                 Official production entry point (boots the Web UI by default; `--terminal` = built-in minimal REPL)
 config.py               Environment configuration and diagnostics
 api.py                  Backward-compatible provider shim
 llm.py                  Prompt construction and structured response parsing
@@ -30,4 +30,4 @@ tests/                  Local regression tests
 
 ## Protected paths
 
-`main.py`, Constitution files, configuration, prompt, terminal, speech, API shim, and legacy core directories are protected by the current evolution manifest. See `constitution/constitution.py` and `evolution/manifest.py` for the exact programmatic lists.
+`main.py`, Constitution files, configuration, prompt, speech, API shim, and legacy core directories are protected by the current evolution manifest. See `constitution/constitution.py` and `evolution/manifest.py` for the exact programmatic lists.

@@ -187,8 +187,8 @@ def classify_all():
             mod = ".".join(parts[:-1]) if parts[-1] == "__init__" else ".".join(parts)
 
         # --- class letter ---
-        if rel.startswith("runtime/run/"):
-            cls = "B"  # generated runtime state (heartbeat/logs/state/lock)
+        if rel.startswith("runtime/run/") or rel == ".env" or rel.startswith("knowledge/zerion_knowledge"):
+            cls = "B"  # generated runtime/local state (gitignored; never packaged)
         elif is_test(rel):
             cls = "C"
         elif rel in ("second_audit.py", "connectivity_audit.py", "setup.py",
@@ -488,12 +488,13 @@ def main() -> int:
     print("== 2. Production graph reachability ==")
     py_total = len(mods)
     check(f"python modules counted ({py_total})", py_total > 100)
-    check("main.py statically reaches the critical pipeline",
+    check("main.py statically reaches the critical pipeline (UI default included)",
           {"config", "core.logging", "constitution.constitution", "llm", "api",
            "memory.memory_manager", "knowledge.manager", "learning.engine",
            "learning.background", "cognition", "intelligence.runtime",
-           "intelligence.critic", "phone.engine", "terminal", "speech",
-           "tools.manager", "planner", "intent.commands", "intent.engine"} <= r_main)
+           "intelligence.critic", "phone.engine", "speech", "ui.server",
+           "tools.manager", "planner", "intent.commands", "intent.engine",
+           "personality"} <= r_main)
     orphan_candidates = [
         m for m in mods
         if m not in r_main and m not in r_ui and m not in r_rt

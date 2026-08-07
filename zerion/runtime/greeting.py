@@ -63,9 +63,9 @@ def deliver_startup_greeting(*, memory: dict | None = None,
     """Deliver the greeting once. Returns the greeting text (None when
     skipped: disabled or already delivered this startup).
 
-    ``text_channel`` is the text fallback sink (e.g. TerminalUI.write_log,
-    print, or a UI chat emitter). Voice goes first when available; text is
-    the fallback in exact accordance with the availability rules.
+    ``text_channel`` is the text fallback sink (print, the minimal legacy
+    REPL's write_log, or a UI chat emitter). Voice goes first when
+    available; text is the fallback per the availability rules.
     """
     global _greeted
     if not rcfg.GREETING_ENABLED:

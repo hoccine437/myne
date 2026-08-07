@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.0 — entry-point consolidation
+- main.py is now the single official door and boots the Web UI by default:
+  `python main.py [--host --port]`. A minimal built-in REPL remains via
+  `--terminal` for UI-less hosts; missing UI extras degrade to it with a
+  clear install hint. terminal.py retired (its surface is absorbed).
+- main.py UI path wires SIGTERM→graceful shutdown (uvicorn only handles
+  SIGINT itself) and best-effort browser auto-open.
+- protected.lock re-locked after the owner-directed main.py change
+  (constitution integrity chain intact — verify_lock passes).
+- tests/test_entrypoint.py proves: default = UI serving, --terminal REPL,
+  --help, graceful shutdown both signals, no duplicated pipeline internals.
+- setup.py/docs updated to the new entry contract.
+
 ## 1.0.0 — Final release candidate built & verified
 - Phone body: phone/device.py host probe (platform/arch/screen/RAM/storage/
   battery/network/sensors, Termux-rich, desktop psutil//proc fallback) +

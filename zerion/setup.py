@@ -144,7 +144,7 @@ def run(argv=None) -> int:
 
     print()
     print("Next:")
-    print("  python main.py                  # terminal front end")
+    print("  python main.py                  # official entry — Web UI by default (--terminal = REPL)")
     if want_ui and not pkgs.get("ui"):
         print("  python -m ui.server --port 8765 # browser UI")
         print("  python -m runtime               # 24/7 service (hosts UI)")

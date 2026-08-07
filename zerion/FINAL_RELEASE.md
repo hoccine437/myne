@@ -63,8 +63,10 @@ no duplicated business logic.
 | 6 | Offline Gemini verification suite | `tests/test_gemini_transport.py` |
 | 7 | New-features battery | `tests/test_final_features.py` |
 | 8 | Final E2E + failure battery | `tests/test_final_e2e.py` |
-| 9 | Second-audit gate tool | `second_audit.py` |
+| 9 | Second-audit + final-connectivity gate tools | `second_audit.py`, `connectivity_audit.py` |
 | 10 | UI welcome experience | `ui/static/js/modules/welcome.js` + wiring |
+| 11 | Entry-point consolidation | `main.py` boots the Web UI by default (SIGTERM-graceful, auto-open), inline minimal REPL via `--terminal`; `terminal.py` retired; `protected.lock` re-locked |
+| 12 | Provisioning | `setup.py` layered install (core / +UI extras), `requirements.txt` documented dependency contract |
 
 ---
 
@@ -142,8 +144,8 @@ pip install -r requirements.txt            # core: requests, python-dotenv
 pip install -r ui/requirements-ui.txt      # web UI (optional): fastapi, uvicorn, psutil
 python setup.py                            # bootstrap checks (optional)
 export GEMINI_API_KEY=...                  # or .env — required for LLM/voice
-python main.py                             # terminal front end
-python -m ui.server --port 8765            # browser front end
+python main.py                             # official entry — Web UI by default (--terminal: built-in REPL)
+python -m ui.server --port 8765            # browser front end (explicit form)
 python -m runtime                          # 24/7 service (hosts UI too)
 python second_audit.py                     # release-gate audit
 python -m pytest tests/ -q                 # full test suite

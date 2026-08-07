@@ -1,9 +1,13 @@
 # Mark-X Lite
 
-A lightweight, terminal-first AI assistant. Same brain (prompt, memory,
-LLM behavior) as the original Mark-X — no GUI, no desktop automation, no
-platform-specific dependencies. Runs on Android (Termux), Linux, or any
-machine with Python 3.10+.
+A lightweight AI assistant with an adaptive Web UI as the default front
+end. Same brain (prompt, memory, LLM behavior) as the original Mark-X —
+no desktop automation, no platform-specific dependencies. Runs on Android
+(Termux), Linux, or any machine with Python 3.10+.
+
+`python main.py` boots the official adaptive UI (browser workspace); a
+minimal built-in REPL remains available with `--terminal` for UI-less
+hosts (no extra packages needed).
 
 ## Features
 
@@ -49,11 +53,16 @@ See [`PHASE1.md`](PHASE1.md) for how the provider router works.
 ## Run
 
 ```bash
-python main.py
+python main.py            # default: the adaptive Web UI (browser workspace)
+python main.py --terminal # --terminal / --legacy: minimal built-in REPL
+python main.py --port 9000  # UI on a custom port (env: ZERION_UI_HOST/PORT also work)
 ```
 
-Type `exit`, `quit`, or `stop` to end the session. Type `mute` to reset the
-current conversation context without exiting.
+Default UI mode prints the URL and tries to open your browser. When the UI
+extras aren't installed, main.py degrades to the built-in terminal REPL with
+a clear install hint instead of crashing. Type `exit`, `quit`, or `stop` to
+end a terminal session. Type `mute` to reset the current conversation context
+without exiting.
 
 ## Web UI (adaptive workspace)
 
@@ -122,7 +131,8 @@ main.py              conversation loop, session memory, intent dispatch
 llm.py                prompt building + JSON response parsing
 api.py                backward-compatible shim over providers/router.py
 speech.py             optional Gemini-powered voice output
-terminal.py           colored terminal input/output, typing indicator
+main.py's main()     official entry: boots the Web UI by default (or the
+                      built-in minimal terminal via --terminal)
 config.py             environment-based configuration, 4 providers
 core/
     logging.py          lightweight leveled/colored logging
@@ -204,8 +214,10 @@ failure-recovery policy, and why it's opt-in.
 
 ## What changed from the original Mark-X
 
-- Removed the Tkinter desktop GUI (`ui.py`, `face.png`) — replaced by a
-  plain terminal interface (`terminal.py`).
+- Removed the Tkinter desktop GUI (`ui.py`, `face.png`). The interim terminal
+  interface (`terminal.py`) was itself retired at the final release: the Web
+  UI is now the default front end (`python main.py`), with a minimal built-in
+  REPL (`--terminal`) for UI-less hosts.
 - Removed `pyautogui`-based desktop automation (`open_app`, `send_message`)
   — this only ever worked on Windows and doesn't belong in a lightweight,
   cross-platform assistant. These intents are now acknowledged politely

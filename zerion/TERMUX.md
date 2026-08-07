@@ -32,8 +32,9 @@ cp .env.example .env
 $EDITOR .env        # set GEMINI_API_KEY (required for LLM + Gemini voice)
 
 # 5. startup — choose ONE front door:
-python main.py                    # terminal (official Core loop)
-python -m ui.server --port 8765   # browser UI at http://localhost:8765
+python main.py                    # official entry — boots the Web UI (browser at :8765)
+python main.py --terminal         # minimal built-in REPL (no UI extras needed)
+python -m ui.server --port 8765   # browser UI explicitly (same as default main.py)
 python -m runtime                 # 24/7 service (hosts the UI too)
 
 # 6. optional explicit autostart (never installed silently)

@@ -16,7 +16,10 @@ cd zerion
 pip install -r requirements.txt          # Core (requests, python-dotenv)
 pip install -r ui/requirements-ui.txt    # UI bridge (fastapi, uvicorn)
 export GEMINI_API_KEY=...                # optional; the UI runs fully offline otherwise
-python -m ui.server --host 0.0.0.0 --port 8765
+
+python main.py                           # official entry — boots this UI by default
+# (equivalent explicit forms: python -m ui.server --host 0.0.0.0 --port 8765,
+#  or python -m runtime for 24/7 service mode hosting the same UI)
 ```
 
 Open `http://localhost:8765`. No build step, no frontend tooling — the

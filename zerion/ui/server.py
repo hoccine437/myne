@@ -56,8 +56,9 @@ STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
 
 ConstitutionEngine.load()
 CONFIG_WARNINGS = config.validate()
-for warning in CONFIG_WARNINGS:
-    print(f"[configuration] {warning}")
+# Don't print configuration warnings at import: main.py's entry point already
+# reports them; standalone `python -m ui.server` prints them in main() below.
+# Loud at exactly one entry, quiet when embedded.
 
 session = ZerionUISession()
 
@@ -462,6 +463,8 @@ def main() -> None:
     parser.add_argument("--log-level", default="warning")
     args = parser.parse_args()
 
+    for warning in CONFIG_WARNINGS:
+        print(f"[configuration] {warning}")
     print(f"Zerion UI → http://{args.host}:{args.port}")
     uvicorn.run(app, host=args.host, port=args.port, log_level=args.log_level)
 
