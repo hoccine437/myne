@@ -126,12 +126,52 @@ async def lifespan(app: FastAPI):
     sample_metrics()
     metrics_task = asyncio.create_task(_metrics_loop())
     idle_task = asyncio.create_task(_idle_loop())
-    bus.emit("notification", {"level": "info", "text": "Zerion Core is online."})
+    _startup_greeting()
     try:
         yield
     finally:
         for task in (metrics_task, idle_task):
             task.cancel()
+
+
+# The 24/7 service (runtime/service.py) owns the READY→greeting sequence
+# when it hosts the UI; it flips this on before starting the uvicorn
+# thread so greeting fire-once semantics live in exactly one place either
+# way. Standalone hosting (python -m ui.server) leaves it off.
+SUPPRESS_STARTUP_GREETING = False
+
+
+def _startup_greeting() -> None:
+    """READY announcement for the standalone UI server path.
+
+    When Zerion runs under the 24/7 service, runtime/service.py delivers
+    the greeting once for the whole system instead — the once-per-startup
+    guard in runtime.greeting makes double delivery impossible either way.
+    Voice (the Core's speech stack) is used when available; otherwise the
+    greeting falls back to a chat message.
+    """
+    if SUPPRESS_STARTUP_GREETING:
+        return
+    try:
+        from runtime import greeting
+        from memory.memory_manager import load_memory
+
+        try:
+            memory = load_memory()
+        except Exception:
+            memory = None
+
+        def to_chat(text: str) -> None:
+            bus.emit("chat", {"role": "ai", "text": text, "kind": "system"})
+
+        text = greeting.deliver_startup_greeting(
+            memory=memory, text_channel=to_chat, blocking=False)
+        if text and greeting.voice_available():
+            # voice handled audio; keep a visible copy in the UI as well
+            to_chat(text)
+    except Exception:
+        # a greeting must never affect startup
+        bus.emit("notification", {"level": "info", "text": "Zerion Core is online."})
 
 
 app = FastAPI(title="Zerion UI", docs_url=None, redoc_url=None, openapi_url=None,
@@ -258,7 +298,16 @@ async def api_bootstrap():
 @app.get("/api/status")
 async def api_status():
     snap = await asyncio.to_thread(session.snapshot)
-    return {"session": snap, "metrics": latest_metrics()}
+    # If the 24/7 runtime is supervising this host, surface its heartbeat —
+    # read-only, so the UI can show service health without coupling.
+    runtime = None
+    hb_path = os.path.join(BASE_DIR, "runtime", "run", "heartbeat.json")
+    try:
+        with open(hb_path, "r", encoding="utf-8") as f:
+            runtime = json.load(f)
+    except Exception:
+        runtime = None
+    return {"session": snap, "metrics": latest_metrics(), "runtime": runtime}
 
 
 @app.get("/api/memory")

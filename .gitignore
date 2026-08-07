@@ -8,3 +8,4 @@ zerion/memory/*.bak
 zerion/knowledge/*.db
 zerion/knowledge/*.db-journal
 zerion/knowledge/*.db-wal
+zerion/runtime/run/

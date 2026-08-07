@@ -68,6 +68,20 @@ python -m ui.server --host 0.0.0.0 --port 8765
 
 See [UI.md](UI.md) for architecture, the event contract, and verification.
 
+## 24/7 service runtime
+
+Zerion can run continuously as a long-lived service with heartbeat, health
+monitoring, automatic recovery with backoff, single-instance guarding, and a
+startup greeting (voice-first, text fallback) delivered once it is READY:
+
+```bash
+python -m runtime            # service + web UI
+python -m runtime --status   # inspect
+python -m runtime --stop     # graceful stop
+```
+
+See [RUNTIME.md](RUNTIME.md).
+
 ## Voice output (optional)
 
 Voice is off by default. Mark-X Lite speaks replies aloud using Gemini's
