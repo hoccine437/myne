@@ -122,7 +122,7 @@ class UISessionTests(unittest.TestCase):
 class UIServerTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        from fastapi.testclient import TestClient
+        from starlette.testclient import TestClient
         from ui.server import app
         cls.client = TestClient(app)
 

@@ -1,7 +1,16 @@
-# UI bridge dependencies (the Core itself needs only requirements.txt)
-fastapi>=0.115
-uvicorn[standard]>=0.30
+# UI bridge dependencies — PURE PYTHON on every platform, Termux/ARM64
+# included: no compilations, no rust/clang toolchain needed. (The stack is
+# Starlette + vanilla uvicorn; uvicorn[standard]'s uvloop/httptools and
+# psutil are intentionally NOT used because they require native builds that
+# don't work reliably on Android.)
+starlette>=1.4
+uvicorn>=0.30
 
-# optional: richer telemetry for the System Status panel (CPU freq,
-# per-process data, battery). Without it the bridge falls back to /proc.
-psutil
+# TestClient in tests/ needs httpx2 (pure Python too):
+# httpx2
+
+# psutil is OPTIONAL: better CPU/RAM telemetry. NOTE: psutil does not build
+# on Android/Termux ("platform android is not supported") — install it only
+# on desktop/server hosts, or skip it; the bridge automatically falls back
+# to /proc parsing.
+# psutil

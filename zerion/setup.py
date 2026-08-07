@@ -32,9 +32,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 
 # module name → pip requirement. Checked by import (idempotent), installed
-# from the matching requirements file.
+# from the matching requirements file. UI extras are pure-Python wheels
+# (starlette + vanilla uvicorn) so they install cleanly on Termux/ARM64 —
+# psutil is deliberately optional (it doesn't build on Android).
 CORE_REQUIRED = {"requests": "requests", "dotenv": "python-dotenv"}
-UI_REQUIRED = {"fastapi": "fastapi", "uvicorn": "uvicorn[standard]", "psutil": "psutil"}
+UI_REQUIRED = {"uvicorn": "uvicorn", "starlette": "starlette"}
 
 REQUIRED_DIRS = (
     "memory", "constitution", "providers", "tools", "skills", "agents",

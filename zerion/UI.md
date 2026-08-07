@@ -14,7 +14,7 @@ itself around the current task.
 ```bash
 cd zerion
 pip install -r requirements.txt          # Core (requests, python-dotenv)
-pip install -r ui/requirements-ui.txt    # UI bridge (fastapi, uvicorn)
+pip install -r ui/requirements-ui.txt    # UI bridge (starlette + uvicorn)
 export GEMINI_API_KEY=...                # optional; the UI runs fully offline otherwise
 
 python main.py                           # official entry — boots this UI by default
@@ -205,7 +205,7 @@ ui/
   session.py           Core session adapter (mirrors main.py's loop)
   metrics.py           host telemetry sampler (psutil + /proc fallback)
   server.py            FastAPI surface: SPA, /ws, /api/*
-  requirements-ui.txt  fastapi + uvicorn (psutil optional-but-nicer)
+  requirements-ui.txt  starlette + uvicorn (pure Python, Termux-safe)
   smoke/smoke.mjs      headless client smoke test
   static/
     index.html         app shell

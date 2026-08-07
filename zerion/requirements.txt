@@ -6,9 +6,8 @@ python-dotenv>=1.0
 # --- Web UI -------------------------------------------------------------
 # For the full product experience (browser UI, /ws bridge, REST panels):
 #   pip install -r ui/requirements-ui.txt
-# On Termux, uvicorn[standard]'s uvloop/httptools and pydantic-core compile
-# natively — install the toolchain first:  pkg install clang make rust
-# (or run `python -m ui.server` after the extras install on any host).
+# Starlette + vanilla uvicorn — pure Python, Termux/ARM64-safe, zero compilers.
+
 
 # Voice output uses Gemini's TTS API via `requests` (already required above)
 # plus Python's stdlib `wave` module — no extra Python packages. Playback

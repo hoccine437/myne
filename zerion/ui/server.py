@@ -34,9 +34,12 @@ os.chdir(BASE_DIR)
 
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Query, WebSocket, WebSocketDisconnect
-from fastapi.responses import FileResponse, JSONResponse
-from fastapi.staticfiles import StaticFiles
+from starlette.applications import Starlette
+from starlette.requests import Request
+from starlette.responses import FileResponse, JSONResponse
+from starlette.routing import Mount, Route, WebSocketRoute
+from starlette.staticfiles import StaticFiles
+from starlette.websockets import WebSocket, WebSocketDisconnect
 
 import config
 from constitution.constitution import ConstitutionEngine
@@ -118,11 +121,11 @@ def session_workspace_modes():
 
 
 # ---------------------------------------------------------------------------
-# FastAPI app
+# Starlette app (pure-Python ASGI — Termux/ARM64 safe: no native builds)
 # ---------------------------------------------------------------------------
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: Starlette):
     # Prime psutil's cpu_percent baseline (first call always returns 0.0).
     sample_metrics()
     metrics_task = asyncio.create_task(_metrics_loop())
@@ -175,8 +178,32 @@ def _startup_greeting() -> None:
         bus.emit("notification", {"level": "info", "text": "Zerion Core is online."})
 
 
-app = FastAPI(title="Zerion UI", docs_url=None, redoc_url=None, openapi_url=None,
-              lifespan=lifespan)
+def _q(request: Request, name: str, default, cast=str, lo=None, hi=None):
+    """Query-param helper with clamping (replaces FastAPI's Query())."""
+    raw = request.query_params.get(name)
+    if raw is None or raw == "":
+        return default
+    try:
+        value = cast(raw)
+    except Exception:
+        return default
+    if cast is int or cast is float:
+        if lo is not None and value < lo:
+            value = lo
+        if hi is not None and value > hi:
+            value = hi
+        return value if cast is float else int(value)
+    return value
+
+
+# route handlers are added to this table and bound at the end
+_ROUTES = []
+
+def route(path, methods=("GET",)):
+    def deco(fn):
+        _ROUTES.append(Route(path, fn, methods=list(methods)))
+        return fn
+    return deco
 
 _clients: set[WebSocket] = set()
 
@@ -208,21 +235,20 @@ async def _idle_loop() -> None:
 # Static SPA
 # ---------------------------------------------------------------------------
 
-@app.get("/")
-async def index():
+@route("/")
+async def index(request: Request):
     return FileResponse(os.path.join(STATIC_DIR, "index.html"))
 
 
-@app.get("/health")
-async def health():
-    return {"ok": True}
+@route("/health")
+async def health(request: Request):
+    return JSONResponse({"ok": True})
 
 
 # ---------------------------------------------------------------------------
 # WebSocket — the primary channel
 # ---------------------------------------------------------------------------
 
-@app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     _clients.add(websocket)
@@ -291,13 +317,13 @@ async def _handle_client_message(websocket: WebSocket, message: dict) -> None:
 # REST panel data
 # ---------------------------------------------------------------------------
 
-@app.get("/api/bootstrap")
-async def api_bootstrap():
-    return _bootstrap_payload()
+@route("/api/bootstrap")
+async def api_bootstrap(request: Request):
+    return JSONResponse(_bootstrap_payload())
 
 
-@app.get("/api/status")
-async def api_status():
+@route("/api/status")
+async def api_status(request: Request):
     snap = await asyncio.to_thread(session.snapshot)
     # If the 24/7 runtime is supervising this host, surface its heartbeat —
     # read-only, so the UI can show service health without coupling.
@@ -308,22 +334,25 @@ async def api_status():
             runtime = json.load(f)
     except Exception:
         runtime = None
-    return {"session": snap, "metrics": latest_metrics(), "runtime": runtime}
+    return JSONResponse({"session": snap, "metrics": latest_metrics(), "runtime": runtime})
 
 
-@app.get("/api/memory")
-async def api_memory():
+@route("/api/memory")
+async def api_memory(request: Request):
     from memory.memory_manager import load_memory
     mem = await asyncio.to_thread(load_memory)
     stats = {section: len(mem.get(section, {}) or {})
              for section in ("identity", "preferences", "relationships", "emotional_state")}
-    return {"memory": mem, "stats": stats, "path": config.MEMORY_PATH.replace(os.path.expanduser("~"), "~")}
+    return JSONResponse({"memory": mem, "stats": stats,
+                         "path": config.MEMORY_PATH.replace(os.path.expanduser("~"), "~")})
 
 
-@app.get("/api/knowledge")
-async def api_knowledge(limit: int = Query(40, ge=1, le=200)):
+@route("/api/knowledge")
+async def api_knowledge(request: Request):
     """Read-only recent knowledge records for the Research workspace /
     Memory Inspector. Uses the Core's knowledge DB as a data source."""
+    limit = _q(request, "limit", 40, int, 1, 200)
+
     def _read():
         try:
             rows = session.knowledge.db.query(
@@ -333,22 +362,24 @@ async def api_knowledge(limit: int = Query(40, ge=1, le=200)):
             return None
         return [dict(r) for r in rows]
     rows = await asyncio.to_thread(_read)
-    return {"records": rows or []}
+    return JSONResponse({"records": rows or []})
 
 
-@app.get("/api/logs")
-async def api_logs(limit: int = Query(200, ge=1, le=600)):
+@route("/api/logs")
+async def api_logs(request: Request):
+    limit = _q(request, "limit", 200, int, 1, 600)
     events = bus.replay()[-limit:]
-    return {"events": [
+    return JSONResponse({"events": [
         e for e in events
         if e["type"] in ("log", "stage", "tool", "decision", "notification", "turn", "error")
-    ]}
+    ]})
 
 
-@app.get("/api/fs/list")
-async def api_fs_list(path: str = Query(".")):
+@route("/api/fs/list")
+async def api_fs_list(request: Request):
     """Directory listing *through the Core's list_directory tool* —
     enriched per entry with an is-dir flag (pure presentation)."""
+    path = _q(request, "path", ".")
     result = await asyncio.to_thread(tool_manager.execute, "list_directory", {"path": path})
     if not result.success:
         return JSONResponse(status_code=404, content={"error": result.message})
@@ -361,26 +392,34 @@ async def api_fs_list(path: str = Query(".")):
             is_dir = False
         entries.append({"name": name, "dir": is_dir})
     entries.sort(key=lambda e: (not e["dir"], e["name"].lower()))
-    return {"path": full, "entries": entries}
+    return JSONResponse({"path": full, "entries": entries})
 
 
-@app.get("/api/fs/read")
-async def api_fs_read(path: str = Query(...)):
+@route("/api/fs/read")
+async def api_fs_read(request: Request):
     """File contents *through the Core's read_file tool* (it applies the
     Core's own 200KB safety cap)."""
+    path = _q(request, "path", "")
+    if not path:
+        return JSONResponse(status_code=400, content={"error": "missing path"})
     result = await asyncio.to_thread(tool_manager.execute, "read_file", {"path": path})
     if not result.success:
         return JSONResponse(status_code=404, content={"error": result.message})
-    return {"path": os.path.abspath(os.path.expanduser(path)), "content": result.data or ""}
+    return JSONResponse({"path": os.path.abspath(os.path.expanduser(path)),
+                         "content": result.data or ""})
 
 
-@app.get("/api/settings")
-async def api_settings_get():
-    return _current_settings()
+@route("/api/settings")
+async def api_settings_get(request: Request):
+    return JSONResponse(_current_settings())
 
 
-@app.post("/api/settings")
-async def api_settings_set(payload: dict):
+@route("/api/settings", methods=("POST",))
+async def api_settings_set(request: Request):
+    try:
+        payload = await request.json()
+    except Exception:
+        payload = {}
     """Toggle the small, documented set of runtime Core settings.
     Applies live (the Core reads these module attrs every turn) and
     persists to .env on a best-effort basis so restarts keep them."""
@@ -409,7 +448,7 @@ async def api_settings_set(payload: dict):
                                       ", ".join(f"{k}={v}" for k, v in updated.items())})
     current = _current_settings()
     current["rejected"] = rejected
-    return current
+    return JSONResponse(current)
 
 
 _ENV_KEYS = {
@@ -446,7 +485,10 @@ def _persist_env(attr: str, value) -> None:
 
 
 # Static assets last so API/WS routes win.
-app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+_ROUTES.append(Mount("/static", StaticFiles(directory=STATIC_DIR), name="static"))
+
+app = Starlette(routes=_ROUTES + [WebSocketRoute("/ws", websocket_endpoint)],
+                lifespan=lifespan)
 
 
 # ---------------------------------------------------------------------------

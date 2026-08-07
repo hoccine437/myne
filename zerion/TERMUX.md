@@ -25,7 +25,7 @@ pkg install -y python python-pip termux-api mpv
 # 3. project environment
 cd $SCRIPT_DIR   # the extracted zerion/ directory
 pip install -r requirements.txt            # requests, python-dotenv
-pip install -r ui/requirements-ui.txt      # optional: fastapi, uvicorn, psutil
+pip install -r ui/requirements-ui.txt      # optional UI extras: starlette + uvicorn (pure Python, Termux-safe)
 
 # 4. configure environment
 cp .env.example .env
@@ -46,10 +46,9 @@ python -m runtime --install-autostart termux --yes
 
 - dependencies: requests, python-dotenv — pure-Python, pip-installable on
   Termux ARM64, **no native builds required** for the Core (SQLite is Python
-  stdlib). The UI extras (fastapi + uvicorn[standard] + psutil) compile small
-  native pieces on Termux — if and only if you install them there, run
-  `pkg install clang make rust` first. `python setup.py --no-ui` provisions
-  the lightest phone-safe profile. **No PyTorch/NumPy/OpenCV/native GGUF
+  stdlib). The UI extras are pure-Python (starlette + vanilla uvicorn) and
+  install on Termux/ARM64 with no compilers. `python setup.py --no-ui`
+  provisions the lightest phone-safe profile. **No PyTorch/NumPy/OpenCV/rust
   runtimes anywhere in the dependency graph.**
 - `phone.device` correctly detects `is_termux/is_android/is_mobile` and
   reports sensor availability honestly (None/unknown when unprobed)
@@ -63,8 +62,8 @@ python -m runtime --install-autostart termux --yes
   project-relative
 
 (The dependency detail now lives in the audit-result section above — the
-quick summary: core = pure Python; UI extras compile native pieces on
-Termux and need `pkg install clang make rust`.)
+quick summary: EVERYTHING is pure Python — core and UI extras both install
+on Termux with no compilers.)
 
 ## Documented operating mode (24/7 on Android)
 
