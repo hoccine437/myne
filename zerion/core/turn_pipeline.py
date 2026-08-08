@@ -44,3 +44,37 @@ def plan_summary_text(summary: dict) -> str:
                 f"{len(done)} step(s) succeeded, {len(failed)} failed.")
     return (f"Finished '{goal}' with some issues — "
             f"{len(done)} step(s) succeeded, {len(failed)} failed or skipped.")
+
+
+# ---------------------------------------------------------------------------
+# Canonical brain-state vocabulary (evidence layer for ZERION_BRAIN_MAP.md)
+# ---------------------------------------------------------------------------
+# The runtime's explicit cognitive states and where they are OBSERVED. The UI
+# bridge already emits these as core_state events per turn (ui/session.py);
+# this mapping is the single reference both docs and tests use. Adding a
+# state REQUIRES wiring it somewhere observable first — vocabulary without
+# emission is a lie.
+BRAIN_STATES = (
+    "IDLE", "PERCEIVING", "UNDERSTANDING", "CONTEXTUALIZING", "REMEMBERING",
+    "REASONING", "PLANNING", "EXECUTING", "OBSERVING", "CRITICIZING",
+    "VERIFYING", "MEMORY-WRITING", "RESPONDING", "LEARNING", "IDLE",
+)
+
+# runtime core_state value → canonical state
+BRAIN_STATE_MAP = {
+    "idle": "IDLE",
+    "thinking": "REASONING",           # llm call pending
+    "analyzing": "CONTEXTUALIZING",   # context assembly (memory/knowledge/cognition)
+    "executing": "EXECUTING",         # tool/agent execution
+    "learning": "LEARNING",           # experience capture
+    "updating": "MEMORY-WRITING",     # long-term JSON memory write
+    "speaking": "RESPONDING",         # answer emitted to user/voice
+    "success": "VERIFYING",           # verified finish marker
+    "warning": "OBSERVING",           # degraded/partial observation
+    "error": "ERROR",
+}
+
+
+def brain_state(core_state: str) -> str:
+    return BRAIN_STATE_MAP.get(core_state, core_state.upper())
+

@@ -207,7 +207,7 @@ class TtsHttpTests(unittest.TestCase):
                 self.assertIn('"hello"', hello)
                 ws.send(__import__("json").dumps({"type": "tts", "text": "hello there", "seq": 7}))
                 got = None
-                for _ in range(60):
+                for _ in range(600):  # high-ceiling: late-join replay can carry real traffic
                     ev = __import__("json").loads(ws.recv(timeout=10))
                     if ev.get("type") == "tts":
                         got = ev["data"]; break
@@ -264,7 +264,7 @@ class TtsHttpTests(unittest.TestCase):
             ws.recv()  # hello
             ws.send(_json.dumps({"type": "tts", "text": "hi", "seq": 1}))
             saw = None
-            for _ in range(60):
+            for _ in range(600):  # high-ceiling: late-join replay can carry real traffic
                 ev = _json.loads(ws.recv(timeout=10))
                 if ev.get("type") == "tts":
                     saw = ev["data"]; break

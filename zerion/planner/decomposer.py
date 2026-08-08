@@ -20,6 +20,7 @@ import json
 import api
 from llm import safe_json_parse as _safe_json_parse
 from planner.models import Plan, Task
+from tools.manager import tool_manager
 
 _DECOMPOSE_PROMPT = """You are a task planner. Given a user request and a list of \
 available tools, decide if it needs multiple ordered steps to complete, or if it's \
@@ -93,13 +94,17 @@ def decompose(user_text: str, available_tools: list) -> Plan:
         return Plan(goal="", tasks=[], created_from=user_text)
 
     tasks = []
-    valid_tool_names = {t["name"] for t in available_tools}
     for raw in raw_tasks:
         try:
             task_id = int(raw.get("id"))
             tool_name = raw.get("tool_name")
-            if tool_name is not None and tool_name not in valid_tool_names:
-                tool_name = None  # unknown tool -> treat as a reasoning-only step
+            if tool_name is not None:
+                # authority check against the REAL registry, not the ranked
+                # decompose-context subset (ranking is a prompt economy, not
+                # a permission) — otherwise a correctly chosen tool silently
+                # degrades into a reasoning-only pass
+                if tool_manager.get_tool(tool_name) is None:
+                    tool_name = None  # genuinely unknown → reasoning step
             tasks.append(Task(
                 id=task_id,
                 description=str(raw.get("description", "")),

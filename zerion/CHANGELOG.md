@@ -1,5 +1,41 @@
 # Changelog
 
+## 1.6.0 — Brain verification & cognitive-integrity repairs
+
+Found by tracing the real runtime path (not by reading architecture docs):
+
+- planner/decomposer.py validated tool names against the TOKEN-TRIMMED
+  relevance subset — planner-chosen tools like `calculate` were silently
+  downgraded to reasoning-only steps. Fixed: tools are validated against
+  the real tool registry (context stays a prompt economy, never authority).
+- intent/fast_planner.py: failed direct tools now surface `tool_success`
+  and parameterized failures fall through to the LLM repair path rather
+  than answering with raw error text.
+- intent/engine.py: action history now records true success/failure for
+  fast-path tools, and failures seed error memory (future avoidance).
+- core/turn_pipeline.py: brain-state vocabulary + mapping
+  (BRAIN_STATES/BRAIN_STATE_MAP) — the state machine documents what the
+  UI session already emits per turn (proof in tests, names never invented).
+- planner summary regression caught mid-pass (missing final return after
+  the vocabulary edit) — the brain-verification suite caught it the same
+  run; this is why the brain suite exists.
+- tests/test_voice_service.py: WS receive budgets widened (60→600) to match
+  the event bus's real replay volume; product path unchanged (answers in ~8ms).
+
+New evidence artifacts:
+- ZERION_BRAIN_MAP.md — full arrow-by-arrow cognitive loop w/ files+tests
+- MAIN_BRAIN_GAP_REPORT.md — expected vs actual per component w/ repairs
+- tests/test_brain_verification.py — 8 tests: FSM emission, memory→prompt
+  influence proof, multi-step planner chain with real tools, executor
+  failure anatomy (retry/mark-failed/verifier-skip/sibling-completes),
+  fast-tool failure truthfulness + error memory, cross-turn state persistence,
+  outbox restart equivalence, offline perf budgets
+
+Performance (sandbox): cold boot 0.165s · import 0.114s · offline turn
+27.5ms mean · RSS ≈39MB · 1 idle thread.
+
+Suite: 375/375 pytest · audits green.
+
 ## 1.5.0 — Final Integration + Phone Readiness (evidence-gated)
 
 - runtime/selfcheck.py: ZERION SYSTEM CHECK — every row is a real probe

@@ -154,9 +154,29 @@ def process(user_text: str, memory: dict):
             fast_result = None
 
     if fast_result and fast_result.get("tool_used"):
+        tool_success = fast_result.get("tool_success")
         action_history.record(
-            tool_name=fast_result["tool_used"], success=True, duration_seconds=0.0,
+            tool_name=fast_result["tool_used"],
+            success=bool(tool_success),  # never record a failure as success
+            duration_seconds=0.0,
+            reason="" if tool_success else str(fast_result.get("tool_error") or ""),
         )
+        # learn-from-failure: direct tool failures become error-memory
+        # records (failure → cause → next-attempt guidance), so the same bad
+        # call pattern is NOT repeated forever (mission §7 / §14)
+        if tool_success is False:
+            try:
+                from learning.errors import ErrorMemory
+                ErrorMemory().record(
+                    problem=user_text[:160],
+                    attempt=f"fast tool {fast_result['tool_used']}",
+                    failure=str(fast_result.get("tool_error") or "tool failed"),
+                    cause="unknown",
+                    correction="fall through to the LLM path for parameter repair",
+                    solution="",
+                )
+            except Exception:
+                pass
 
     return classification, fast_result
 

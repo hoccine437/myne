@@ -132,6 +132,20 @@ def _handle_direct_tool(tool_name: str, user_text: str) -> dict:
 
     result = tool_manager.execute(tool_name, parameters)
     if result.error == "confirmation_required":
-        return {"text": result.message, "handled_by": "fast_planner", "confirmation_required": True}
+        return {"text": result.message, "handled_by": "fast_planner",
+                "confirmation_required": True, "tool_used": tool_name,
+                "tool_success": None}  # parked — not an outcome
 
-    return {"text": result.message or "", "handled_by": "fast_planner", "tool_used": tool_name}
+    if not result.success:
+        # OBSERVE reality, don't paper over it: zero-parameter info tools
+        # (battery_status on a desktop) self-explain unavailability and the
+        # text is a valid answer; parameterized tools need the LLM path so a
+        # failure becomes "fix the call", not "report the crash" (mission §7)
+        if parameters:
+            return None
+        return {"text": result.message or "Tool failed.", "handled_by": "fast_planner",
+                "tool_used": tool_name, "tool_success": False,
+                "tool_error": result.error}
+
+    return {"text": result.message or "", "handled_by": "fast_planner",
+            "tool_used": tool_name, "tool_success": True}
