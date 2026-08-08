@@ -21,11 +21,16 @@ _TRIGGER_PLATFORM = {"email.new": "email", "telegram.new": "telegram",
                      "notification.new": ("phone", "social")}
 
 
-def poll_once() -> dict:
+def poll_once(event_hook=None) -> dict:
     """One bounded sweep. Returns counts — always, even when everything is
-    degraded. Nothing in here may raise into the service loop."""
+    degraded. Nothing in here may raise into the service loop.
+
+    event_hook(msg) replaces the default ingest() per polled item — the
+    autopilot passes its full decision pipeline; standalone callers keep the
+    ingest-only behavior exactly as before."""
     if not config.COMM_ENABLED:
         return {"polled": 0, "ingested": 0, "workflows": 0, "idle": "comm disabled"}
+    hook = event_hook or (lambda m: ingest(m))
     ingested = 0
     polled = 0
     try:
@@ -34,7 +39,7 @@ def poll_once() -> dict:
                     "idle": "no connectors configured"}
         for msg in connectors.poll_all_events():
             polled += 1
-            ingest(msg)
+            hook(msg)
             ingested += 1
     except Exception as e:
         log.warning(f"comm poll degraded: {e}")

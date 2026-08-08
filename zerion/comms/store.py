@@ -136,6 +136,25 @@ def _load(raw, default):
         return default
 
 
+def init_all() -> None:
+    """Materialize every comms table across schema-owning modules.
+    Any cross-table reader (endpoints, probes, drains) calls this once so a
+    first-request-on-fresh-DB can never hit a missing table."""
+    db()
+    from comms.events import init as _events
+    _events()
+    from comms.conversation_state import _init as _conv
+    _conv()
+    from comms.quality import _init as _quality
+    _quality()
+    from comms.overrides import _init as _over
+    _over()
+    from comms.outbox import _init as _out
+    _out()
+    from comms.inbox import overview as _o
+    _o()  # forces nothing extra; documents the module surface
+
+
 # ---------------------------------------------------------------------------
 # messages (unified inbox)
 # ---------------------------------------------------------------------------

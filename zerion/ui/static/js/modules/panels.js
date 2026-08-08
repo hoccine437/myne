@@ -221,6 +221,9 @@ registerPanel("comms", {
     const countsBox = h("div", { class: "comm-counts mono" });
     const inboxList = h("div", { class: "comm-list" });
     const draftsList = h("div", { class: "comm-list" });
+    const controlsBox = h("div", { class: "comm-controls" });
+    const qualityBox = h("div", { class: "comm-list" });
+    const queueList = h("div", { class: "comm-list" });
     const flowsList = h("div", { class: "comm-list" });
     const auditList = h("div", { class: "comm-list" });
 
@@ -230,6 +233,8 @@ registerPanel("comms", {
       h("h4", { class: "section-title" }, "Pending Drafts (approval)"), draftsList,
       h("h4", { class: "section-title" }, "Workflows"), flowsList,
       h("h4", { class: "section-title" }, "Audit Trail"), auditList,
+      h("h4", { class: "section-title" }, "Autonomy & Controls"), controlsBox, qualityBox,
+      h("h4", { class: "section-title" }, "Outbound Queue"), queueList,
     );
 
     async function refresh() {
@@ -316,8 +321,58 @@ registerPanel("comms", {
       } catch (e) { auditList.textContent = `audit unavailable: ${e.message || e}`; }
     }
 
+    async function refreshAutonomy() {
+      try {
+        const a = await api("/api/comm/autonomy");
+        clear(controlsBox);
+        const paused = a.overrides && (a.overrides.paused || a.overrides.estop);
+        const mkBtn = (label, op, target) => {
+          const b = h("button", { class: "mini-btn" }, label);
+          b.addEventListener("click", async () => {
+            await api("/api/comm/control", { method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ op, target: target || "" }) });
+            refreshAutonomy(); refresh();
+          });
+          return b;
+        };
+        controlsBox.append(
+          mkBtn(paused ? "Resume" : "Pause", paused ? "resume" : "pause"),
+          mkBtn("EMERGENCY STOP", "estop"),
+          mkBtn("Clear queue", "clear_queue"),
+        );
+        const row2 = h("div", { class: "comm-controls2" });
+        for (const p of a.platforms || []) {
+          row2.appendChild(mkBtn(
+            p.shadow === "shadow" ? `graduate ${p.platform}` : `shadow ${p.platform}`,
+            p.shadow === "shadow" ? "graduate" : "ungraduate", p.platform));
+          row2.appendChild(mkBtn(`disable ${p.platform}`, "disable_platform", p.platform));
+          row2.appendChild(mkBtn(`enable ${p.platform}`, "enable_platform", p.platform));
+        }
+        controlsBox.appendChild(row2);
+        clear(qualityBox);
+        for (const p of a.platforms || []) {
+          const m = p.metrics || {};
+          qualityBox.appendChild(h("div", { class: "comm-item mono" },
+            `${p.platform}: ${p.shadow}${p.forced_max?.forced_max_level != null ? " max=" + p.forced_max.forced_max_level : ""} `
+            + `accept=${m.reply_acceptance_rate ?? "—"} corr=${m.user_correction_rate ?? "—"} fails=${m.failed_send_rate ?? "—"}`));
+        }
+        if (!(a.platforms || []).length) qualityBox.append(h("div", { class: "empty-hint" }, "(no platform telemetry yet)"));
+      } catch (e) { controlsBox.textContent = `autonomy unavailable: ${e.message || e}`; }
+      try {
+        const q = await api("/api/comm/outbox");
+        clear(queueList);
+        for (const r of q.queue || []) {
+          queueList.appendChild(h("div", { class: "comm-item mono" },
+            `[${r.status}] ${r.platform} → ${r.recipient} (try ${r.attempts})`.slice(0, 130)));
+        }
+        if (!(q.queue || []).length) queueList.append(h("div", { class: "empty-hint" }, "(queue empty)"));
+      } catch (e) { queueList.textContent = `queue unavailable: ${e.message || e}`; }
+    }
     refresh();
+    refreshAutonomy();
     const timer = setInterval(refresh, 30000);
-    return () => clearInterval(timer);
+    const timer2 = setInterval(refreshAutonomy, 30000);
+    return () => { clearInterval(timer); clearInterval(timer2); };
   },
 });

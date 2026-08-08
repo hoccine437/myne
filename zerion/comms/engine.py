@@ -50,6 +50,20 @@ def send_draft(draft, confirmed: bool = False, workflow: str = "",
                agent: str = "") -> dict:
     """Attempt to send. Never bypasses a gate; every outcome is auditable."""
     started = time.time()
+
+    # user override plane is above everything — paused / estop / disabled
+    # scopes reject the action entirely, no matter who asked or confirmed
+    from comms.overrides import is_estopped, is_paused, platform_disabled, contact_disabled
+    override_reason = ""
+    if is_estopped():
+        override_reason = "EMERGENCY STOP active"
+    elif is_paused():
+        override_reason = "communication paused by user"
+    elif platform_disabled(draft.platform):
+        override_reason = f"platform '{draft.platform}' disabled by user"
+    elif contact_disabled(draft.recipient):
+        override_reason = f"recipient disabled by user"
+
     decision = approvals.decide(draft.platform, draft.account,
                                 draft.recipient, draft.body, workflow=workflow)
     report = evaluate_send(draft, decision, workflow)
@@ -72,6 +86,8 @@ def send_draft(draft, confirmed: bool = False, workflow: str = "",
                 "report": report, "platform_result": result.get("platform_result", "") if result else "",
                 "verification": verification}
 
+    if override_reason:
+        return _finish("failed", {}, error=override_reason)
     if decision.action == "deny":
         return _finish("failed", {}, error=decision.reason)
     if decision.action in ("observe", "draft"):
@@ -93,8 +109,18 @@ def send_draft(draft, confirmed: bool = False, workflow: str = "",
         return _finish("failed", connector.send(draft),
                        error="platform does not support programmatic send")
 
+    # exactly-once: the action fingerprint is claimed before the platform is
+    # touched. A crash between connector and settle is detected at claim time
+    # on retry (the revalidator walks the outbox) — never re-sent blindly.
+    from comms.events import action_key, claim_action, settle_action
+    akey = action_key(draft.platform, draft.account, draft.recipient, draft.body)
+    if not claim_action(akey, draft.platform, draft.recipient):
+        return _finish("failed", {}, error="duplicate action suppressed (idempotency)")
+
     result = connector.send(draft)
     ok, note = verify.verify_platform_result(result)
+    settle_action(akey, "sent" if ok else "failed",
+                  note if ok else str(result.get("platform_result", ""))[:160])
     if ok:
         ratelimit.record(draft.platform, draft.recipient, draft.body,
                          draft.draft_id, note)

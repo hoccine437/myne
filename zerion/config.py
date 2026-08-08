@@ -148,6 +148,18 @@ EMAIL_IMAP_PORT = _env_int("EMAIL_IMAP_PORT", 993, minimum=1)
 EMAIL_SMTP_PORT = _env_int("EMAIL_SMTP_PORT", 465, minimum=1)
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 
+# Background autonomous communication (comms/autopilot.py): the pump and
+# event pipeline run when enabled; autonomous SENDS still require the
+# trusted-rule ladder (no sending without explicit authorization anywhere).
+AUTOPILOT_ENABLED = os.getenv("AUTOPILOT_ENABLED", "true").strip().lower() in (
+    "1", "true", "yes", "on"
+)
+# New platforms start in shadow mode (observe + draft, nothing sent) until
+# the owner graduates them with evidence.
+COMM_SHADOW_DEFAULT = os.getenv("COMM_SHADOW_DEFAULT", "true").strip().lower() in (
+    "1", "true", "yes", "on"
+)
+
 # ---------------------------------------------------------------------------
 # Misc
 # ---------------------------------------------------------------------------

@@ -1,5 +1,64 @@
 # Changelog
 
+## 1.3.0 — Background Autonomous Communication (human-safe)
+
+**comms/autopilot.py — the background spine:** every inbound event flows
+identity → exactly-once claim → loop guard → classify+store → isolated
+conversation state → FIREWALL (injection/exfiltration quarantined before any
+drafting decision) → reply-worthiness → separated candidate draft →
+consistency + critic lanes → multi-dimensional evidence gate →
+AUTONOMOUS (trusted low-risk only) | APPROVAL (parked + notify) | PAUSE
+(stop conditions hard-halt). Never a raw LLM→send path.
+
+**New modules:**
+- events.py — deterministic event identity + exactly-once processing/action
+  registry ('processing' rows survive crashes; recovery revalidates)
+- conversation_state.py — strict (platform, account, conversation) scoping;
+  wrong-recipient/wrong-account guards are structural
+- firewall.py — prompt-injection / exfiltration / sensitive-content / link /
+  dangerous-attachment detection (untrusted input is data, never instructions)
+- facts.py — candidate grounding vs knowledge-verified states; commitments
+  and hard numbers in a draft must be grounded or the draft parks
+- consistency.py — contradiction detection within the conversation scope +
+  agent-disagreement stop
+- decision.py — the evidence gate (intent/context/identity/fact/recipient/
+  policy/risk/history/consistency/critic/loop/connector) composing to
+  autonomous | approval | pause | observe
+- outbox.py — offline-safe queue: TTL expiry, error classification
+  (temporary → bounded exponential backoff; auth/permission/unknown →
+  STOP+report), revalidation of every re-execution (policy re-evaluated,
+  state changes honored)
+- loopguard.py — self-echo / bot-marker / cycle-window detection with
+  cooldown + audit
+- quality.py — telemetry (accept/reject/verify_fail/policy_block/loop…)
+  feeding shadow mode and DOWNGRADE-ONLY autonomy gates (no self-upgrade;
+  graduation is an owner action by design)
+- overrides.py — pause / resume / ESTOP (clears queue) / platform-contact-
+  workflow disables; persistent, audited, restart-proof
+
+**Wiring:** runtime service maintenance pump now routes through
+autopilot.pump (ingest → outbox drain → worklows); resource-constrained hosts
+defer replies while preserving ingestion and all safety gates. New tools:
+comm_process (agents/tools can drive the pipeline), comm_pause, comm_estop,
+comm_resume(+confirm), comm_override(+confirm), comm_outbox, comm_autonomy —
+56 tools total. UI: Communication panel gains Autonomy & Controls + outbound
+queue + quality metrics; new endpoints /api/comm/{autonomy,outbox,control}.
+
+**Config:** AUTOPILOT_ENABLED (default true; sends still need the ladder),
+COMM_SHADOW_DEFAULT (new platforms observe-only until the owner graduates
+them). DEPENDENCY_MANIFEST updated.
+
+**Proof style:** tests/test_autopilot.py — 32 tests covering the §43
+checklist: exactly-once, isolation, injection/exfiltration stops, forbidden
+auto paths, high-risk parking, loop cooldowns, offline queue fresh-check,
+estop under confirmation, shadow mode, downgrade rules, host-load
+deferral, journal integrity (no secrets), and the full low-risk autonomous
+send E2E through a faked Telegram transport. Live verification over HTTP for
+autonomy/outbox/control endpoints.
+
+Suite: 338/338 pytest · 22/22 second audit · 45/45 connectivity · 70/70 UI
+smoke · arch_map preserved · ZIP extract-validated.
+
 ## 1.2.0 — Universal Communication & Action Layer
 
 **comms/ package (16 modules) — the intelligent action layer:**

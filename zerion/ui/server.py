@@ -598,6 +598,86 @@ async def api_comm_audit(request: Request):
     return JSONResponse({"entries": await asyncio.to_thread(_read)})
 
 
+@route("/api/comm/autonomy")
+async def api_comm_autonomy(request: Request):
+    """Autonomy state board: overrides, shadow mode, quality gates."""
+
+    def _read():
+        from comms import overrides, quality, store
+        from comms.registry import connectors
+        store.init_all()   # schema materialization — first-request safe
+        platforms = sorted({p for p in connectors.health().keys()} |
+                           {r["platform"] for r in
+                            store.db().query("SELECT DISTINCT platform FROM comm_quality")})
+        return {
+            "overrides": overrides.status(),
+            "platforms": [{
+                "platform": p,
+                "shadow": quality.shadow_state(p),
+                "forced_max": quality.forced_max(p),
+                "metrics": quality.metrics(p),
+                "shadow_ready": quality.shadow_ready(p),
+            } for p in platforms],
+        }
+    return JSONResponse(await asyncio.to_thread(_read))
+
+
+@route("/api/comm/outbox")
+async def api_comm_outbox(request: Request):
+    def _read():
+        from comms import outbox, store
+        store.init_all()
+        return outbox.pending(limit=50)
+    return JSONResponse({"queue": await asyncio.to_thread(_read)})
+
+
+@route("/api/comm/control", methods=("POST",))
+async def api_comm_control(request: Request):
+    """Owner control plane: pause/resume/estop + scoped disables + graduation.
+    Every operation is real (comms.overrides), audited, and reversible except
+    estop's queue drop (by design, items are expired not silently sent)."""
+    try:
+        payload = await request.json()
+    except Exception:
+        payload = {}
+    op = str((payload or {}).get("op", ""))
+    target = str((payload or {}).get("target", ""))
+
+    def _run():
+        from comms import overrides, quality
+        if op == "pause":
+            return overrides.pause_all("panel")
+        if op == "resume":
+            return overrides.resume()
+        if op == "estop":
+            return overrides.estop("panel emergency stop")
+        if op == "clear_queue":
+            return {"dropped": overrides.clear_queue("panel")}
+        if op == "disable_platform":
+            return overrides.disable_platform(target, "panel")
+        if op == "enable_platform":
+            return overrides.enable_platform(target)
+        if op == "disable_contact":
+            return overrides.disable_contact(target, "panel")
+        if op == "enable_contact":
+            return overrides.enable_contact(target)
+        if op == "graduate":
+            # shadow → graduated: evidence gate is advisory; owner decides
+            ready = quality.shadow_ready(target)
+            quality.set_shadow(target, "graduated")
+            return {"platform": target, "graduated": True,
+                    "evidence": ready}
+        if op == "ungraduate":
+            quality.set_shadow(target, "shadow")
+            return {"platform": target, "graduated": False}
+        return {"error": f"unknown op {op!r}"}
+
+    result = await asyncio.to_thread(_run)
+    bus.emit("decision", {"source": "Communication control",
+                          "text": f"{op} {target}: {result}"})
+    return JSONResponse(result)
+
+
 @route("/api/settings")
 async def api_settings_get(request: Request):
     return JSONResponse(_current_settings())

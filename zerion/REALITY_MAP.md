@@ -1004,6 +1004,26 @@ Updates to the map's subsystem table:
 Approval ladder defaults to LEVEL 2 (confirm before send); high-risk markers
 force confirmation even on trusted rules; audit never stores secrets.
 
+## 27d. BACKGROUND AUTONOMY UPDATE (2026-08-08, same-day continuation)
+
+| Component | Status | Evidence |
+|---|---|---|
+| autopilot event spine (dedupe→loop guard→classify→state→firewall→draft→gate→send/park/pause→verify→learn) | LIVE (sandbox: connectors unconfigured → idle quiet; faked transports drive full flows) | tests/test_autopilot.py 32/32 |
+| exactly-once event/action registry | LIVE | claim/settle + crash-reprocess tests |
+| conversation isolation (platform+account+conversation) | LIVE | scope tests incl. wrong-recipient denial |
+| firewall (injection/exfiltration/sensitive/links/dangerous-attach) | LIVE | quarantine-before-draft test incl. via tool surface |
+| evidence gate (multi-dimensional autonomous|approval|pause|observe) | LIVE | decision matrix tests |
+| offline outbox (TTL/backoff/stop-on-auth/permission/unknown + revalidation) | LIVE | outbox suite incl. stale-drop proof |
+| loop guard (echo/bot-marker/cycle cooldown) | LIVE | loop suite |
+| shadow mode + downgrade-only quality gates (no self-upgrade) | LIVE | quality/shadow tests; graduation = owner op |
+| overrides incl. ESTOP (clears queue) | LIVE | live HTTP control-plane probe |
+| 24/7 service pump + host-load degradation | LIVE | pump test + constrained-mode test |
+| model/agent disagreement stop | LIVE (composition rule in decision gate) | decision test |
+
+Remaining environmental rows unchanged (real Telegram/email accounts, Termux
+notifications on-device, Android background-restart policy) — all gated
+honestly and documented, none claimed.
+
 ## 28. FINAL SUMMARY (§38 contract)
 
 **Actual Entry Point:** `main.py:main()` → Web UI default (`_run_ui` → uvicorn/hosting `ui.server.app`); `main.py --terminal` REPL; `python -m runtime` service supervising the same UI in a thread plus health maintenance.

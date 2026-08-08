@@ -551,8 +551,10 @@ class ZerionService:
         # errors degrade the layer in logs/health only, never the service
         if config.COMM_ENABLED:
             try:
-                from comms.scheduler import poll_once
-                pulse = poll_once()
+                # autonomy layer: inbound events flow through the full
+                # decide→draft→gate→(send|park)→verify lane; workflows fire too
+                from comms.autopilot import pump as autopilot_pump
+                pulse = autopilot_pump()
                 if pulse.get("ingested") or pulse.get("workflows"):
                     self.log.info("comm.poll", "comm",
                                   f"{pulse['ingested']} ingested, "
