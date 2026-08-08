@@ -1024,6 +1024,22 @@ Remaining environmental rows unchanged (real Telegram/email accounts, Termux
 notifications on-device, Android background-restart policy) — all gated
 honestly and documented, none claimed.
 
+## 27e. SERIOUS MODE + AUTHORIZED 24/7 UPDATE (2026-08-08, same-day)
+
+| Component | Status | Evidence |
+|---|---|---|
+| multilingual semantic command routing (EN/AR/Darja) | LIVE | tests/test_serious_mode.py matrix + live WS run (Arabic flow cmd → ACTIVE) |
+| Serious Mode auth (PBKDF2, lockout, count-only logging) | LIVE | auth tests incl. lockout-vs-correct-code, secrecy probes (memory/knowledge/audit/stdout never carry the code) |
+| Strictest-policy interaction (serious ⇒ auto→confirm) | LIVE | decision-gate test both directions |
+| Authorized background workflow objects (TTL, immediate stop) | LIVE | flow tests incl. expiry + stop-aborts-replies |
+| COMM_REQUIRE_FLOW gate (no flow ⇒ observe-only) | LIVE | autopilot gate tests (before-after stop) |
+| Constitution v1.1 (+17 laws COM/AUT/BGS) | LIVE | engine verify_lock, parse + enforcement-mapping tests |
+| comm health heartbeat (service/listeners/queue/last_event/last_error) | LIVE | health snapshot writer + runtime probe read |
+| UI: serious badge, bg flows with stop, control-plane ops | LIVE | live HTTP/WS probes |
+
+Constitution, memory, learning, agents, tools, comms spine all unchanged in
+shape — this pass added guarantees, not parallel systems.
+
 ## 28. FINAL SUMMARY (§38 contract)
 
 **Actual Entry Point:** `main.py:main()` → Web UI default (`_run_ui` → uvicorn/hosting `ui.server.app`); `main.py --terminal` REPL; `python -m runtime` service supervising the same UI in a thread plus health maintenance.

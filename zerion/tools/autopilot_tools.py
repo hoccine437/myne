@@ -188,3 +188,53 @@ class CommAutonomyTool(Tool):
         if len(lines) == 1:
             lines.append("(no connectors/telemetry yet)")
         return ToolResult.ok(message="\n".join(lines))
+
+
+class CommFlowTool(Tool):
+    name = "comm_flow"
+    description = ("Manage authorized background communication workflows. "
+                   "ops: list (all flows with expiry), start (platform, "
+                   "account?, scope=messages, ttl_s?) — starts/stops are "
+                   "trust-forward and require confirmation; list is read-only.")
+    parameters = {"op": "list|start|stop", "platform": "e.g. instagram",
+                  "account": "optional account", "ttl_s": "optional lifetime seconds",
+                  "flow_id": "for stop by id"}
+    destructive = True
+
+    def available(self) -> bool:
+        return True
+
+    def execute(self, parameters: dict) -> ToolResult:
+        from comms import bgworkflows
+        import config as _cfg
+        p = parameters or {}
+        op = str(p.get("op", "list"))
+        if op == "list":
+            flows = bgworkflows.list_all()
+            if not flows:
+                return ToolResult.ok(message="No background workflows defined.")
+            lines = []
+            for f in flows:
+                lines.append(f"- {f['flow_id']} [{f['status']}] {f['platform']}"
+                             f"{('/' + f['account']) if f['account'] else ''} "
+                             f"scope={f['scope']} risk={f['risk_level']} "
+                             f"expires<{int(f['expires_at'])}>")
+            return ToolResult.ok(data=flows, message="\n".join(lines))
+        if op == "start":
+            platform = str(p.get("platform", "")).strip()
+            if not platform:
+                return ToolResult.fail("missing_parameter", "platform is required")
+            flow = bgworkflows.start(
+                platform, account=str(p.get("account", "")),
+                scope=str(p.get("scope", "messages")),
+                ttl_s=int(p.get("ttl_s") or _cfg.COMM_FLOW_TTL))
+            return ToolResult.ok(data=flow,
+                                 message=f"Background workflow ACTIVE: {flow['flow_id']} "
+                                         f"({platform}, expires in "
+                                         f"{int((flow['expires_at'] - flow['enabled_at']) // 3600)}h, "
+                                         f"source=user-command).")
+        if op == "stop":
+            n = bgworkflows.stop(flow_id=str(p.get("flow_id", "")),
+                                 platform=str(p.get("platform", "")))
+            return ToolResult.ok(message=f"Stopped {n} workflow(s).")
+        return ToolResult.fail("invalid_parameter", "op must be list|start|stop")

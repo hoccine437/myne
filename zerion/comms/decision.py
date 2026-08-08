@@ -158,8 +158,19 @@ def evaluate(inbound, candidate, connector_state: str, quality: dict,
                         reasons=tuple(sorted(stops)), evidence=evidence)
 
     # no stops: autonomous allowed ONLY when the policy ladder itself says
-    # 'auto' (trusted low-risk rule) AND candidate exists
+    # 'auto' (trusted low-risk rule) AND candidate exists. SERIOUS MODE
+    # discipline: serious mode degrades 'auto' to 'confirm' — strictest
+    # applicable policy wins when both systems are active (mission §25).
     if candidate is not None and policy.action == "auto":
+        try:
+            import personality
+            if personality.serious_active():
+                return Decision(mode=APPROVAL,
+                                reasons=("serious_mode_strictest_policy: "
+                                         "auto→confirm",),
+                                evidence=evidence)
+        except Exception:
+            pass
         return Decision(mode=AUTONOMOUS, reasons=("trusted_low_risk",),
                         evidence=evidence)
     return Decision(mode=APPROVAL, reasons=("confirmation_required_by_ladder",),

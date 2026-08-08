@@ -141,7 +141,8 @@ class FinalE2E(unittest.TestCase):
             "route my domain",                      # skill routing
             "what device are you on",               # phone-body device probe
             "orchestrate this analysis for me",     # agent orchestration via tool
-            "start serious mode",                   # personality on
+            "start serious mode",                   # personality on (challenge)
+            "nano 808",                             # authentication (never logged)
             "hello",                                # chat under serious persona
             "stop serious mode",                    # personality off
             "exit",
@@ -169,7 +170,8 @@ class FinalE2E(unittest.TestCase):
         self.assertIn("verdict", out)
 
         # PERSONALITY engaged both directions via natural phrase
-        self.assertIn("Serious mode active", out)
+        self.assertIn("SERIOUS MODE: ON", out)        # authenticated activation
+        self.assertIn("authentication", out.lower())  # the challenge ran first
         self.assertIn("Normal mode active", out)
 
         # SELF-CRITIC stage reached when confidence/structure demands

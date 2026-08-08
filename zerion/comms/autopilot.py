@@ -68,6 +68,18 @@ def pump() -> dict:
                 "outbox": sent_counts, "ingested": pulse.get("ingested", 0)}
     pulse = _pulse(event_hook=process_inbound)
 
+    # health snapshot (mission §6) — honest state, never fabricated
+    try:
+        from comms import health as comm_health
+        from comms import bgworkflows
+        states = [h.get("state") for h in connectors.health().values()]
+        service_state = ("degraded" if any(s == "error" for s in states)
+                         else ("active" if states else "idle"))
+        comm_health.write(service_state, queue_depth=len(outbox.pending()),
+                          workflows_active=len(bgworkflows.active()))
+    except Exception as e:
+        log.debug(f"comm health write deferred: {e}")
+
     if not connectors.active():
         return {"active": True, "idle": "no connectors", "outbox": sent_counts}
     return {"active": True, "outbox": sent_counts,
@@ -139,6 +151,17 @@ def process_inbound(msg) -> dict:
         settle("done", f"classified {msg.classification}, no reply required")
         return {"event": eid, "outcome": "observed", "class": msg.classification}
 
+    # AUTHORIZATION: background replies require an explicit, active, scoped
+    # user-started flow (mission §2). Without one the system only observes —
+    # a message saying "answer people" is never self-authorizing.
+    if config.COMM_REQUIRE_FLOW:
+        from comms import bgworkflows
+        flow = bgworkflows.covers(msg.platform, msg.account, scope="messages")
+        if flow is None:
+            settle("ignored", "no authorized background workflow for this scope")
+            return {"event": eid, "outcome": "observed-no-flow",
+                    "class": msg.classification}
+
     # shadow mode: draft-scored but never sent (§30)
     shadow = shadow_state(msg.platform) == "shadow"
 
@@ -174,6 +197,7 @@ def process_inbound(msg) -> dict:
                         "evidence_keys": sorted(result.evidence.keys())})
 
     if result.mode == decision.PAUSE:
+        # record the candidate for review, marked failed (never sent)
         store.store_draft(candidate)
         store.set_draft_status(candidate.draft_id, "failed")
         settle("failed", "pause:" + ",".join(result.stop_flags))

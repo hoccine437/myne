@@ -76,6 +76,12 @@ def set_mode(mode: str) -> str:
     return _ack[mode]
 
 
+def serious_active() -> bool:
+    """True while Serious Mode is engaged. Used by policy gates (strictest
+    discipline wins when combined with communication workflows)."""
+    return current() == SERIOUS
+
+
 def persona_rules() -> tuple:
     return _PERSONA_RULES.get(current(), ())
 

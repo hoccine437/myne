@@ -80,6 +80,7 @@ SETTABLE_CONFIG = {
 
 def _current_settings() -> dict:
     """Non-secret runtime settings for the client. Never includes keys."""
+    import personality  # lazy: zero cost when not in the payload path
     return {
         "planner_enabled": bool(config.PLANNER_ENABLED),
         "orchestration_enabled": bool(config.ORCHESTRATION_ENABLED),
@@ -90,6 +91,7 @@ def _current_settings() -> dict:
         "tts_model": config.GEMINI_TTS_MODEL,
         "voice_name": config.VOICE_NAME,
         "provider": config.LLM_PROVIDER,
+        "serious_mode": personality.serious_active(),
         "llm_configured": bool(config.GEMINI_API_KEY),
         "tts_supported": config.gemini_tts_supported(),
         "speech_status": speech_status(),
@@ -509,12 +511,19 @@ async def api_comm_overview(request: Request):
     def _read():
         from comms.inbox import overview
         from comms.registry import connectors
-        from comms import store
+        from comms import store, bgworkflows, health as comm_health
+        store.init_all()
+        import config as _cfg
+        import personality
         return {
             "connectors": connectors.health(),
             "inbox": overview(),
             "drafts_pending": len(store.pending_drafts()),
             "workflows": len(store.list_workflows()),
+            "bg_flows": bgworkflows.list_all(limit=20),
+            "bg_health": comm_health.read(),
+            "serious_mode": personality.serious_active(),
+            "require_flow": bool(_cfg.COMM_REQUIRE_FLOW),
         }
     return JSONResponse(await asyncio.to_thread(_read))
 
@@ -670,6 +679,9 @@ async def api_comm_control(request: Request):
         if op == "ungraduate":
             quality.set_shadow(target, "shadow")
             return {"platform": target, "graduated": False}
+        if op == "stop_bg_flow":
+            from comms import bgworkflows
+            return {"stopped": bgworkflows.stop(flow_id=target)}
         return {"error": f"unknown op {op!r}"}
 
     result = await asyncio.to_thread(_run)

@@ -90,6 +90,12 @@ class Guard(unittest.TestCase):
         connectors.inject(TelegramConnector(http=http))
         return self._tg_sent
 
+    def authorize_flow(self, platform="telegram"):
+        """The §2 ritual: an explicit authorized background workflow object."""
+        from comms import bgworkflows
+        return bgworkflows.start(platform, account="bot", scope="messages",
+                                 ttl_s=3600)
+
 
 # ---------------------------------------------------------------------------
 # exactly-once
@@ -376,6 +382,7 @@ class TestShadow(Guard):
         self._c.COMM_DEFAULT_LEVEL = 3
         self._c.COMM_TRUSTED_RAW = '[{"platform":"telegram","recipient":"777"}]'
         quality.set_shadow("telegram", "shadow")
+        self.authorize_flow()
         sent = self.bind_fake_telegram()
         out = process_inbound(_msg(content="did the deploy pass?", timestamp=time.time()))
         self.assertEqual(out["outcome"], "shadow-draft")
@@ -396,6 +403,7 @@ class TestPipeline(Guard):
         self._c.COMM_DEFAULT_LEVEL = 3
         self._c.COMM_TRUSTED_RAW = '[{"platform":"telegram","recipient":"777"}]'
         quality.set_shadow("telegram", "graduated")
+        self.authorize_flow()
         sent = self.bind_fake_telegram()
         out = process_inbound(_msg(content="did the deploy pass?",
                                    timestamp=time.time()))
@@ -417,6 +425,7 @@ class TestPipeline(Guard):
         conversation_state.touch("telegram", "bot", "777", sender="amina",
                                  topic="money")
         quality.set_shadow("telegram", "graduated")   # owner-level action in tests
+        self.authorize_flow()
         sent = self.bind_fake_telegram()
         out = process_inbound(_msg(content="can you pay the invoice amount of 500 tomorrow?",
                                    timestamp=time.time()))
@@ -446,6 +455,7 @@ class TestPipeline(Guard):
         self._c.COMM_DEFAULT_LEVEL = 3
         self._c.COMM_TRUSTED_RAW = '[{"platform":"telegram","recipient":"777"}]'
         quality.set_shadow("telegram", "graduated")
+        self.authorize_flow()
         sent = self.bind_fake_telegram()
         result = tool_manager.execute("comm_process", {
             "platform": "telegram", "sender": "amina", "account": "bot",

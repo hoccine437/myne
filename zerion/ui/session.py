@@ -329,7 +329,18 @@ class ZerionUISession:
         lowered = text.lower()
         session = self.state
 
-        bus.emit("chat", {"role": "user", "text": text, "kind": origin})
+        # secret-material guard (§9/§27): while an authentication challenge
+        # awaits the user's code, the raw input is NEVER echoed to the event
+        # stream — not the live feed, not the replay buffer, not any log
+        try:
+            from intent import commands as _cmd_guard
+            if _cmd_guard.pending_secret_input():
+                bus.emit("chat", {"role": "user", "text": "••••••",
+                                  "kind": "auth-masked"})
+            else:
+                bus.emit("chat", {"role": "user", "text": text, "kind": origin})
+        except Exception:
+            bus.emit("chat", {"role": "user", "text": text, "kind": origin})
 
         # --- interrupt words: the web equivalent of quitting the loop ---
         if is_interrupt(lowered):

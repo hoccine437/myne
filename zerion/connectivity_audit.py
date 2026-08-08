@@ -343,7 +343,10 @@ def classify_all():
             cls, why = "DEVELOPMENT-ONLY", DEV_TOOLS[rel]
         elif is_test(rel):
             cls, why = "TEST-ONLY", "test harness"
-        elif rel.startswith(RUNTIME_STATE_PREFIXES) or rel == ".env":
+        elif rel.startswith(RUNTIME_STATE_PREFIXES) or rel == ".env" or \
+                rel == "memory/memory.json.bak":
+            # .bak = the memory manager's own one-generation crash-recovery
+            # artifact, produced by update_memory() at runtime (never source)
             cls, why = "OPTIONAL / PLUGIN", "generated runtime/local state (gitignored; never packaged)"
         elif ext in DOC_EXT or p.name == "LICENSE":
             cls, why = "DEVELOPMENT-ONLY", "documentation"

@@ -240,14 +240,21 @@ class PersonalityTests(unittest.TestCase):
         self.assertEqual(self.p.persona_rules(), ())
 
     def test_command_palette_phrase_and_slash(self):
+        # serious activation is AUTHENTICATED (security contract upgrade):
+        # the palette still recognizes the phrases, but activation now
+        # requires the password handshake; deactivation stays free
         from intent import commands
         self.assertTrue(commands.is_command("START SERIOUS MODE"))
         self.assertTrue(commands.is_command("/serious"))
         out = commands.handle("start serious mode", None, {})
         self.assertIn("Serious", out)
+        self.assertIn("authentication", out.lower())
+        self.assertTrue(commands.pending_secret_input())
+        out2 = commands.handle("nano 808", None, {})
+        self.assertIn("SERIOUS MODE: ON", out2)
         self.assertTrue(commands.is_command("STOP SERIOUS MODE"))
-        out = commands.handle("Stop Serious Mode", None, {})
-        self.assertIn("Normal", out)
+        out3 = commands.handle("Stop Serious Mode", None, {})
+        self.assertIn("Normal", out3)
         # critical: natural language starting with 'start' is NOT swallowed
         self.assertFalse(commands.is_command("start a timer for my run"))
 

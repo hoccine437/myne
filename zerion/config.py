@@ -159,6 +159,16 @@ AUTOPILOT_ENABLED = os.getenv("AUTOPILOT_ENABLED", "true").strip().lower() in (
 COMM_SHADOW_DEFAULT = os.getenv("COMM_SHADOW_DEFAULT", "true").strip().lower() in (
     "1", "true", "yes", "on"
 )
+# Background replies require an explicit authorized workflow object
+# (comms/bgworkflows.py). "Reply to people on X" starts one with a TTL;
+# without one, the autopilot only observes. Never false in production.
+COMM_REQUIRE_FLOW = os.getenv("COMM_REQUIRE_FLOW", "true").strip().lower() in (
+    "1", "true", "yes", "on"
+)
+COMM_FLOW_TTL = _env_int("COMM_FLOW_TTL", 86400, minimum=300)
+# Serious Mode attempt throttling (authentication guard)
+SERIOUS_MAX_ATTEMPTS = _env_int("SERIOUS_MAX_ATTEMPTS", 3, minimum=1)
+SERIOUS_LOCKOUT_S = _env_int("SERIOUS_LOCKOUT_S", 300, minimum=10)
 
 # ---------------------------------------------------------------------------
 # Misc

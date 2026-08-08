@@ -237,10 +237,12 @@ registerPanel("comms", {
       h("h4", { class: "section-title" }, "Outbound Queue"), queueList,
     );
 
+    let lastOverview = null;
     async function refresh() {
       // connector + account state
       try {
         const ov = await api("/api/comm/overview");
+        lastOverview = ov;
         clear(healthBox);
         const entries = Object.entries(ov.connectors || {});
         healthBox.appendChild(entries.length
@@ -251,7 +253,7 @@ registerPanel("comms", {
           : h("div", { class: "empty-hint" }, "No connectors configured (email/telegram env or Termux access)."));
         clear(countsBox);
         const by = Object.entries(ov.inbox?.by_platform || {}).map(([p, n]) => `${p}:${n}`).join("  ");
-        countsBox.append(`messages ${ov.inbox?.total ?? 0}${by ? "  (" + by + ")" : ""}  ·  drafts ${ov.drafts_pending ?? 0}  ·  workflows ${ov.workflows ?? 0}`);
+        countsBox.append(`messages ${ov.inbox?.total ?? 0}${by ? "  (" + by + ")" : ""}  ·  drafts ${ov.drafts_pending ?? 0}  ·  workflows ${ov.workflows ?? 0}${ov.serious_mode ? "  ·  SERIOUS MODE: ON" : ""}`);
       } catch (e) { countsBox.textContent = `overview unavailable: ${e.message || e}`; }
 
       try {
@@ -302,6 +304,23 @@ registerPanel("comms", {
             h("span", { class: "mono" }, `${wf.definition?.trigger?.type || "?"}`),
             h("span", {}, ` ${wf.name}`),
             h("span", { class: "mono" }, wf.enabled ? "" : " (disabled)")));
+        }
+        for (const f of ((lastOverview && lastOverview.bg_flows) || [])) {
+          const st = f.status === "active" ? "ACTIVE" : f.status;
+          const row = h("div", { class: "comm-item" },
+            h("span", { class: "mono" }, `[bg:${st}] `),
+            h("span", {}, `${f.platform}${f.account ? "/" + f.account : ""} risk=${f.risk_level} exp ${new Date(f.expires_at * 1000).toLocaleString()}`));
+          if (f.status === "active") {
+            const stopBtn = h("button", { class: "mini-btn" }, "stop");
+            stopBtn.addEventListener("click", async () => {
+              await api("/api/comm/control", { method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ op: "stop_bg_flow", target: f.flow_id }) });
+              refresh();
+            });
+            row.appendChild(stopBtn);
+          }
+          flowsList.appendChild(row);
         }
         if (!(w.workflows || []).length) flowsList.append(h("div", { class: "empty-hint" }, "(no workflows)"));
         for (const r of (w.recent_runs || []).slice(0, 5)) {

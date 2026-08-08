@@ -1,5 +1,50 @@
 # Changelog
 
+## 1.4.0 — Authenticated Serious Mode + Authorized 24/7 Workflows + Constitution v1.1
+
+**Authenticated Serious Mode (§8–§16):**
+- semantic multilingual activation — "Turn on serious mode", "فعل الوضع
+  الجاد", "شغل الوضع الجاد", spelling/case/Arabic-Latin variants all map to
+  ENABLE_SERIOUS_MODE through intent/multilingual.py (stem evidence, never
+  exact strings; negation & unrelated 'serious' usages stay inert)
+- activation requires local authentication — the installation code
+  (nano 808 family, incl. Arabic forms) exists ONLY as KDF constants +
+  salted PBKDF2 hash (security/serious_auth.py); never stored plaintext,
+  logged, remembered, telemetried, or sent to any model
+- lockout (3 fails → 300s lock, held even against the correct code),
+  count-only security logging, challenge-cancellation words are free
+- UI masking: while the challenge is pending, the user's typed code is never
+  echoed into the event stream / replay buffer / logs
+- strictest-policy interaction: Serious Mode demotes trusted auto-sends to
+  confirmations in the comm evidence gate (AUT-002)
+- deactivation stays authless ("turn off serious mode", "عطل…")
+
+**Authorized background workflows (§2):** explicit objects (id / platform /
+account / scope / allowed actions / risk / expiry — 24h default, hard-stoppable
+by command or panel) are now the only path to background replies; without an
+ACTIVE scoped flow, autopilot observes and never drafts
+(COMM_REQUIRE_FLOW; COMM_FLOW_TTL).
+
+**Constitution v1.1 (§17/§18):** +17 laws — level 6 (background
+communication: authorization, scope, isolation, verification, duplicates,
+rate limits, untrusted content, sensitive gate, ESTOP, audit, downgrade,
+connector isolation), level 7 (serious-mode authentication, security
+boundary, credential protection), level 8 (platform limits, safe recovery).
+All existing laws unchanged; owner relock + engine verify green; tests map
+laws to the actual code gates.
+
+**Wiring:** comms/health.py heartbeat writer (service/listener/queue/
+last_event/last_error); runtime probe carries it; UI panel shows serious
+badge + bg flows with stop buttons; new control op stop_bg_flow; new tool
+comm_flow (trust-forward). 58 tools.
+
+**Contract migrations (mandated, tested):** /serious and 'start serious
+mode' now authenticate instead of toggling directly; the regression suite
+was updated accordingly.
+
+Suite: 367/367 pytest · 22/22 second audit · 45/45 connectivity · 70/70 UI
+smoke · arch_map preserved · ZIP extract-validated.
+
 ## 1.3.0 — Background Autonomous Communication (human-safe)
 
 **comms/autopilot.py — the background spine:** every inbound event flows
