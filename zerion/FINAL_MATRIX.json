@@ -107,5 +107,12 @@
       "status": "VERIFIED",
       "evidence": "second_audit.py 22/22 from repo AND extracted ZIP; connectivity_audit.py 30/30"
     }
-  ]
+  ],
+  "fresh_gate_run": {
+    "date": "2026-08-08",
+    "tests": 198,
+    "connectivity": "45/45",
+    "second_audit": "22/22",
+    "ui_smoke": 70
+  }
 }

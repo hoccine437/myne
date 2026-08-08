@@ -2,7 +2,7 @@
   "VERSION": "1.0.0",
   "BUILD DATE": "2026-08-08",
   "ENTRY POINT": "main.py (Web UI default; --terminal minimal REPL; --host/--port)",
-  "TESTS PASSED": 189,
+  "TESTS PASSED": 198,
   "TESTS FAILED": 0,
   "STATICALLY VERIFIED": [
     "Termux dependency classification (dependency manifest)",
@@ -18,11 +18,11 @@
     "24/7 multi-hour soak on a phone (in-process lifecycle fully tested)"
   ],
   "TERMUX STATUS": "STATICALLY VERIFIED + SIMULATED PROFILE VERIFIED (real device: user log proves main.py + Gemini prior; UI extras now pure-python installable)",
-  "ANDROID STATUS": "NOT VERIFIED WITHOUT HARDWARE — body APIs gate cleanly on absent binaries",
+  "ANDROID STATUS": "NOT VERIFIED WITHOUT HARDWARE \u2014 body APIs gate cleanly on absent binaries",
   "GEMINI STATUS": "CODE PATH VERIFIED (transport battery incl. 401/403/429+Retry-After/5xx/timeout/network/malformed/empty); LIVE API VERIFIED on user's physical device log",
   "GEMINI TTS STATUS": "CODE PATH VERIFIED (service reuses speech._generate_audio; WAV 24kHz/mono served via expiring tokens; dedupe + rate-limit proven); LIVE AUDIO UNVERIFIED in sandbox (no speaker; quota fell back on user's device at that moment)",
   "UI STATUS": "VERIFIED (66 smoke checks; acceptance matrix emitted to UI_ACCEPTANCE.json)",
-  "24/7 STATUS": "VERIFIED (34 runtime tests; heartbeats/backoff/recovery/duplicate-lock/persistence) — physical long-soak not verified",
+  "24/7 STATUS": "VERIFIED (34 runtime tests; heartbeats/backoff/recovery/duplicate-lock/persistence) \u2014 physical long-soak not verified",
   "SECURITY STATUS": "VERIFIED (key-free envelopes, .env excluded from ZIP, tokenized audio URLs, confirmation gates intact)",
-  "FINAL RELEASE STATUS": "RELEASE CANDIDATE — EXTERNAL DEVICE TEST REQUIRED"
+  "FINAL RELEASE STATUS": "RELEASE CANDIDATE \u2014 EXTERNAL DEVICE TEST REQUIRED"
 }
