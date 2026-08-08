@@ -1,0 +1,104 @@
+{
+  "rows": [
+    {
+      "feature": "Chat",
+      "status": "VERIFIED",
+      "evidence": "ui smoke: message render, send, markdown, virtualized window"
+    },
+    {
+      "feature": "Voice input",
+      "status": "VERIFIED",
+      "evidence": "smoke: SpeechRecognition \u2192 core.message; button state wired"
+    },
+    {
+      "feature": "Gemini TTS",
+      "status": "VERIFIED",
+      "evidence": "test_voice_service (13) + smoke voice states + live /api/tts fetch"
+    },
+    {
+      "feature": "Core visualization",
+      "status": "VERIFIED",
+      "evidence": "orb state machine bound to core_state events; smoke state checks"
+    },
+    {
+      "feature": "System telemetry",
+      "status": "VERIFIED",
+      "evidence": "metrics stream \u2192 gauges+sparklines; /api/status runtime row"
+    },
+    {
+      "feature": "Active agents",
+      "status": "VERIFIED",
+      "evidence": "engine activity rows from agents events"
+    },
+    {
+      "feature": "Active tasks",
+      "status": "VERIFIED",
+      "evidence": "planner tasks event drives the list"
+    },
+    {
+      "feature": "Current goal",
+      "status": "VERIFIED",
+      "evidence": "goal_manager state mirrored on goal events"
+    },
+    {
+      "feature": "Running tools",
+      "status": "VERIFIED",
+      "evidence": "tool events render start/end/confirm/cancel"
+    },
+    {
+      "feature": "Notifications",
+      "status": "VERIFIED",
+      "evidence": "server notification events \u2192 toasts + feed"
+    },
+    {
+      "feature": "Recent decisions",
+      "status": "VERIFIED",
+      "evidence": "decision events \u2192 feed"
+    },
+    {
+      "feature": "Terminal",
+      "status": "VERIFIED",
+      "evidence": "run_shell through the confirmation flow; stream+prompt"
+    },
+    {
+      "feature": "File Explorer",
+      "status": "VERIFIED",
+      "evidence": "panel + /api/fs/list + /api/fs/read through Core tools"
+    },
+    {
+      "feature": "Logs",
+      "status": "VERIFIED",
+      "evidence": "live event buffer panel"
+    },
+    {
+      "feature": "Memory Inspector",
+      "status": "VERIFIED",
+      "evidence": "/api/memory + /api/knowledge"
+    },
+    {
+      "feature": "Developer Mode",
+      "status": "VERIFIED",
+      "evidence": "pipeline timeline + runtime metrics"
+    },
+    {
+      "feature": "Adaptive workspace",
+      "status": "VERIFIED",
+      "evidence": "six modes; classification events drive switching"
+    },
+    {
+      "feature": "Phone layout",
+      "status": "VERIFIED",
+      "evidence": "jsdom device classes: phone/tablet; drawers+edge swipes in smoke"
+    },
+    {
+      "feature": "Fullscreen",
+      "status": "STATICALLY VERIFIED",
+      "evidence": "fullscreen API wiring + auto setting; real browser N/A in sandbox"
+    },
+    {
+      "feature": "Settings",
+      "status": "VERIFIED",
+      "evidence": "every control round-trips localStorage or /api/settings"
+    }
+  ]
+}
