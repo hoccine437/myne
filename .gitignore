@@ -10,3 +10,4 @@ zerion/knowledge/*.db-journal
 zerion/knowledge/*.db-wal
 zerion/runtime/run/
 ZERION_FINAL.zip
+Zerion-Final-Release.zip
