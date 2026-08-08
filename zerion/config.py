@@ -136,6 +136,19 @@ PLANNER_ENABLED = os.getenv("PLANNER_ENABLED", "false").strip().lower() in (
 PLANNER_MIN_WORDS = _env_int("PLANNER_MIN_WORDS", 4, minimum=0)
 
 # ---------------------------------------------------------------------------
+# Agent Orchestration
+# ---------------------------------------------------------------------------
+# When the Intent Engine can't answer locally and the request classifies as
+# ordinary chat covering 2+ specialist domains, the canonical Orchestrator
+# (agents/orchestrator.py) is consulted BEFORE paying for an LLM call: its
+# lanes are bounded, whitelisted, read-only, and the whole consult is
+# evidence-gated (no useful lanes → the turn falls through to the LLM
+# exactly as before). Disable to restore the pre-integration behavior.
+ORCHESTRATION_ENABLED = os.getenv("ORCHESTRATION_ENABLED", "true").strip().lower() in (
+    "1", "true", "yes", "on"
+)
+
+# ---------------------------------------------------------------------------
 # Self-Critic
 # ---------------------------------------------------------------------------
 # The Self-Critic reviews a draft chat response before it's sent, using
@@ -174,6 +187,7 @@ def validate() -> list:
         f"Speech model: {GEMINI_TTS_MODEL}",
         f"TTS supported: {'YES' if gemini_tts_supported() else 'NO'}",
         f"Self-Critic: {'enabled' if ENABLE_SELF_CRITIC else 'disabled'}",
+        f"Orchestration: {'enabled' if ORCHESTRATION_ENABLED else 'disabled'}",
     ])
 
     if LLM_PROVIDER not in _SUPPORTED_PROVIDERS:

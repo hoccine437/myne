@@ -74,6 +74,7 @@ SETTABLE_CONFIG = {
     "self_critic_enabled": ("ENABLE_SELF_CRITIC", bool),
     "voice_enabled": ("VOICE_ENABLED", bool),
     "low_confidence_threshold": ("LOW_CONFIDENCE_THRESHOLD", float),
+    "orchestration_enabled": ("ORCHESTRATION_ENABLED", bool),
 }
 
 
@@ -81,6 +82,7 @@ def _current_settings() -> dict:
     """Non-secret runtime settings for the client. Never includes keys."""
     return {
         "planner_enabled": bool(config.PLANNER_ENABLED),
+        "orchestration_enabled": bool(config.ORCHESTRATION_ENABLED),
         "self_critic_enabled": bool(config.ENABLE_SELF_CRITIC),
         "voice_enabled": bool(config.VOICE_ENABLED),
         "low_confidence_threshold": config.LOW_CONFIDENCE_THRESHOLD,
@@ -545,6 +547,7 @@ _ENV_KEYS = {
     "ENABLE_SELF_CRITIC": "ENABLE_SELF_CRITIC",
     "VOICE_ENABLED": "VOICE_ENABLED",
     "LOW_CONFIDENCE_THRESHOLD": "LOW_CONFIDENCE_THRESHOLD",
+    "ORCHESTRATION_ENABLED": "ORCHESTRATION_ENABLED",
 }
 
 

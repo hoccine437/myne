@@ -1,5 +1,50 @@
 # Changelog
 
+## 1.1.0 — Reality-Map Integration (agents + learning wired into runtime)
+
+**P0 defect repairs (verified in REALITY_MAP.md, now fixed and re-verified):**
+- runtime/service.py agents health probe imported a nonexistent symbol
+  (`agents.service.agent_pool`) — every health tick degraded the subsystem.
+  Fixed to the canonical public surface; probe verifies `agents: healthy`.
+- ui/tts.py: four raw stderr debug prints removed; structured core.logging
+  debug channel used instead. Test asserts silence.
+
+**Agent runtime integration (agents were REGISTERED_NOT_EXECUTED):**
+- intent/engine.py consults the canonical Agent Orchestrator after the fast
+  planner for multi-domain CHAT requests — zero extra LLM cost, gated by
+  config.ORCHESTRATION_ENABLED (env + UI runtime setting).
+- Evidence discipline: whitelisted knowledge/long_term layers, ≥50%
+  on-topic token coverage, critic-accept required for direct answers;
+  "revise" verdicts inject explicitly-uncertain context instead. Self-echo
+  (capability-gap/critique/knowledge_gap records quoting the request)
+  provably cannot answer a request.
+- agents/orchestrator.py: lanes fan out in parallel under one shared 20s
+  deadline; one bounded restart on transient failure; every lane returns
+  the structured result contract (task id, evidence, confidence, tools,
+  duration, verification status).
+
+**Learning controller activation (was tool-only):**
+- learning/triggers.py: explicit "learn <topic>"/"teach yourself …"
+  trigger executes the canonical loop offline; repeated same-tool failures
+  (≥3/session) surface a structured signal — never silent auto-learning.
+- /learn <topic> palette command → same learn_domain path as the LLM tool.
+- BackgroundLearning.run_once reports spaced-recall dues at idle.
+- Error memory keyed by concept; wide-window retrieval so ranked noise
+  can't hide failures; critic flags weak summaries at store time
+  (critic-flagged tag, reduced confidence — never silent promotion).
+- Curriculum prerequisite_of / part_of edges written to the existing
+  intelligence/world graph and consulted when a practice attempt fails.
+
+**Bugs found by the new end-to-end test (both fixed):**
+- learning/errors.py crashed when failure payloads were ints — the
+  learn-from-failure path was effectively unreachable.
+- learning/controller.py generalization probes reused identical seeds for
+  runs inside one second — "unseen" probes could repeat verbatim. Now
+  salted with run_id.
+
+Suite: 253/253 pytest (233 baseline + 20 integration tests), 22/22 second
+audit, 45/45 connectivity, 70/70 UI smoke, arch_map 49/43 preserved.
+
 ## 1.0.0 — Universal Learning (evidence-driven loops, never fake)
 
 - learning/acquisition.py: classify every learn fragment as

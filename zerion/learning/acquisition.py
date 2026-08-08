@@ -60,7 +60,16 @@ class AcquisitionLayer:
             "verification_status": "unverified",
             "domain": domain,
         }
-        return KnowledgeManager().store(
+        record_id = KnowledgeManager().store(
             content=frag.content, category=f"frag:{frag.kind}",
             tags=[frag.kind, frag.source, domain], importance=importance,
             confidence=confidence, metadata=meta, layer="knowledge")
+        # relationship graph: every fragment joins the domain it belongs to
+        # (existing intelligence/world graph_edges table — no second store).
+        if record_id:
+            try:
+                from intelligence.world import WorldModel
+                WorldModel().link(f"record:{record_id}", "part_of", f"domain:{domain}", .6)
+            except Exception:
+                pass  # the graph is an index, never a reason acquisition fails
+        return record_id

@@ -60,6 +60,21 @@ class LearningController:
         cur = self.curriculum.build(topic, already_known=list(known_concepts or []))
         self._system_emit(system_listener, "curriculum.built", {"units": len(cur.units)})
 
+        # Relationships (mission graph): curriculum edges land in the
+        # existing world graph (graph_edges) — prerequisite_of between
+        # concepts, part_of between concept and domain. Reused on failure
+        # (related-concept lookup) instead of a parallel relation store.
+        try:
+            from intelligence.world import WorldModel
+            _world = WorldModel()
+            for _u in cur.units:
+                _world.link(f"concept:{_u.concept}", "part_of", f"domain:{topic}", .5)
+                for _p in _u.prerequisites:
+                    _world.link(f"concept:{_p}", "prerequisite_of",
+                                f"concept:{_u.concept}", .7)
+        except Exception:
+            _world = None
+
         report = {"run_id": run_id, "topic": topic, "iterations": [],
                   "mastery": [], "errors": [], "generalization": None,
                   "finished_reason": None, "final_level": None}
@@ -105,13 +120,28 @@ class LearningController:
                 self.retention.note_pass(rec_id)
             else:
                 cmd, hint = self._cause_and_fix(ex, result)
-                self.errors.record(ex.prompt, str(result.actual), ex.expected,
+                # record under the CONCEPT as well as the literal exercise —
+                # error memory is retrieved by "similar task", and the task
+                # future-me will recognize is the subject, not the operands
+                self.errors.record(f"{concept} — exercise: {ex.prompt}",
+                                   str(result.actual), str(ex.expected),
                                    cmd, hint, solution="")
                 self.progress.note_error(obj, result.feedback)
                 # backoff: review this failure soon
                 self.retention.note_fail(rec_id)
                 self._system_emit(system_listener, "practice.failed", result.feedback)
-                if iterations >= 2 and not unit.prerequisites:
+                # relationship lookup: prerequisites of the failed concept may
+                # be the real gap — surface what the graph knows, honestly
+                related = []
+                if _world is not None:
+                    try:
+                        related = [r["source"] for r in _world.related(f"concept:{concept}")
+                                   if r["relation"] == "prerequisite_of"]
+                    except Exception:
+                        related = []
+                if related:
+                    report.setdefault("related_gaps", []).extend(related)
+                if iterations >= 2 and not unit.prerequisites and not related:
                     # can't recover without external info — report limitation honestly
                     report["finished_reason"] = "stuck-no-new-evidence"
                     break
@@ -123,7 +153,10 @@ class LearningController:
             report["mastery"].append(self.curriculum.mastery_score(cur))
 
         # generalization probe on NEW generated seeds (no shared seed = honest)
-        gen_seed = int(time.time()) % 100000
+        # NOTE: salted with run_id — bare int(time.time()) replays the exact
+        # same "unseen" probes for two runs sharing a second, which would let
+        # a subject pass by recall instead of generalization.
+        gen_seed = (int(time.time()) + int(run_id, 16)) % 100000
         probes = []
         for _ in range(3):
             ex = self.practice.generate(topic + ": generalized probe", "competent",

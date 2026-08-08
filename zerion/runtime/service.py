@@ -459,7 +459,9 @@ class ZerionService:
         # --- agents (ecosystem liveness: queue + failure posture) ----------
         def probe_agents():
             try:
-                from agents.service import agent_pool
+                # canonical public surface (agents/__init__.py), the same
+                # import shape connectivity_audit + test_orchestrator use
+                from agents import agent_pool
                 s = agent_pool.stats()
                 if s["tracked"] > s["max_pending"]:
                     return f"agent backlog beyond bound ({s['tracked']}/{s['max_pending']})"

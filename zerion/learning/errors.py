@@ -20,7 +20,12 @@ class ErrorMemory:
 
     def record(self, problem: str, attempt: str, failure: str, cause: str,
                correction: str, solution: str) -> int:
-        """Record a structured failure (never silent, never blind)."""
+        """Record a structured failure (never silent, never blind).
+        All fields coerce to str: callers pass numbers (expected values)
+        and exceptions as often as prose."""
+        problem, attempt = str(problem), str(attempt)
+        failure, cause = str(failure), str(cause)
+        correction, solution = str(correction), str(solution)
         content = (f"PROBLEM: {problem[:160]}\nATTEMPT: {attempt[:200]}\n"
                    f"FAILURE: {failure[:200]}\nCAUSE: {cause}\n"
                    f"CORRECTION: {correction[:200]}\nSOLUTION: {solution[:200]}")
@@ -36,7 +41,10 @@ class ErrorMemory:
                              }, layer="capability")
 
     def retrieve_similar(self, problem: str, limit: int = 5) -> list:
-        found = self.km.searcher.search(problem, limit)
+        # search-then-filter must happen on a WIDE window: ranking by
+        # importance/confidence can crowd error rows out of a small top-k,
+        # which would silently erase exactly the failures meant to be found.
+        found = self.km.searcher.search(problem, max(limit * 8, 30))
         out = []
         for r in found:
             if r["category"] != "error_memory":
@@ -44,4 +52,4 @@ class ErrorMemory:
             out.append({"cause": r["metadata"].get("cause"),
                         "correction": r["metadata"].get("correction"),
                         "solution": r["metadata"].get("solution")})
-        return out
+        return out[:limit]

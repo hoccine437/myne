@@ -78,6 +78,16 @@ def classify(goal: str) -> tuple[tuple[str, ...], str]:
 STATES = ("registered", "available", "selected", "initialized", "executing",
           "completed", "verified", "released", "failed", "aborted")
 
+# One global wall-clock budget for ALL lanes of a run (parallel fan-out),
+# not per lane — an orchestrated consult must never dominate a user turn.
+# Lane work itself is already bounded (local knowledge search or whitelisted
+# read-only tools with their own timeouts); this is the outer guard.
+LANE_DEADLINE_S = 20.0
+
+# Lane errors that can never succeed on retry (contract violations, not
+# transient conditions) — restart budget is never spent on these.
+_NON_TRANSIENT_MARKERS = ("whitelist", "task must contain", "cannot search memory")
+
 
 class Lifecycle:
     def __init__(self):
@@ -88,6 +98,45 @@ class Lifecycle:
         rec["states"].append((state, time.time()))
         rec.update(extra)
         rec["current"] = state
+
+
+def _lane_record(task_id: str, type_name: str, agent: dict | None, error) -> dict:
+    """One lane's result in the runtime agent contract (structured, no
+    private internals — evidence is the lane's own result text, nothing
+    else leaks). Backward-compatible keys (status/result/error) preserved."""
+    agent = agent or {}
+    status = agent.get("status", "failed")
+    if status == "completed":
+        verification = "memory_retrieval" if "query" in (agent.get("task") or {}) else "tool_result"
+        confidence = 0.8
+    elif error == "timeout":
+        verification = "timeout"
+        status = "failed"
+        confidence = 0.2
+    else:
+        verification = "failed"
+        confidence = 0.15
+    task = agent.get("task") or {}
+    tools_used = [task["tool"]] if task.get("tool") else []
+    duration = None
+    if agent.get("finished") and agent.get("created"):
+        duration = round(agent["finished"] - agent["created"], 3)
+    record = {
+        "task_id": task_id,
+        "agent": type_name,
+        "agent_id": agent.get("id"),
+        "objective": (task.get("query") or task.get("tool") or ""),
+        "status": status,
+        "result": (agent.get("result") or {}).get("message", ""),
+        "evidence": (agent.get("result") or {}).get("message", "")[:240],
+        "confidence": confidence,
+        "error": error or agent.get("error"),
+        "tools_used": tools_used,
+        "duration_s": duration,
+        "verification_status": verification,
+        "restarted": bool(agent.get("restarted", False) or agent.get("restarts", 0)),
+    }
+    return record
 
 
 # ---------------------------------------------------------------------------
@@ -126,30 +175,53 @@ class Orchestrator:
                     "message": "No specialist engagement needed — handled by the core.",
                     "lifecycle": self.lifecycle.records[task_id]}
 
-        # execute: each selected type gets ONE bounded lane (independent if
-        # shared-safe; the pool whitelists exclude all destructive tools)
+        # execute: each selected type gets ONE bounded lane. Lanes are
+        # INDEPENDENT (same contract family: local search or read-only tool),
+        # so they fan out in parallel and join on one shared deadline —
+        # dependency-aware sequencing stays with the AI Planner (its steps
+        # genuinely feed each other); mixing the two would duplicate it.
         plan_msg = AgentMessage.new(
             objective=goal, agent_id="orchestrator", task_id=task_id,
             capabilities_required=tuple(types),
         )
-        lanes = []
+        spawned: list[tuple[str, dict]] = []
         for t in types:
             atype = get_type(t)
             if atype is None:
-                lanes.append((t, {"ok": False, "error": "unknown_type"}))
+                spawned.append((t, {"ok": False, "error": "unknown_type"}))
                 continue
             self.lifecycle.mark(task_id, "executing", type=t)
-            lanes.append((t, self.pool.spawn(t, {"query": goal} if atype.can_search_memory
-                                             else {"tool": atype.allowed_tools[0]})))
+            spawned.append((t, self.pool.spawn(
+                t, {"query": goal} if atype.can_search_memory
+                else {"tool": atype.allowed_tools[0]}, wait=False)))
+
         collected = {}
-        for t, spawn in lanes:
-            if spawn.get("ok"):
-                agent = spawn["agent"]
-                collected[t] = {"status": agent["status"],
-                                "result": (agent.get("result") or {}).get("message", ""),
-                                "error": agent.get("error")}
-            else:
-                collected[t] = {"status": "failed", "error": spawn.get("message"), "result": ""}
+        deadline = time.time() + LANE_DEADLINE_S
+        for t, spawn in spawned:
+            if not spawn.get("ok"):
+                collected[t] = _lane_record(task_id, t, None,
+                                            spawn.get("message") or spawn.get("error"))
+                continue
+            remaining = max(0.1, deadline - time.time())
+            outcome = self.pool.wait(spawn["agent"]["id"], timeout=remaining)
+            if not outcome.get("ok") and outcome.get("error") == "timeout":
+                self.lifecycle.mark(task_id, "aborted", type=t, reason="lane deadline")
+                collected[t] = _lane_record(task_id, t, None, "timeout",
+                                            timed_out=True)
+                continue
+            agent = outcome.get("agent") or spawn.get("agent") or {}
+            # bounded failure recovery: ONE restart for transient-lane
+            # failures (pool.enforces the budget), never for contract errors
+            if agent.get("status") == "failed" and not any(
+                    m in str(agent.get("error") or "") for m in _NON_TRANSIENT_MARKERS):
+                retry = self.pool.restart(agent["id"])
+                if retry.get("ok") and retry.get("agent"):
+                    remaining = max(0.1, deadline - time.time())
+                    outcome = self.pool.wait(retry["agent"]["id"], timeout=remaining)
+                    if outcome.get("ok"):
+                        agent = outcome["agent"]
+                        agent["restarted"] = True
+            collected[t] = _lane_record(task_id, t, agent, agent.get("error"))
 
         # aggregate text
         aggregate = "\n".join(f"[{t}] {c['result'] or c['error'] or '—'}"

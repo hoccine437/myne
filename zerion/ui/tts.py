@@ -33,6 +33,7 @@ import time
 from starlette.concurrency import run_in_threadpool
 
 import config
+from core import logging as log
 
 MAX_TEXT = 4000          # chars accepted per request
 RATE_LIMIT = 12          # generations per minute (global to the session host)
@@ -78,19 +79,17 @@ class TtsService:
                       source: str = "chat") -> dict:
         """Front door. Returns a state envelope:
         {state, url?, voice?, reason?, ...}"""
-        import sys as _s; print("[tts] req enter", file=_s.stderr, flush=True)
+        log.debug(f"tts: request accepted (chars={len(text or '')}, seq={seq}, source={source})")
         self.total_requests += 1
         self.sweep()
-        import sys as _s; print('[tts] swept', file=_s.stderr, flush=True)
         text = (text or "").strip()
         if not text:
             return {"state": "error", "reason": "empty text"}
         if len(text) > MAX_TEXT:
             return {"state": "error", "reason": f"text exceeds {MAX_TEXT} chars"}
 
-        import sys as _s; print('[tts] before availability', file=_s.stderr, flush=True)
         avail = self.availability()
-        print('[tts] availability:', avail, file=_s.stderr, flush=True)
+        log.debug(f"tts: availability gemini_ready={avail['gemini_ready']} configured={avail['configured']}")
         if not avail["gemini_ready"]:
             if not avail["configured"]:
                 return {"state": "unavailable",

@@ -20,7 +20,7 @@ from intent.history import action_history
 COMMANDS = {
     "/status", "/tools", "/memory", "/history", "/goals",
     "/plugins", "/debug", "/help", "/plan", "/serious", "/normal",
-    "/benchmark",
+    "/benchmark", "/learn",
 }
 
 # Persona switches also accept the natural-language (exact-phrase) forms —
@@ -69,8 +69,18 @@ def handle(user_text: str, session, memory: dict) -> str:
     if cmd == "/help":
         return (
             "Commands: /status /tools /memory /history /goals /plugins "
-            "/debug [on|off] /plan /help"
+            "/debug [on|off] /plan /learn <topic> /help"
         )
+
+    if cmd == "/learn":
+        # Explicit, bounded self-teaching through the SAME canonical path
+        # the LLM uses (learning tool → LearningController) — no duplicate
+        # loop here, and identical in both front ends. Fully local.
+        topic = stripped[len("/learn"):].strip()
+        if len(topic) < 3:
+            return "Usage: /learn <topic> — runs one bounded self-teaching loop (local, offline)."
+        result = tool_manager.execute("learn_domain", {"topic": topic})
+        return result.message
 
     if cmd == "/status":
         snap = session_state.snapshot(session, tool_manager, planning_engine, action_history)
