@@ -1,5 +1,37 @@
 # Changelog
 
+## 1.0.0 — Universal Learning (evidence-driven loops, never fake)
+
+- learning/acquisition.py: classify every learn fragment as
+  source/claim/fact/interpretation/hypothesis/unknown; unknown markers win
+  precedence over fact markers, so nothing is treated as truth by default.
+- learning/verification.py: truth states VERIFY/SUPPORTED/UNCERTAIN/
+  CONTRADICTED/REJECTED; multi-source aggregation and executable tests override.
+  Never fabricates.
+- learning/curriculum.py: dynamic curriculum with prerequisite ordering and
+  adaptive re-order based on measured performance (never a static script).
+- learning/practice.py: progressive difficulty exercises with measurable
+  verdicts (not voice… actual attempts measured).
+- learning/errors.py: structured error memory (problem→attempt→cause→fix
+  →solution) through the canonical knowledge store.
+- learning/progress.py: multi-dimensional learning progress (mastery/
+  verify-rate/generalization/error count — never one arbitrary percentage).
+- learning/retention.py: adaptive spaced recall (double on pass, halve on
+  fail, bounded 1..90 days) driving "what's due".
+- learning/transfer.py + learning/meta.py: domain transfer of general
+  principles and measured learning-strategy comparison.
+- learning/controller.py: the LearningController implements the full loop:
+  ASSESS → GAPS → CURRICULUM → ACQUIRE → PRACTICE/EXPERIMENT → FEEDBACK →
+  VERIFY → GENERALIZE → STORE → REVIEW → MEASURE. Calls out when stuck
+  instead of guessing.
+- tools/learning_tools.py: learn_domain / learn_progress / review_due via
+  the Tool Manager contract (nothing bypasses policy).
+- runtime/service.py: learning subsystem's health probe now reports review
+  backlogs so retention debt is visible, not hidden.
+- tests/test_learning_system.py + tests/demo_self_teaching.py: the mandated
+  synthetic-domain experiment is fully measured (mistake→correction→
+  generalization) — never a narrative-only demonstration.
+
 ## 1.0.0 — world-class intelligence integration
 - cognition/decisions.py: structured option-stacking (options/cost/risk/
   benefit/uncertainty/reversibility/evidence → decision with bounded

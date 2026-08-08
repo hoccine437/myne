@@ -708,7 +708,7 @@ def audit_entrypoint_authority(main_direct=None):
     allowed = {"main.py", "runtime/__main__.py", "ui/server.py", "setup.py",
                "second_audit.py", "connectivity_audit.py", "arch_map.py"}
     unexpected = sorted(r for r in set(entry_blocks) - allowed
-                        if not r.startswith("tests/test_"))
+                        if not r.startswith(("tests/test_", "tests/demo_")))
     check("no hidden production entry points (CLI files all classified)",
           not unexpected, "; ".join(unexpected))
 

@@ -119,6 +119,31 @@ def run_all() -> dict:
     results["constitution"] = {"verify_lock": ok,
                                "latency_ms": round((time.perf_counter() - t0) * 1000)}
 
+    # ---- learning: synthetic acquisition→practice→verify runs, measured
+    t0 = time.perf_counter()
+    from learning.controller import LearningController
+    import knowledge.database as kdb
+    import tempfile
+    orig_d = kdb.Database.__init__.__defaults__
+    with tempfile.TemporaryDirectory() as dbdir:
+        kdb.Database.__init__.__defaults__ = (os.path.join(dbdir, "bench-learn.db"),)
+        try:
+            lc = LearningController()
+            rep = lc.learn_domain("benchmark-arithmetic",
+                                  practice_attempt_fn=lambda prompt: sum(
+                                      int(x) for x in prompt.split("+")))
+            out = rep["final_level"]["mastery"] if rep.get("final_level") else None
+            results["learning"] = {
+                "finished_reason": rep.get("finished_reason"),
+                "mastery_last": rep["mastery"][-1] if rep.get("mastery") else 0.0,
+                "verify_rate": rep["final_level"].get("verify_rate"),
+                "learning_completes": rep.get("finished_reason") in (
+                    "mastery", "budget-complete", "stuck-no-new-evidence"),
+                "latency_ms": round((time.perf_counter() - t0) * 1000),
+            }
+        finally:
+            kdb.Database.__init__.__defaults__ = orig_d
+
     def _lens_ok(lens: dict) -> bool:
         # quality verdicts decide; latency 0ms is fine (not a failure)
         return all(v for k, v in lens.items()

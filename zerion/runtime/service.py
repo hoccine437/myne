@@ -366,12 +366,16 @@ class ZerionService:
             try:
                 from learning.optimizer import MemoryOptimizer
                 MemoryOptimizer().db.query("SELECT count(*) AS n FROM records")
+                from learning.retention import RetentionScheduler
+                due = RetentionScheduler().due()
+                if len(due) > 40:  # bounded: overdue learning items never hide
+                    return f"retention backlog ({len(due)} due) — review soon"
             except Exception as e:
                 return f"learning store failed: {e}"
             return None
         self.monitor.register(Subsystem(
             "learning", probe=probe_learning, recover=None,
-            provenance="MemoryOptimizer query"))
+            provenance="MemoryOptimizer query + RetentionScheduler.due()"))
 
         # --- phone body ---------------------------------------------------
         def _is_termux():
