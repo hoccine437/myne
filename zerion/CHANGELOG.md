@@ -1,5 +1,35 @@
 # Changelog
 
+## 1.5.0 — Final Integration + Phone Readiness (evidence-gated)
+
+- runtime/selfcheck.py: ZERION SYSTEM CHECK — every row is a real probe
+  (constitution lock, memory roundtrip, knowledge DB, 58 tools, agent pool,
+  phone binaries, connectors+effective overrides, learning, owner-gated
+  evolution staging, models, storage, network reachability, UI import).
+  `python -m runtime --check` now prints the matrix + the per-subsystem
+  service probe (PASS/DEGRADED/BLOCKED/FAILED/UNAVAILABLE, no green-by-import).
+- setup.py: comms/security/intent/knowledge/learning required dirs; import
+  sanity extended to comms/engine+autopilot, security/serious_auth,
+  learning.controller, intent.multilingual; termux-notification-list /
+  termux-contact-list / termux-sms-send probed; Termux permission+background
+  guidance printed on phone installs.
+- PHONE_SETUP.md: the complete phone installation contract (Android/CPU/RAM/
+  Python/Termux versions, packages+binaries, env vars, permission matrix with
+  code-gate pointers, one-procedure install, background-mode rules,
+  known-not-verified device rows).
+- readiness_audit.py: full evidence-weighted scoring pipeline — gates +
+  system check + registry identity (agent_pool≡pool) + code probes that prove
+  constitutional behaviours (no-flow observe-only, risky parks, ESTOP wins,
+  serious requires auth) + gap scan + machine system graph
+  (SYSTEM_GRAPH.json: 365 nodes / 1068 edges) + READINESS_REPORT.json +
+  FINAL_READINESS_REPORT.md. Current: overall 92.0%, verdict
+  READY-WITH-LIMITATIONS (device-gated phone rows UNVERIFIED, never claimed).
+- connectivity audit: registration of the readiness audit artifacts + `sh`
+  probe documented; .bak runtime artifact classified.
+
+Suite: 367/367 pytest · 22/22 second audit · 45/45 connectivity · 70/70 UI
+smoke · arch_map 49/43 · ZIP extract-validated.
+
 ## 1.4.0 — Authenticated Serious Mode + Authorized 24/7 Workflows + Constitution v1.1
 
 **Authenticated Serious Mode (§8–§16):**

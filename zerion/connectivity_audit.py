@@ -271,6 +271,11 @@ DEV_TOOLS = {
     "setup.py": "first-run bootstrap CLI",
     "second_audit.py": "release-gate audit runner",
     "connectivity_audit.py": "this connectivity audit",
+    "readiness_audit.py": "final readiness audit runner (graph+gaps+score)",
+    "GAPS_FINAL.json": "readiness_audit.py output (gap scan)",
+    "SYSTEM_GRAPH.json": "readiness_audit.py output (dependency+reachability graph)",
+    "READINESS_REPORT.json": "readiness_audit.py output (machine report)",
+    "FINAL_READINESS_REPORT.md": "readiness_audit.py output (human report)",
     "ui/smoke/smoke.mjs": "headless UI harness",
     "UI_ACCEPTANCE.json": "audit-generated acceptance matrix",
     "FINAL_MATRIX.json": "release-phase verification matrix",
@@ -709,7 +714,8 @@ def audit_entrypoint_authority(main_direct=None):
         if '__name__ == "__main__"' in p.read_text(encoding="utf-8", errors="ignore"):
             entry_blocks.append(rel)
     allowed = {"main.py", "runtime/__main__.py", "ui/server.py", "setup.py",
-               "second_audit.py", "connectivity_audit.py", "arch_map.py"}
+               "second_audit.py", "connectivity_audit.py", "arch_map.py",
+               "readiness_audit.py"}
     unexpected = sorted(r for r in set(entry_blocks) - allowed
                         if not r.startswith(("tests/test_", "tests/demo_")))
     check("no hidden production entry points (CLI files all classified)",
@@ -802,7 +808,8 @@ def main() -> int:
         and not m.startswith("tests")
         and not m.startswith(("skills", "evolution", "memory.long_term",
                               "testing", "constitution.evolution"))
-        and m not in ("setup", "second_audit", "connectivity_audit", "arch_map")
+        and m not in ("setup", "second_audit", "connectivity_audit", "arch_map",
+                      "readiness_audit")
     ]
     check("every production python module reachable from main/ UI / runtime entries / dynamic tools",
           not orphan_candidates, "; ".join(orphan_candidates[:12]))

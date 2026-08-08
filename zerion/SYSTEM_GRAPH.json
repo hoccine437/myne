@@ -1,0 +1,8294 @@
+{
+ "generated": "2026-08-08 21:44:27",
+ "nodes": [
+  {
+   "file": ".env",
+   "module": null,
+   "class": "OPTIONAL / PLUGIN",
+   "why": "generated runtime/local state (gitignored; never packaged)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": ".env.example",
+   "module": null,
+   "class": "INDIRECTLY CONNECTED",
+   "why": "consumed by production code or configuration",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ARCHITECTURE_INTEGRATION_AUDIT.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ARCHITECTURE_MAP.json",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "arch_map.py output (evidence + map)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ARCHITECTURE_MIND_MAP.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "BUILD.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "CAPABILITY_EVOLUTION.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "CHANGELOG.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "CODE_OF_CONDUCT.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "COGNITIVE_REASONING_ENGINE_V1.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "CONSTITUTIONAL_INTELLIGENCE.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "CONSTITUTION_SYSTEM.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "CONTRIBUTING.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "CORE_STABILIZATION_REPORT.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "DEPENDENCY_MANIFEST.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ENGINEERING_AUDIT_FINAL.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ENGINEERING_AUDIT_PHASE1.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ENGINEERING_HARDENING.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "FINAL_HARDENING_REPORT.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "FINAL_MATRIX.json",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "release-phase verification matrix",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "FINAL_READINESS_REPORT.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "readiness_audit.py output (human report)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "FINAL_RELEASE.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "FINAL_RELEASE_REPORT.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "FINAL_VERIFICATION_REPORT.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "GAPS_FINAL.json",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "readiness_audit.py output (gap scan)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "GAP_MATRIX.json",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "arch_map.py output (gap rows)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "GEMINI_ONLY_REPORT.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "GEMINI_VOICE_MIGRATION_REPORT.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "HARDENING_IMPLEMENTATION_REPORT.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "INTELLIGENCE_SYSTEMS.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "LICENSE",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "MEMORY_INTELLIGENCE_V1.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "PACKAGE_REPORT.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "PHASE1.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "PHASE2.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "PHASE4.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "PHASE5.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "PHONE_CONTROL.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "PHONE_DISPATCH_PRODUCTION_REPORT.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "PHONE_SETUP.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "PRODUCTION_READINESS_REPORT.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "PROJECT_STRUCTURE.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "QUICK_RUN.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "READINESS_REPORT.json",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "readiness_audit.py output (machine report)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "README.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "REALITY_MAP.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "RELEASE_NOTES.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "RELEASE_REPORT.json",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "machine-readable release report",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "REMOVE_OPENROUTER_REPORT.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "REQUIREMENTS.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "RUNTIME.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "RUNTIME_INTELLIGENCE_INTEGRATION.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "RUNTIME_PIPELINE_FIX_REPORT.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "RUNTIME_VALIDATION_REPORT.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "SECURITY.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "SETUP_SYSTEM_REPORT.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "SUPPORT.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "TERMUX.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "TTS_DIAGNOSTIC_REPORT.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "UI.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "UI_ACCEPTANCE.json",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "audit-generated acceptance matrix",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "VALIDATION_REPORT.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "VERSION",
+   "module": null,
+   "class": "INDIRECTLY CONNECTED",
+   "why": "read by runtime/service + ui bootstrap",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "VULNERABILITY_GAP_AUDIT.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "Zerion_v1_Stability_Report.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "agents/__init__.py",
+   "module": "agents",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "agents/messages.py",
+   "module": "agents.messages",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.orchestrator_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "agents/orchestrator.py",
+   "module": "agents.orchestrator",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.orchestrator_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "agents/pool.py",
+   "module": "agents.pool",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "agents/service.py",
+   "module": "agents.service",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "agents/types.py",
+   "module": "agents.types",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "api.py",
+   "module": "api",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "arch_map.py",
+   "module": "arch_map",
+   "class": "DEVELOPMENT-ONLY",
+   "why": "reconciliation-protocol measurement harness (dev)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "benchmarks.py",
+   "module": "benchmarks",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "capabilities/__init__.py",
+   "module": "capabilities",
+   "class": "DIRECTLY CONNECTED",
+   "why": "static import by main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "capabilities/evolution.py",
+   "module": "capabilities.evolution",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "capabilities/manager.py",
+   "module": "capabilities.manager",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "capabilities/models.py",
+   "module": "capabilities.models",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "capabilities/reasoning.py",
+   "module": "capabilities.reasoning",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "cognition/__init__.py",
+   "module": "cognition",
+   "class": "DIRECTLY CONNECTED",
+   "why": "static import by main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "cognition/context.py",
+   "module": "cognition.context",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "cognition/curiosity.py",
+   "module": "cognition.curiosity",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "cognition/decisions.py",
+   "module": "cognition.decisions",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "cognition/engine.py",
+   "module": "cognition.engine",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "cognition/modes.py",
+   "module": "cognition.modes",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "cognition/reasoning.py",
+   "module": "cognition.reasoning",
+   "class": "DIRECTLY CONNECTED",
+   "why": "static import by main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/__init__.py",
+   "module": "comms",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/approvals.py",
+   "module": "comms.approvals",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/audit.py",
+   "module": "comms.audit",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/autopilot.py",
+   "module": "comms.autopilot",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/base.py",
+   "module": "comms.base",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/bgworkflows.py",
+   "module": "comms.bgworkflows",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/calendar.py",
+   "module": "comms.calendar",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/classify.py",
+   "module": "comms.classify",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/connectors/email_connector.py",
+   "module": "comms.connectors.email_connector",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/connectors/phone_inbox.py",
+   "module": "comms.connectors.phone_inbox",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/connectors/telegram.py",
+   "module": "comms.connectors.telegram",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/consistency.py",
+   "module": "comms.consistency",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/contacts.py",
+   "module": "comms.contacts",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/conversation_state.py",
+   "module": "comms.conversation_state",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/decision.py",
+   "module": "comms.decision",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/engine.py",
+   "module": "comms.engine",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/events.py",
+   "module": "comms.events",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/facts.py",
+   "module": "comms.facts",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/firewall.py",
+   "module": "comms.firewall",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/health.py",
+   "module": "comms.health",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/inbox.py",
+   "module": "comms.inbox",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/loopguard.py",
+   "module": "comms.loopguard",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/models.py",
+   "module": "comms.models",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/outbox.py",
+   "module": "comms.outbox",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/overrides.py",
+   "module": "comms.overrides",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/quality.py",
+   "module": "comms.quality",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/ratelimit.py",
+   "module": "comms.ratelimit",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/registry.py",
+   "module": "comms.registry",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/reply.py",
+   "module": "comms.reply",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/scheduler.py",
+   "module": "comms.scheduler",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/store.py",
+   "module": "comms.store",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/verify.py",
+   "module": "comms.verify",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "comms/workflow.py",
+   "module": "comms.workflow",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": true
+   }
+  },
+  {
+   "file": "config.py",
+   "module": "config",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "connectivity_audit.py",
+   "module": "connectivity_audit",
+   "class": "DEVELOPMENT-ONLY",
+   "why": "this connectivity audit",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "constitution/__init__.py",
+   "module": "constitution",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "constitution/constitution.lock",
+   "module": null,
+   "class": "INDIRECTLY CONNECTED",
+   "why": "consumed by production code or configuration",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "constitution/constitution.py",
+   "module": "constitution.constitution",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "constitution/constitution.txt",
+   "module": null,
+   "class": "INDIRECTLY CONNECTED",
+   "why": "consumed by production code or configuration",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "constitution/evolution.py",
+   "module": "constitution.evolution",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "constitution/policy.py",
+   "module": "constitution.policy",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "constitution/protected.lock",
+   "module": null,
+   "class": "INDIRECTLY CONNECTED",
+   "why": "consumed by production code or configuration",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "constitution/registry.py",
+   "module": "constitution.registry",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "core/__init__.py",
+   "module": "core",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "core/logging.py",
+   "module": "core.logging",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "core/turn_pipeline.py",
+   "module": "core.turn_pipeline",
+   "class": "DIRECTLY CONNECTED",
+   "why": "static import by main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "evolution/__init__.py",
+   "module": "evolution",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "evolution/analyzer.py",
+   "module": "evolution.analyzer",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "evolution/deployment.py",
+   "module": "evolution.deployment",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "evolution/engine.py",
+   "module": "evolution.engine",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "evolution/generator.py",
+   "module": "evolution.generator",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "evolution/manifest.py",
+   "module": "evolution.manifest",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "evolution/planner.py",
+   "module": "evolution.planner",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "evolution/reviewer.py",
+   "module": "evolution.reviewer",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "evolution/rollback.py",
+   "module": "evolution.rollback",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "evolution/version.py",
+   "module": "evolution.version",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "intelligence/__init__.py",
+   "module": "intelligence",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "intelligence/composition.py",
+   "module": "intelligence.composition",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "intelligence/critic.py",
+   "module": "intelligence.critic",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "intelligence/experience.py",
+   "module": "intelligence.experience",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "intelligence/models.py",
+   "module": "intelligence.models",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "intelligence/projects.py",
+   "module": "intelligence.projects",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "intelligence/quality.py",
+   "module": "intelligence.quality",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "intelligence/reflection.py",
+   "module": "intelligence.reflection",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "intelligence/registry.py",
+   "module": "intelligence.registry",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "intelligence/resolver.py",
+   "module": "intelligence.resolver",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "intelligence/runtime.py",
+   "module": "intelligence.runtime",
+   "class": "DIRECTLY CONNECTED",
+   "why": "static import by main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "intelligence/simulation.py",
+   "module": "intelligence.simulation",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "intelligence/world.py",
+   "module": "intelligence.world",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "intent/README.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "intent/__init__.py",
+   "module": "intent",
+   "class": "DIRECTLY CONNECTED",
+   "why": "static import by main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "intent/classifier.py",
+   "module": "intent.classifier",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "intent/commands.py",
+   "module": "intent.commands",
+   "class": "DIRECTLY CONNECTED",
+   "why": "static import by main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "intent/engine.py",
+   "module": "intent.engine",
+   "class": "DIRECTLY CONNECTED",
+   "why": "static import by main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "intent/fast_planner.py",
+   "module": "intent.fast_planner",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "intent/history.py",
+   "module": "intent.history",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "intent/models.py",
+   "module": "intent.models",
+   "class": "DIRECTLY CONNECTED",
+   "why": "static import by main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "intent/multilingual.py",
+   "module": "intent.multilingual",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "intent/session_state.py",
+   "module": "intent.session_state",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "knowledge/__init__.py",
+   "module": "knowledge",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "knowledge/database.py",
+   "module": "knowledge.database",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "knowledge/manager.py",
+   "module": "knowledge.manager",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "knowledge/ranking.py",
+   "module": "knowledge.ranking",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "knowledge/search.py",
+   "module": "knowledge.search",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "knowledge/zerion_knowledge.db",
+   "module": null,
+   "class": "OPTIONAL / PLUGIN",
+   "why": "generated runtime/local state (gitignored; never packaged)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "learning/__init__.py",
+   "module": "learning",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "learning/acquisition.py",
+   "module": "learning.acquisition",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.learning_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "learning/background.py",
+   "module": "learning.background",
+   "class": "DIRECTLY CONNECTED",
+   "why": "static import by main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "learning/controller.py",
+   "module": "learning.controller",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.learning_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "learning/curriculum.py",
+   "module": "learning.curriculum",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.learning_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "learning/engine.py",
+   "module": "learning.engine",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "learning/errors.py",
+   "module": "learning.errors",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "learning/experience.py",
+   "module": "learning.experience",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "learning/meta.py",
+   "module": "learning.meta",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.learning_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "learning/optimizer.py",
+   "module": "learning.optimizer",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "learning/practice.py",
+   "module": "learning.practice",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.learning_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "learning/progress.py",
+   "module": "learning.progress",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.learning_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "learning/reflection.py",
+   "module": "learning.reflection",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "learning/retention.py",
+   "module": "learning.retention",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.learning_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "learning/transfer.py",
+   "module": "learning.transfer",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.learning_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "learning/triggers.py",
+   "module": "learning.triggers",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "learning/verification.py",
+   "module": "learning.verification",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.learning_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "llm.py",
+   "module": "llm",
+   "class": "DIRECTLY CONNECTED",
+   "why": "static import by main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "main.py",
+   "module": "main",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "memory/__init__.py",
+   "module": "memory",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "memory/intelligence.py",
+   "module": "memory.intelligence",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "memory/long_term.py",
+   "module": "memory.long_term",
+   "class": "LEGACY",
+   "why": "intentionally retained compat surface",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "memory/memory.json",
+   "module": null,
+   "class": "INDIRECTLY CONNECTED",
+   "why": "consumed by production code or configuration",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "memory/memory_manager.py",
+   "module": "memory.memory_manager",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "meta.py",
+   "module": "meta",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "personality.py",
+   "module": "personality",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "phone/__init__.py",
+   "module": "phone",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "phone/actions.py",
+   "module": "phone.actions",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "phone/adapter.py",
+   "module": "phone.adapter",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "phone/audit.py",
+   "module": "phone.audit",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "phone/automation.py",
+   "module": "phone.automation",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "phone/controllers.py",
+   "module": "phone.controllers",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "phone/device.py",
+   "module": "phone.device",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "phone/discovery.py",
+   "module": "phone.discovery",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "phone/dispatch.py",
+   "module": "phone.dispatch",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "phone/engine.py",
+   "module": "phone.engine",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "phone/extract.py",
+   "module": "phone.extract",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "phone/manager.py",
+   "module": "phone.manager",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "phone/models.py",
+   "module": "phone.models",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "phone/state.py",
+   "module": "phone.state",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "phone/verifier.py",
+   "module": "phone.verifier",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "planner/README.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "planner/__init__.py",
+   "module": "planner",
+   "class": "DIRECTLY CONNECTED",
+   "why": "static import by main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "planner/context.py",
+   "module": "planner.context",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "planner/decomposer.py",
+   "module": "planner.decomposer",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "planner/executor.py",
+   "module": "planner.executor",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "planner/goal.py",
+   "module": "planner.goal",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "planner/models.py",
+   "module": "planner.models",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "planner/planner.py",
+   "module": "planner.planner",
+   "class": "DIRECTLY CONNECTED",
+   "why": "static import by main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "planner/ranking.py",
+   "module": "planner.ranking",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "planner/state.py",
+   "module": "planner.state",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "planner/verifier.py",
+   "module": "planner.verifier",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "planner/workflow.py",
+   "module": "planner.workflow",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "prompt.txt",
+   "module": null,
+   "class": "INDIRECTLY CONNECTED",
+   "why": "consumed by production code or configuration",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "providers/__init__.py",
+   "module": "providers",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "providers/base.py",
+   "module": "providers.base",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "providers/gemini.py",
+   "module": "providers.gemini",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "providers/router.py",
+   "module": "providers.router",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "readiness_audit.py",
+   "module": "readiness_audit",
+   "class": "DEVELOPMENT-ONLY",
+   "why": "final readiness audit runner (graph+gaps+score)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "requirements.txt",
+   "module": null,
+   "class": "INDIRECTLY CONNECTED",
+   "why": "consumed by production code or configuration",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "runtime/__init__.py",
+   "module": "runtime",
+   "class": "DIRECTLY CONNECTED",
+   "why": "static import by main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "runtime/__main__.py",
+   "module": "runtime.__main__",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "runtime service tree",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": true
+   }
+  },
+  {
+   "file": "runtime/autostart.py",
+   "module": "runtime.autostart",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "runtime service tree",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": true
+   }
+  },
+  {
+   "file": "runtime/greeting.py",
+   "module": "runtime.greeting",
+   "class": "DIRECTLY CONNECTED",
+   "why": "static import by main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "runtime/health.py",
+   "module": "runtime.health",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "runtime/lockfile.py",
+   "module": "runtime.lockfile",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "runtime/logging.py",
+   "module": "runtime.logging",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "runtime service tree",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": true
+   }
+  },
+  {
+   "file": "runtime/rcfg.py",
+   "module": "runtime.rcfg",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "runtime/run/benchmarks.jsonl",
+   "module": null,
+   "class": "OPTIONAL / PLUGIN",
+   "why": "generated runtime/local state (gitignored; never packaged)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "runtime/run/comm_audit.jsonl",
+   "module": null,
+   "class": "OPTIONAL / PLUGIN",
+   "why": "generated runtime/local state (gitignored; never packaged)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "runtime/run/comm_health.json",
+   "module": null,
+   "class": "OPTIONAL / PLUGIN",
+   "why": "generated runtime/local state (gitignored; never packaged)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "runtime/run/learning_experiment.json",
+   "module": null,
+   "class": "OPTIONAL / PLUGIN",
+   "why": "generated runtime/local state (gitignored; never packaged)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "runtime/run/serious_auth.json",
+   "module": null,
+   "class": "OPTIONAL / PLUGIN",
+   "why": "generated runtime/local state (gitignored; never packaged)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "runtime/run/service.log.jsonl",
+   "module": null,
+   "class": "OPTIONAL / PLUGIN",
+   "why": "generated runtime/local state (gitignored; never packaged)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "runtime/selfcheck.py",
+   "module": "runtime.selfcheck",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "runtime service tree",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": true
+   }
+  },
+  {
+   "file": "runtime/service.py",
+   "module": "runtime.service",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "runtime service tree",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": true
+   }
+  },
+  {
+   "file": "second_audit.py",
+   "module": "second_audit",
+   "class": "DEVELOPMENT-ONLY",
+   "why": "release-gate audit runner",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "security/__init__.py",
+   "module": "security",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "security/serious_auth.py",
+   "module": "security.serious_auth",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "setup.py",
+   "module": "setup",
+   "class": "DEVELOPMENT-ONLY",
+   "why": "first-run bootstrap CLI",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "skills/__init__.py",
+   "module": "skills",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.skill_tools)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "skills/base.py",
+   "module": "skills.base",
+   "class": "LEGACY",
+   "why": "intentionally retained compat surface",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "skills/domains.py",
+   "module": "skills.domains",
+   "class": "LEGACY",
+   "why": "intentionally retained compat surface",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "skills/electronics.py",
+   "module": "skills.electronics",
+   "class": "LEGACY",
+   "why": "intentionally retained compat surface",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "skills/finance.py",
+   "module": "skills.finance",
+   "class": "LEGACY",
+   "why": "intentionally retained compat surface",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "skills/human.py",
+   "module": "skills.human",
+   "class": "LEGACY",
+   "why": "intentionally retained compat surface",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "skills/manager.py",
+   "module": "skills.manager",
+   "class": "LEGACY",
+   "why": "intentionally retained compat surface",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "skills/software.py",
+   "module": "skills.software",
+   "class": "LEGACY",
+   "why": "intentionally retained compat surface",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "speech.py",
+   "module": "speech",
+   "class": "DIRECTLY CONNECTED",
+   "why": "static import by main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "testing/__init__.py",
+   "module": "testing",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "testing/runner.py",
+   "module": "testing.runner",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "tests/demo_self_teaching.py",
+   "module": "tests.demo_self_teaching",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_autopilot.py",
+   "module": "tests.test_autopilot",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_bg_flows.py",
+   "module": "tests.test_bg_flows",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_capabilities.py",
+   "module": "tests.test_capabilities",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_cognition_influence.py",
+   "module": "tests.test_cognition_influence",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_communication_layer.py",
+   "module": "tests.test_communication_layer",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_constitution_engine.py",
+   "module": "tests.test_constitution_engine",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_constitutional.py",
+   "module": "tests.test_constitutional",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_core_stabilization.py",
+   "module": "tests.test_core_stabilization",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_entrypoint.py",
+   "module": "tests.test_entrypoint",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_execution_safety.py",
+   "module": "tests.test_execution_safety",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_final_e2e.py",
+   "module": "tests.test_final_e2e",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_final_features.py",
+   "module": "tests.test_final_features",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_gemini_extended.py",
+   "module": "tests.test_gemini_extended",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_gemini_only.py",
+   "module": "tests.test_gemini_only",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_gemini_transport.py",
+   "module": "tests.test_gemini_transport",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_gemini_voice_only.py",
+   "module": "tests.test_gemini_voice_only",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_hardening.py",
+   "module": "tests.test_hardening",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_integration_map.py",
+   "module": "tests.test_integration_map",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_intelligence.py",
+   "module": "tests.test_intelligence",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_learning_system.py",
+   "module": "tests.test_learning_system",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_main_integration.py",
+   "module": "tests.test_main_integration",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_memory_intelligence.py",
+   "module": "tests.test_memory_intelligence",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_orchestrator.py",
+   "module": "tests.test_orchestrator",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_phase4.py",
+   "module": "tests.test_phase4",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_phase5.py",
+   "module": "tests.test_phase5",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_phone.py",
+   "module": "tests.test_phone",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_phone_body.py",
+   "module": "tests.test_phone_body",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_phone_dispatch.py",
+   "module": "tests.test_phone_dispatch",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_phone_extract.py",
+   "module": "tests.test_phone_extract",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_reasoning.py",
+   "module": "tests.test_reasoning",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_runtime.py",
+   "module": "tests.test_runtime",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_runtime_integration.py",
+   "module": "tests.test_runtime_integration",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_runtime_pipeline.py",
+   "module": "tests.test_runtime_pipeline",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_self_critic.py",
+   "module": "tests.test_self_critic",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_serious_mode.py",
+   "module": "tests.test_serious_mode",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_setup.py",
+   "module": "tests.test_setup",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_ui_bridge.py",
+   "module": "tests.test_ui_bridge",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_universal_integration.py",
+   "module": "tests.test_universal_integration",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_voice_service.py",
+   "module": "tests.test_voice_service",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_world_class.py",
+   "module": "tests.test_world_class",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tools/README.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tools/__init__.py",
+   "module": "tools",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "tools/agent_tools.py",
+   "module": "tools.agent_tools",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "tools/registry.py: pkgutil.iter_modules discovery",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tools/autopilot_tools.py",
+   "module": "tools.autopilot_tools",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "tools/registry.py: pkgutil.iter_modules discovery",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tools/base.py",
+   "module": "tools.base",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "tools/comm_tools.py",
+   "module": "tools.comm_tools",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "tools/registry.py: pkgutil.iter_modules discovery",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tools/datetime_tools.py",
+   "module": "tools.datetime_tools",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "tools/registry.py: pkgutil.iter_modules discovery",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tools/device_state_tool.py",
+   "module": "tools.device_state_tool",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "tools/registry.py: pkgutil.iter_modules discovery",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tools/device_tools.py",
+   "module": "tools.device_tools",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "tools/registry.py: pkgutil.iter_modules discovery",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tools/exec_tools.py",
+   "module": "tools.exec_tools",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "tools/registry.py: pkgutil.iter_modules discovery",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tools/file_tools.py",
+   "module": "tools.file_tools",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "tools/registry.py: pkgutil.iter_modules discovery",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tools/learning_tools.py",
+   "module": "tools.learning_tools",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "tools/registry.py: pkgutil.iter_modules discovery",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tools/manager.py",
+   "module": "tools.manager",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "tools/network_tools.py",
+   "module": "tools.network_tools",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "tools/registry.py: pkgutil.iter_modules discovery",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tools/orchestrator_tools.py",
+   "module": "tools.orchestrator_tools",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "tools/registry.py: pkgutil.iter_modules discovery",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tools/registry.py",
+   "module": "tools.registry",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "tools/skill_tools.py",
+   "module": "tools.skill_tools",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "tools/registry.py: pkgutil.iter_modules discovery",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tools/system_tools.py",
+   "module": "tools.system_tools",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "tools/registry.py: pkgutil.iter_modules discovery",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tools/test_tools.py",
+   "module": "tools.test_tools",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "tools/registry.py: pkgutil.iter_modules discovery",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tools/utility_tools.py",
+   "module": "tools.utility_tools",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "tools/registry.py: pkgutil.iter_modules discovery",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/__init__.py",
+   "module": "ui",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "ui/events.py",
+   "module": "ui.events",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "ui/metrics.py",
+   "module": "ui.metrics",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "ui/requirements-ui.txt",
+   "module": null,
+   "class": "INDIRECTLY CONNECTED",
+   "why": "consumed by production code or configuration",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/server.py",
+   "module": "ui.server",
+   "class": "DIRECTLY CONNECTED",
+   "why": "static import by main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "ui/session.py",
+   "module": "ui.session",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "ui/smoke/smoke.mjs",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "headless UI harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/css/base.css",
+   "module": null,
+   "class": "INDIRECTLY CONNECTED",
+   "why": "UI asset served by ui.server",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/css/layout.css",
+   "module": null,
+   "class": "INDIRECTLY CONNECTED",
+   "why": "UI asset served by ui.server",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/css/panels.css",
+   "module": null,
+   "class": "INDIRECTLY CONNECTED",
+   "why": "UI asset served by ui.server",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/css/workspace.css",
+   "module": null,
+   "class": "INDIRECTLY CONNECTED",
+   "why": "UI asset served by ui.server",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/index.html",
+   "module": null,
+   "class": "INDIRECTLY CONNECTED",
+   "why": "UI asset served by ui.server",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/core/bus.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/core/device.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/core/dom.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/core/net.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/core/store.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/main.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/chat.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/commandbar.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/floating.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/gestures.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/i18n.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/insightpanel.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/modes/automation.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/modes/chatws.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/modes/coding.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/modes/phone.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/modes/research.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/modes/trading.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/modes/vision.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/monitor.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/orb.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/panels.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/settings.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/shortcuts.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/statuspanel.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/terminal.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/voice.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/welcome.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/static/js/modules/workspace.js",
+   "module": null,
+   "class": "DIRECTLY CONNECTED",
+   "why": "ES-module import chain from main.js (incl. lazy loaders)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ui/tts.py",
+   "module": "ui.tts",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  }
+ ],
+ "edges": [
+  {
+   "from": "agents",
+   "to": "agents.service"
+  },
+  {
+   "from": "agents",
+   "to": "agents.types"
+  },
+  {
+   "from": "agents.messages",
+   "to": "agents"
+  },
+  {
+   "from": "agents.orchestrator",
+   "to": "agents"
+  },
+  {
+   "from": "agents.orchestrator",
+   "to": "agents.messages"
+  },
+  {
+   "from": "agents.orchestrator",
+   "to": "agents.pool"
+  },
+  {
+   "from": "agents.orchestrator",
+   "to": "agents.service"
+  },
+  {
+   "from": "agents.orchestrator",
+   "to": "agents.types"
+  },
+  {
+   "from": "agents.orchestrator",
+   "to": "intelligence.critic"
+  },
+  {
+   "from": "agents.orchestrator",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "agents.pool",
+   "to": "agents"
+  },
+  {
+   "from": "agents.pool",
+   "to": "agents.types"
+  },
+  {
+   "from": "agents.pool",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "agents.pool",
+   "to": "tools.manager"
+  },
+  {
+   "from": "agents.service",
+   "to": "agents"
+  },
+  {
+   "from": "agents.service",
+   "to": "agents.pool"
+  },
+  {
+   "from": "agents.types",
+   "to": "agents"
+  },
+  {
+   "from": "api",
+   "to": "providers.router"
+  },
+  {
+   "from": "arch_map",
+   "to": "api"
+  },
+  {
+   "from": "arch_map",
+   "to": "config"
+  },
+  {
+   "from": "arch_map",
+   "to": "constitution.constitution"
+  },
+  {
+   "from": "arch_map",
+   "to": "evolution.manifest"
+  },
+  {
+   "from": "arch_map",
+   "to": "intelligence.critic"
+  },
+  {
+   "from": "arch_map",
+   "to": "main"
+  },
+  {
+   "from": "arch_map",
+   "to": "memory.memory_manager"
+  },
+  {
+   "from": "arch_map",
+   "to": "planner"
+  },
+  {
+   "from": "arch_map",
+   "to": "planner.planner"
+  },
+  {
+   "from": "arch_map",
+   "to": "providers.base"
+  },
+  {
+   "from": "benchmarks",
+   "to": "agents.orchestrator"
+  },
+  {
+   "from": "benchmarks",
+   "to": "agents.pool"
+  },
+  {
+   "from": "benchmarks",
+   "to": "cognition.decisions"
+  },
+  {
+   "from": "benchmarks",
+   "to": "cognition.reasoning"
+  },
+  {
+   "from": "benchmarks",
+   "to": "config"
+  },
+  {
+   "from": "benchmarks",
+   "to": "constitution.constitution"
+  },
+  {
+   "from": "benchmarks",
+   "to": "intent.classifier"
+  },
+  {
+   "from": "benchmarks",
+   "to": "knowledge.database"
+  },
+  {
+   "from": "benchmarks",
+   "to": "learning.controller"
+  },
+  {
+   "from": "benchmarks",
+   "to": "memory.memory_manager"
+  },
+  {
+   "from": "benchmarks",
+   "to": "tools.manager"
+  },
+  {
+   "from": "capabilities",
+   "to": "capabilities.evolution"
+  },
+  {
+   "from": "capabilities",
+   "to": "capabilities.manager"
+  },
+  {
+   "from": "capabilities.evolution",
+   "to": "capabilities"
+  },
+  {
+   "from": "capabilities.evolution",
+   "to": "capabilities.manager"
+  },
+  {
+   "from": "capabilities.evolution",
+   "to": "capabilities.reasoning"
+  },
+  {
+   "from": "capabilities.manager",
+   "to": "capabilities"
+  },
+  {
+   "from": "capabilities.manager",
+   "to": "capabilities.models"
+  },
+  {
+   "from": "capabilities.manager",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "capabilities.models",
+   "to": "capabilities"
+  },
+  {
+   "from": "capabilities.reasoning",
+   "to": "capabilities"
+  },
+  {
+   "from": "capabilities.reasoning",
+   "to": "capabilities.manager"
+  },
+  {
+   "from": "capabilities.reasoning",
+   "to": "capabilities.models"
+  },
+  {
+   "from": "cognition",
+   "to": "cognition.engine"
+  },
+  {
+   "from": "cognition.context",
+   "to": "cognition"
+  },
+  {
+   "from": "cognition.curiosity",
+   "to": "cognition"
+  },
+  {
+   "from": "cognition.curiosity",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "cognition.decisions",
+   "to": "cognition"
+  },
+  {
+   "from": "cognition.engine",
+   "to": "cognition"
+  },
+  {
+   "from": "cognition.engine",
+   "to": "cognition.curiosity"
+  },
+  {
+   "from": "cognition.engine",
+   "to": "cognition.modes"
+  },
+  {
+   "from": "cognition.engine",
+   "to": "constitution"
+  },
+  {
+   "from": "cognition.engine",
+   "to": "personality"
+  },
+  {
+   "from": "cognition.modes",
+   "to": "cognition"
+  },
+  {
+   "from": "cognition.modes",
+   "to": "cognition.decisions"
+  },
+  {
+   "from": "cognition.reasoning",
+   "to": "cognition"
+  },
+  {
+   "from": "cognition.reasoning",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "comms.approvals",
+   "to": "comms"
+  },
+  {
+   "from": "comms.approvals",
+   "to": "comms.classify"
+  },
+  {
+   "from": "comms.approvals",
+   "to": "comms.store"
+  },
+  {
+   "from": "comms.approvals",
+   "to": "config"
+  },
+  {
+   "from": "comms.audit",
+   "to": "comms"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "comms"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "comms.approvals"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "comms.audit"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "comms.bgworkflows"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "comms.classify"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "comms.conversation_state"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "comms.decision"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "comms.engine"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "comms.events"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "comms.firewall"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "comms.health"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "comms.inbox"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "comms.loopguard"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "comms.models"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "comms.outbox"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "comms.overrides"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "comms.quality"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "comms.registry"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "comms.reply"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "comms.scheduler"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "comms.store"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "config"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "core"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "core.logging"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "intelligence.critic"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "phone.adapter"
+  },
+  {
+   "from": "comms.autopilot",
+   "to": "ui.events"
+  },
+  {
+   "from": "comms.base",
+   "to": "comms"
+  },
+  {
+   "from": "comms.base",
+   "to": "comms.models"
+  },
+  {
+   "from": "comms.bgworkflows",
+   "to": "comms"
+  },
+  {
+   "from": "comms.bgworkflows",
+   "to": "comms.audit"
+  },
+  {
+   "from": "comms.bgworkflows",
+   "to": "comms.store"
+  },
+  {
+   "from": "comms.calendar",
+   "to": "comms"
+  },
+  {
+   "from": "comms.calendar",
+   "to": "comms.store"
+  },
+  {
+   "from": "comms.classify",
+   "to": "comms"
+  },
+  {
+   "from": "comms.classify",
+   "to": "comms.models"
+  },
+  {
+   "from": "comms.connectors.email_connector",
+   "to": "comms"
+  },
+  {
+   "from": "comms.connectors.email_connector",
+   "to": "comms.base"
+  },
+  {
+   "from": "comms.connectors.email_connector",
+   "to": "comms.models"
+  },
+  {
+   "from": "comms.connectors.email_connector",
+   "to": "config"
+  },
+  {
+   "from": "comms.connectors.phone_inbox",
+   "to": "comms"
+  },
+  {
+   "from": "comms.connectors.phone_inbox",
+   "to": "comms.base"
+  },
+  {
+   "from": "comms.connectors.phone_inbox",
+   "to": "comms.models"
+  },
+  {
+   "from": "comms.connectors.phone_inbox",
+   "to": "phone.adapter"
+  },
+  {
+   "from": "comms.connectors.telegram",
+   "to": "comms"
+  },
+  {
+   "from": "comms.connectors.telegram",
+   "to": "comms.base"
+  },
+  {
+   "from": "comms.connectors.telegram",
+   "to": "comms.models"
+  },
+  {
+   "from": "comms.connectors.telegram",
+   "to": "config"
+  },
+  {
+   "from": "comms.consistency",
+   "to": "comms"
+  },
+  {
+   "from": "comms.consistency",
+   "to": "comms.store"
+  },
+  {
+   "from": "comms.contacts",
+   "to": "comms"
+  },
+  {
+   "from": "comms.contacts",
+   "to": "comms.store"
+  },
+  {
+   "from": "comms.contacts",
+   "to": "core"
+  },
+  {
+   "from": "comms.contacts",
+   "to": "core.logging"
+  },
+  {
+   "from": "comms.contacts",
+   "to": "phone.adapter"
+  },
+  {
+   "from": "comms.conversation_state",
+   "to": "comms"
+  },
+  {
+   "from": "comms.conversation_state",
+   "to": "comms.store"
+  },
+  {
+   "from": "comms.decision",
+   "to": "comms"
+  },
+  {
+   "from": "comms.decision",
+   "to": "comms.approvals"
+  },
+  {
+   "from": "comms.decision",
+   "to": "comms.classify"
+  },
+  {
+   "from": "comms.decision",
+   "to": "comms.consistency"
+  },
+  {
+   "from": "comms.decision",
+   "to": "comms.contacts"
+  },
+  {
+   "from": "comms.decision",
+   "to": "comms.conversation_state"
+  },
+  {
+   "from": "comms.decision",
+   "to": "comms.facts"
+  },
+  {
+   "from": "comms.decision",
+   "to": "comms.firewall"
+  },
+  {
+   "from": "comms.decision",
+   "to": "comms.ratelimit"
+  },
+  {
+   "from": "comms.decision",
+   "to": "comms.store"
+  },
+  {
+   "from": "comms.decision",
+   "to": "core"
+  },
+  {
+   "from": "comms.decision",
+   "to": "core.logging"
+  },
+  {
+   "from": "comms.decision",
+   "to": "personality"
+  },
+  {
+   "from": "comms.engine",
+   "to": "comms"
+  },
+  {
+   "from": "comms.engine",
+   "to": "comms.approvals"
+  },
+  {
+   "from": "comms.engine",
+   "to": "comms.audit"
+  },
+  {
+   "from": "comms.engine",
+   "to": "comms.events"
+  },
+  {
+   "from": "comms.engine",
+   "to": "comms.overrides"
+  },
+  {
+   "from": "comms.engine",
+   "to": "comms.ratelimit"
+  },
+  {
+   "from": "comms.engine",
+   "to": "comms.registry"
+  },
+  {
+   "from": "comms.engine",
+   "to": "comms.store"
+  },
+  {
+   "from": "comms.engine",
+   "to": "comms.verify"
+  },
+  {
+   "from": "comms.engine",
+   "to": "core"
+  },
+  {
+   "from": "comms.engine",
+   "to": "core.logging"
+  },
+  {
+   "from": "comms.engine",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "comms.engine",
+   "to": "learning.errors"
+  },
+  {
+   "from": "comms.events",
+   "to": "comms"
+  },
+  {
+   "from": "comms.events",
+   "to": "comms.store"
+  },
+  {
+   "from": "comms.facts",
+   "to": "comms"
+  },
+  {
+   "from": "comms.facts",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "comms.firewall",
+   "to": "comms"
+  },
+  {
+   "from": "comms.health",
+   "to": "comms"
+  },
+  {
+   "from": "comms.health",
+   "to": "comms.registry"
+  },
+  {
+   "from": "comms.inbox",
+   "to": "comms"
+  },
+  {
+   "from": "comms.inbox",
+   "to": "comms.classify"
+  },
+  {
+   "from": "comms.inbox",
+   "to": "comms.store"
+  },
+  {
+   "from": "comms.loopguard",
+   "to": "comms"
+  },
+  {
+   "from": "comms.loopguard",
+   "to": "comms.audit"
+  },
+  {
+   "from": "comms.loopguard",
+   "to": "comms.events"
+  },
+  {
+   "from": "comms.loopguard",
+   "to": "comms.ratelimit"
+  },
+  {
+   "from": "comms.loopguard",
+   "to": "comms.store"
+  },
+  {
+   "from": "comms.models",
+   "to": "comms"
+  },
+  {
+   "from": "comms.outbox",
+   "to": "comms"
+  },
+  {
+   "from": "comms.outbox",
+   "to": "comms.audit"
+  },
+  {
+   "from": "comms.outbox",
+   "to": "comms.store"
+  },
+  {
+   "from": "comms.overrides",
+   "to": "comms"
+  },
+  {
+   "from": "comms.overrides",
+   "to": "comms.audit"
+  },
+  {
+   "from": "comms.overrides",
+   "to": "comms.outbox"
+  },
+  {
+   "from": "comms.overrides",
+   "to": "comms.store"
+  },
+  {
+   "from": "comms.quality",
+   "to": "comms"
+  },
+  {
+   "from": "comms.quality",
+   "to": "comms.store"
+  },
+  {
+   "from": "comms.ratelimit",
+   "to": "comms"
+  },
+  {
+   "from": "comms.ratelimit",
+   "to": "comms.store"
+  },
+  {
+   "from": "comms.ratelimit",
+   "to": "config"
+  },
+  {
+   "from": "comms.registry",
+   "to": "comms"
+  },
+  {
+   "from": "comms.registry",
+   "to": "comms.connectors.email_connector"
+  },
+  {
+   "from": "comms.registry",
+   "to": "comms.connectors.phone_inbox"
+  },
+  {
+   "from": "comms.registry",
+   "to": "comms.connectors.telegram"
+  },
+  {
+   "from": "comms.registry",
+   "to": "core"
+  },
+  {
+   "from": "comms.registry",
+   "to": "core.logging"
+  },
+  {
+   "from": "comms.reply",
+   "to": "api"
+  },
+  {
+   "from": "comms.reply",
+   "to": "comms"
+  },
+  {
+   "from": "comms.reply",
+   "to": "comms.classify"
+  },
+  {
+   "from": "comms.reply",
+   "to": "comms.models"
+  },
+  {
+   "from": "comms.reply",
+   "to": "comms.store"
+  },
+  {
+   "from": "comms.reply",
+   "to": "core"
+  },
+  {
+   "from": "comms.reply",
+   "to": "core.logging"
+  },
+  {
+   "from": "comms.reply",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "comms.scheduler",
+   "to": "comms"
+  },
+  {
+   "from": "comms.scheduler",
+   "to": "comms.calendar"
+  },
+  {
+   "from": "comms.scheduler",
+   "to": "comms.inbox"
+  },
+  {
+   "from": "comms.scheduler",
+   "to": "comms.models"
+  },
+  {
+   "from": "comms.scheduler",
+   "to": "comms.registry"
+  },
+  {
+   "from": "comms.scheduler",
+   "to": "comms.store"
+  },
+  {
+   "from": "comms.scheduler",
+   "to": "comms.workflow"
+  },
+  {
+   "from": "comms.scheduler",
+   "to": "config"
+  },
+  {
+   "from": "comms.scheduler",
+   "to": "core"
+  },
+  {
+   "from": "comms.scheduler",
+   "to": "core.logging"
+  },
+  {
+   "from": "comms.store",
+   "to": "comms"
+  },
+  {
+   "from": "comms.store",
+   "to": "comms.conversation_state"
+  },
+  {
+   "from": "comms.store",
+   "to": "comms.events"
+  },
+  {
+   "from": "comms.store",
+   "to": "comms.inbox"
+  },
+  {
+   "from": "comms.store",
+   "to": "comms.outbox"
+  },
+  {
+   "from": "comms.store",
+   "to": "comms.overrides"
+  },
+  {
+   "from": "comms.store",
+   "to": "comms.quality"
+  },
+  {
+   "from": "comms.store",
+   "to": "knowledge.database"
+  },
+  {
+   "from": "comms.verify",
+   "to": "comms"
+  },
+  {
+   "from": "comms.workflow",
+   "to": "agents.service"
+  },
+  {
+   "from": "comms.workflow",
+   "to": "comms"
+  },
+  {
+   "from": "comms.workflow",
+   "to": "comms.audit"
+  },
+  {
+   "from": "comms.workflow",
+   "to": "comms.calendar"
+  },
+  {
+   "from": "comms.workflow",
+   "to": "comms.classify"
+  },
+  {
+   "from": "comms.workflow",
+   "to": "comms.engine"
+  },
+  {
+   "from": "comms.workflow",
+   "to": "comms.inbox"
+  },
+  {
+   "from": "comms.workflow",
+   "to": "comms.models"
+  },
+  {
+   "from": "comms.workflow",
+   "to": "comms.reply"
+  },
+  {
+   "from": "comms.workflow",
+   "to": "comms.store"
+  },
+  {
+   "from": "comms.workflow",
+   "to": "core"
+  },
+  {
+   "from": "comms.workflow",
+   "to": "core.logging"
+  },
+  {
+   "from": "comms.workflow",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "comms.workflow",
+   "to": "learning.errors"
+  },
+  {
+   "from": "comms.workflow",
+   "to": "phone.adapter"
+  },
+  {
+   "from": "comms.workflow",
+   "to": "tools.manager"
+  },
+  {
+   "from": "connectivity_audit",
+   "to": "agents"
+  },
+  {
+   "from": "connectivity_audit",
+   "to": "agents.types"
+  },
+  {
+   "from": "connectivity_audit",
+   "to": "intent"
+  },
+  {
+   "from": "connectivity_audit",
+   "to": "intent.commands"
+  },
+  {
+   "from": "connectivity_audit",
+   "to": "runtime.logging"
+  },
+  {
+   "from": "connectivity_audit",
+   "to": "runtime.service"
+  },
+  {
+   "from": "connectivity_audit",
+   "to": "skills.manager"
+  },
+  {
+   "from": "connectivity_audit",
+   "to": "tools.manager"
+  },
+  {
+   "from": "constitution",
+   "to": "constitution.constitution"
+  },
+  {
+   "from": "constitution",
+   "to": "constitution.evolution"
+  },
+  {
+   "from": "constitution",
+   "to": "constitution.policy"
+  },
+  {
+   "from": "constitution",
+   "to": "constitution.registry"
+  },
+  {
+   "from": "constitution.constitution",
+   "to": "constitution"
+  },
+  {
+   "from": "constitution.evolution",
+   "to": "constitution"
+  },
+  {
+   "from": "constitution.evolution",
+   "to": "constitution.constitution"
+  },
+  {
+   "from": "constitution.evolution",
+   "to": "evolution.engine"
+  },
+  {
+   "from": "constitution.policy",
+   "to": "constitution"
+  },
+  {
+   "from": "constitution.policy",
+   "to": "constitution.constitution"
+  },
+  {
+   "from": "constitution.registry",
+   "to": "constitution"
+  },
+  {
+   "from": "constitution.registry",
+   "to": "constitution.constitution"
+  },
+  {
+   "from": "core.logging",
+   "to": "core"
+  },
+  {
+   "from": "core.turn_pipeline",
+   "to": "core"
+  },
+  {
+   "from": "evolution",
+   "to": "evolution.engine"
+  },
+  {
+   "from": "evolution.analyzer",
+   "to": "evolution"
+  },
+  {
+   "from": "evolution.analyzer",
+   "to": "evolution.manifest"
+  },
+  {
+   "from": "evolution.deployment",
+   "to": "evolution"
+  },
+  {
+   "from": "evolution.deployment",
+   "to": "evolution.manifest"
+  },
+  {
+   "from": "evolution.deployment",
+   "to": "evolution.rollback"
+  },
+  {
+   "from": "evolution.deployment",
+   "to": "evolution.version"
+  },
+  {
+   "from": "evolution.engine",
+   "to": "evolution"
+  },
+  {
+   "from": "evolution.engine",
+   "to": "evolution.analyzer"
+  },
+  {
+   "from": "evolution.engine",
+   "to": "evolution.deployment"
+  },
+  {
+   "from": "evolution.engine",
+   "to": "evolution.generator"
+  },
+  {
+   "from": "evolution.engine",
+   "to": "evolution.planner"
+  },
+  {
+   "from": "evolution.engine",
+   "to": "evolution.reviewer"
+  },
+  {
+   "from": "evolution.engine",
+   "to": "testing.runner"
+  },
+  {
+   "from": "evolution.generator",
+   "to": "evolution"
+  },
+  {
+   "from": "evolution.generator",
+   "to": "evolution.manifest"
+  },
+  {
+   "from": "evolution.manifest",
+   "to": "evolution"
+  },
+  {
+   "from": "evolution.planner",
+   "to": "evolution"
+  },
+  {
+   "from": "evolution.planner",
+   "to": "evolution.manifest"
+  },
+  {
+   "from": "evolution.reviewer",
+   "to": "evolution"
+  },
+  {
+   "from": "evolution.reviewer",
+   "to": "evolution.manifest"
+  },
+  {
+   "from": "evolution.rollback",
+   "to": "evolution"
+  },
+  {
+   "from": "evolution.version",
+   "to": "evolution"
+  },
+  {
+   "from": "intelligence",
+   "to": "intelligence.experience"
+  },
+  {
+   "from": "intelligence",
+   "to": "intelligence.resolver"
+  },
+  {
+   "from": "intelligence",
+   "to": "intelligence.world"
+  },
+  {
+   "from": "intelligence.composition",
+   "to": "capabilities.manager"
+  },
+  {
+   "from": "intelligence.composition",
+   "to": "intelligence"
+  },
+  {
+   "from": "intelligence.critic",
+   "to": "api"
+  },
+  {
+   "from": "intelligence.critic",
+   "to": "config"
+  },
+  {
+   "from": "intelligence.critic",
+   "to": "core"
+  },
+  {
+   "from": "intelligence.critic",
+   "to": "core.logging"
+  },
+  {
+   "from": "intelligence.critic",
+   "to": "intelligence"
+  },
+  {
+   "from": "intelligence.critic",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "intelligence.experience",
+   "to": "intelligence"
+  },
+  {
+   "from": "intelligence.experience",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "intelligence.models",
+   "to": "intelligence"
+  },
+  {
+   "from": "intelligence.projects",
+   "to": "intelligence"
+  },
+  {
+   "from": "intelligence.projects",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "intelligence.quality",
+   "to": "intelligence"
+  },
+  {
+   "from": "intelligence.reflection",
+   "to": "intelligence"
+  },
+  {
+   "from": "intelligence.registry",
+   "to": "intelligence"
+  },
+  {
+   "from": "intelligence.registry",
+   "to": "intelligence.models"
+  },
+  {
+   "from": "intelligence.resolver",
+   "to": "intelligence"
+  },
+  {
+   "from": "intelligence.resolver",
+   "to": "intelligence.models"
+  },
+  {
+   "from": "intelligence.resolver",
+   "to": "intelligence.registry"
+  },
+  {
+   "from": "intelligence.runtime",
+   "to": "intelligence"
+  },
+  {
+   "from": "intelligence.runtime",
+   "to": "intelligence.composition"
+  },
+  {
+   "from": "intelligence.runtime",
+   "to": "intelligence.experience"
+  },
+  {
+   "from": "intelligence.runtime",
+   "to": "intelligence.models"
+  },
+  {
+   "from": "intelligence.runtime",
+   "to": "intelligence.projects"
+  },
+  {
+   "from": "intelligence.runtime",
+   "to": "intelligence.quality"
+  },
+  {
+   "from": "intelligence.runtime",
+   "to": "intelligence.reflection"
+  },
+  {
+   "from": "intelligence.runtime",
+   "to": "intelligence.registry"
+  },
+  {
+   "from": "intelligence.runtime",
+   "to": "intelligence.resolver"
+  },
+  {
+   "from": "intelligence.runtime",
+   "to": "intelligence.simulation"
+  },
+  {
+   "from": "intelligence.runtime",
+   "to": "intelligence.world"
+  },
+  {
+   "from": "intelligence.runtime",
+   "to": "memory.intelligence"
+  },
+  {
+   "from": "intelligence.simulation",
+   "to": "intelligence"
+  },
+  {
+   "from": "intelligence.simulation",
+   "to": "intelligence.models"
+  },
+  {
+   "from": "intelligence.world",
+   "to": "intelligence"
+  },
+  {
+   "from": "intelligence.world",
+   "to": "knowledge.database"
+  },
+  {
+   "from": "intent.classifier",
+   "to": "intent"
+  },
+  {
+   "from": "intent.classifier",
+   "to": "intent.models"
+  },
+  {
+   "from": "intent.commands",
+   "to": "benchmarks"
+  },
+  {
+   "from": "intent.commands",
+   "to": "comms"
+  },
+  {
+   "from": "intent.commands",
+   "to": "comms.audit"
+  },
+  {
+   "from": "intent.commands",
+   "to": "comms.bgworkflows"
+  },
+  {
+   "from": "intent.commands",
+   "to": "comms.overrides"
+  },
+  {
+   "from": "intent.commands",
+   "to": "comms.registry"
+  },
+  {
+   "from": "intent.commands",
+   "to": "config"
+  },
+  {
+   "from": "intent.commands",
+   "to": "core"
+  },
+  {
+   "from": "intent.commands",
+   "to": "core.logging"
+  },
+  {
+   "from": "intent.commands",
+   "to": "core.turn_pipeline"
+  },
+  {
+   "from": "intent.commands",
+   "to": "intent"
+  },
+  {
+   "from": "intent.commands",
+   "to": "intent.history"
+  },
+  {
+   "from": "intent.commands",
+   "to": "intent.multilingual"
+  },
+  {
+   "from": "intent.commands",
+   "to": "intent.session_state"
+  },
+  {
+   "from": "intent.commands",
+   "to": "personality"
+  },
+  {
+   "from": "intent.commands",
+   "to": "planner"
+  },
+  {
+   "from": "intent.commands",
+   "to": "planner.planner"
+  },
+  {
+   "from": "intent.commands",
+   "to": "security"
+  },
+  {
+   "from": "intent.commands",
+   "to": "security.serious_auth"
+  },
+  {
+   "from": "intent.commands",
+   "to": "tools.manager"
+  },
+  {
+   "from": "intent.engine",
+   "to": "agents.orchestrator"
+  },
+  {
+   "from": "intent.engine",
+   "to": "config"
+  },
+  {
+   "from": "intent.engine",
+   "to": "intent"
+  },
+  {
+   "from": "intent.engine",
+   "to": "intent.classifier"
+  },
+  {
+   "from": "intent.engine",
+   "to": "intent.fast_planner"
+  },
+  {
+   "from": "intent.engine",
+   "to": "intent.history"
+  },
+  {
+   "from": "intent.engine",
+   "to": "intent.models"
+  },
+  {
+   "from": "intent.engine",
+   "to": "learning"
+  },
+  {
+   "from": "intent.engine",
+   "to": "learning.triggers"
+  },
+  {
+   "from": "intent.engine",
+   "to": "tools.manager"
+  },
+  {
+   "from": "intent.fast_planner",
+   "to": "intent"
+  },
+  {
+   "from": "intent.fast_planner",
+   "to": "intent.models"
+  },
+  {
+   "from": "intent.fast_planner",
+   "to": "meta"
+  },
+  {
+   "from": "intent.fast_planner",
+   "to": "tools.manager"
+  },
+  {
+   "from": "intent.history",
+   "to": "intent"
+  },
+  {
+   "from": "intent.models",
+   "to": "intent"
+  },
+  {
+   "from": "intent.multilingual",
+   "to": "intent"
+  },
+  {
+   "from": "intent.session_state",
+   "to": "intent"
+  },
+  {
+   "from": "knowledge",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "knowledge.database",
+   "to": "knowledge"
+  },
+  {
+   "from": "knowledge.manager",
+   "to": "knowledge"
+  },
+  {
+   "from": "knowledge.manager",
+   "to": "knowledge.database"
+  },
+  {
+   "from": "knowledge.manager",
+   "to": "knowledge.search"
+  },
+  {
+   "from": "knowledge.ranking",
+   "to": "knowledge"
+  },
+  {
+   "from": "knowledge.search",
+   "to": "knowledge"
+  },
+  {
+   "from": "knowledge.search",
+   "to": "knowledge.database"
+  },
+  {
+   "from": "knowledge.search",
+   "to": "knowledge.ranking"
+  },
+  {
+   "from": "learning",
+   "to": "learning.engine"
+  },
+  {
+   "from": "learning.acquisition",
+   "to": "intelligence.world"
+  },
+  {
+   "from": "learning.acquisition",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "learning.acquisition",
+   "to": "learning"
+  },
+  {
+   "from": "learning.background",
+   "to": "learning"
+  },
+  {
+   "from": "learning.background",
+   "to": "learning.optimizer"
+  },
+  {
+   "from": "learning.background",
+   "to": "learning.retention"
+  },
+  {
+   "from": "learning.controller",
+   "to": "intelligence.world"
+  },
+  {
+   "from": "learning.controller",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "learning.controller",
+   "to": "learning"
+  },
+  {
+   "from": "learning.controller",
+   "to": "learning.acquisition"
+  },
+  {
+   "from": "learning.controller",
+   "to": "learning.curriculum"
+  },
+  {
+   "from": "learning.controller",
+   "to": "learning.errors"
+  },
+  {
+   "from": "learning.controller",
+   "to": "learning.meta"
+  },
+  {
+   "from": "learning.controller",
+   "to": "learning.practice"
+  },
+  {
+   "from": "learning.controller",
+   "to": "learning.progress"
+  },
+  {
+   "from": "learning.controller",
+   "to": "learning.retention"
+  },
+  {
+   "from": "learning.controller",
+   "to": "learning.transfer"
+  },
+  {
+   "from": "learning.controller",
+   "to": "learning.verification"
+  },
+  {
+   "from": "learning.curriculum",
+   "to": "learning"
+  },
+  {
+   "from": "learning.engine",
+   "to": "config"
+  },
+  {
+   "from": "learning.engine",
+   "to": "intelligence.critic"
+  },
+  {
+   "from": "learning.engine",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "learning.engine",
+   "to": "learning"
+  },
+  {
+   "from": "learning.engine",
+   "to": "learning.experience"
+  },
+  {
+   "from": "learning.engine",
+   "to": "learning.reflection"
+  },
+  {
+   "from": "learning.errors",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "learning.errors",
+   "to": "learning"
+  },
+  {
+   "from": "learning.experience",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "learning.experience",
+   "to": "learning"
+  },
+  {
+   "from": "learning.meta",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "learning.meta",
+   "to": "learning"
+  },
+  {
+   "from": "learning.optimizer",
+   "to": "knowledge.database"
+  },
+  {
+   "from": "learning.optimizer",
+   "to": "learning"
+  },
+  {
+   "from": "learning.practice",
+   "to": "learning"
+  },
+  {
+   "from": "learning.progress",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "learning.progress",
+   "to": "learning"
+  },
+  {
+   "from": "learning.reflection",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "learning.reflection",
+   "to": "learning"
+  },
+  {
+   "from": "learning.retention",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "learning.retention",
+   "to": "learning"
+  },
+  {
+   "from": "learning.transfer",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "learning.transfer",
+   "to": "learning"
+  },
+  {
+   "from": "learning.triggers",
+   "to": "core"
+  },
+  {
+   "from": "learning.triggers",
+   "to": "core.logging"
+  },
+  {
+   "from": "learning.triggers",
+   "to": "intent.history"
+  },
+  {
+   "from": "learning.triggers",
+   "to": "learning"
+  },
+  {
+   "from": "learning.triggers",
+   "to": "learning.controller"
+  },
+  {
+   "from": "learning.verification",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "learning.verification",
+   "to": "learning"
+  },
+  {
+   "from": "llm",
+   "to": "api"
+  },
+  {
+   "from": "llm",
+   "to": "cognition.context"
+  },
+  {
+   "from": "llm",
+   "to": "config"
+  },
+  {
+   "from": "llm",
+   "to": "core"
+  },
+  {
+   "from": "llm",
+   "to": "core.logging"
+  },
+  {
+   "from": "llm",
+   "to": "tools.manager"
+  },
+  {
+   "from": "main",
+   "to": "capabilities"
+  },
+  {
+   "from": "main",
+   "to": "cognition"
+  },
+  {
+   "from": "main",
+   "to": "cognition.reasoning"
+  },
+  {
+   "from": "main",
+   "to": "config"
+  },
+  {
+   "from": "main",
+   "to": "constitution.constitution"
+  },
+  {
+   "from": "main",
+   "to": "core"
+  },
+  {
+   "from": "main",
+   "to": "core.logging"
+  },
+  {
+   "from": "main",
+   "to": "core.turn_pipeline"
+  },
+  {
+   "from": "main",
+   "to": "intelligence.critic"
+  },
+  {
+   "from": "main",
+   "to": "intelligence.runtime"
+  },
+  {
+   "from": "main",
+   "to": "intent"
+  },
+  {
+   "from": "main",
+   "to": "intent.commands"
+  },
+  {
+   "from": "main",
+   "to": "intent.engine"
+  },
+  {
+   "from": "main",
+   "to": "intent.models"
+  },
+  {
+   "from": "main",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "main",
+   "to": "learning.background"
+  },
+  {
+   "from": "main",
+   "to": "learning.engine"
+  },
+  {
+   "from": "main",
+   "to": "llm"
+  },
+  {
+   "from": "main",
+   "to": "memory.memory_manager"
+  },
+  {
+   "from": "main",
+   "to": "phone.engine"
+  },
+  {
+   "from": "main",
+   "to": "planner"
+  },
+  {
+   "from": "main",
+   "to": "planner.planner"
+  },
+  {
+   "from": "main",
+   "to": "runtime"
+  },
+  {
+   "from": "main",
+   "to": "runtime.greeting"
+  },
+  {
+   "from": "main",
+   "to": "speech"
+  },
+  {
+   "from": "main",
+   "to": "tools.manager"
+  },
+  {
+   "from": "main",
+   "to": "ui.server"
+  },
+  {
+   "from": "memory.intelligence",
+   "to": "intelligence.world"
+  },
+  {
+   "from": "memory.intelligence",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "memory.intelligence",
+   "to": "memory"
+  },
+  {
+   "from": "memory.long_term",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "memory.long_term",
+   "to": "memory"
+  },
+  {
+   "from": "memory.memory_manager",
+   "to": "config"
+  },
+  {
+   "from": "memory.memory_manager",
+   "to": "core"
+  },
+  {
+   "from": "memory.memory_manager",
+   "to": "core.logging"
+  },
+  {
+   "from": "memory.memory_manager",
+   "to": "memory"
+  },
+  {
+   "from": "meta",
+   "to": "agents.types"
+  },
+  {
+   "from": "meta",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "meta",
+   "to": "phone.device"
+  },
+  {
+   "from": "meta",
+   "to": "tools.manager"
+  },
+  {
+   "from": "personality",
+   "to": "memory.memory_manager"
+  },
+  {
+   "from": "phone",
+   "to": "phone.automation"
+  },
+  {
+   "from": "phone",
+   "to": "phone.discovery"
+  },
+  {
+   "from": "phone",
+   "to": "phone.engine"
+  },
+  {
+   "from": "phone.actions",
+   "to": "phone"
+  },
+  {
+   "from": "phone.adapter",
+   "to": "phone"
+  },
+  {
+   "from": "phone.adapter",
+   "to": "phone.models"
+  },
+  {
+   "from": "phone.audit",
+   "to": "phone"
+  },
+  {
+   "from": "phone.automation",
+   "to": "phone"
+  },
+  {
+   "from": "phone.automation",
+   "to": "phone.engine"
+  },
+  {
+   "from": "phone.controllers",
+   "to": "phone"
+  },
+  {
+   "from": "phone.controllers",
+   "to": "phone.adapter"
+  },
+  {
+   "from": "phone.controllers",
+   "to": "phone.models"
+  },
+  {
+   "from": "phone.device",
+   "to": "phone"
+  },
+  {
+   "from": "phone.discovery",
+   "to": "phone"
+  },
+  {
+   "from": "phone.discovery",
+   "to": "phone.adapter"
+  },
+  {
+   "from": "phone.discovery",
+   "to": "phone.models"
+  },
+  {
+   "from": "phone.dispatch",
+   "to": "constitution"
+  },
+  {
+   "from": "phone.dispatch",
+   "to": "intelligence.experience"
+  },
+  {
+   "from": "phone.dispatch",
+   "to": "intelligence.models"
+  },
+  {
+   "from": "phone.dispatch",
+   "to": "intelligence.projects"
+  },
+  {
+   "from": "phone.dispatch",
+   "to": "intelligence.reflection"
+  },
+  {
+   "from": "phone.dispatch",
+   "to": "intelligence.world"
+  },
+  {
+   "from": "phone.dispatch",
+   "to": "phone"
+  },
+  {
+   "from": "phone.dispatch",
+   "to": "phone.extract"
+  },
+  {
+   "from": "phone.dispatch",
+   "to": "phone.models"
+  },
+  {
+   "from": "phone.dispatch",
+   "to": "phone.verifier"
+  },
+  {
+   "from": "phone.engine",
+   "to": "constitution"
+  },
+  {
+   "from": "phone.engine",
+   "to": "learning.engine"
+  },
+  {
+   "from": "phone.engine",
+   "to": "phone"
+  },
+  {
+   "from": "phone.engine",
+   "to": "phone.controllers"
+  },
+  {
+   "from": "phone.engine",
+   "to": "phone.discovery"
+  },
+  {
+   "from": "phone.engine",
+   "to": "phone.dispatch"
+  },
+  {
+   "from": "phone.engine",
+   "to": "phone.extract"
+  },
+  {
+   "from": "phone.engine",
+   "to": "phone.manager"
+  },
+  {
+   "from": "phone.engine",
+   "to": "phone.models"
+  },
+  {
+   "from": "phone.engine",
+   "to": "phone.verifier"
+  },
+  {
+   "from": "phone.extract",
+   "to": "phone"
+  },
+  {
+   "from": "phone.manager",
+   "to": "constitution"
+  },
+  {
+   "from": "phone.manager",
+   "to": "phone"
+  },
+  {
+   "from": "phone.manager",
+   "to": "phone.actions"
+  },
+  {
+   "from": "phone.manager",
+   "to": "phone.audit"
+  },
+  {
+   "from": "phone.manager",
+   "to": "phone.discovery"
+  },
+  {
+   "from": "phone.manager",
+   "to": "phone.dispatch"
+  },
+  {
+   "from": "phone.manager",
+   "to": "phone.extract"
+  },
+  {
+   "from": "phone.manager",
+   "to": "phone.models"
+  },
+  {
+   "from": "phone.manager",
+   "to": "phone.state"
+  },
+  {
+   "from": "phone.manager",
+   "to": "phone.verifier"
+  },
+  {
+   "from": "phone.models",
+   "to": "phone"
+  },
+  {
+   "from": "phone.state",
+   "to": "phone"
+  },
+  {
+   "from": "phone.state",
+   "to": "phone.device"
+  },
+  {
+   "from": "phone.verifier",
+   "to": "phone"
+  },
+  {
+   "from": "phone.verifier",
+   "to": "phone.models"
+  },
+  {
+   "from": "planner.context",
+   "to": "planner"
+  },
+  {
+   "from": "planner.context",
+   "to": "planner.ranking"
+  },
+  {
+   "from": "planner.context",
+   "to": "tools.manager"
+  },
+  {
+   "from": "planner.decomposer",
+   "to": "api"
+  },
+  {
+   "from": "planner.decomposer",
+   "to": "llm"
+  },
+  {
+   "from": "planner.decomposer",
+   "to": "planner"
+  },
+  {
+   "from": "planner.decomposer",
+   "to": "planner.models"
+  },
+  {
+   "from": "planner.executor",
+   "to": "planner"
+  },
+  {
+   "from": "planner.executor",
+   "to": "planner.models"
+  },
+  {
+   "from": "planner.executor",
+   "to": "planner.verifier"
+  },
+  {
+   "from": "planner.executor",
+   "to": "tools.manager"
+  },
+  {
+   "from": "planner.goal",
+   "to": "planner"
+  },
+  {
+   "from": "planner.models",
+   "to": "planner"
+  },
+  {
+   "from": "planner.planner",
+   "to": "core"
+  },
+  {
+   "from": "planner.planner",
+   "to": "core.logging"
+  },
+  {
+   "from": "planner.planner",
+   "to": "planner"
+  },
+  {
+   "from": "planner.planner",
+   "to": "planner.context"
+  },
+  {
+   "from": "planner.planner",
+   "to": "planner.decomposer"
+  },
+  {
+   "from": "planner.planner",
+   "to": "planner.executor"
+  },
+  {
+   "from": "planner.planner",
+   "to": "planner.goal"
+  },
+  {
+   "from": "planner.planner",
+   "to": "planner.state"
+  },
+  {
+   "from": "planner.planner",
+   "to": "planner.workflow"
+  },
+  {
+   "from": "planner.ranking",
+   "to": "planner"
+  },
+  {
+   "from": "planner.state",
+   "to": "planner"
+  },
+  {
+   "from": "planner.verifier",
+   "to": "planner"
+  },
+  {
+   "from": "planner.verifier",
+   "to": "planner.models"
+  },
+  {
+   "from": "planner.workflow",
+   "to": "planner"
+  },
+  {
+   "from": "planner.workflow",
+   "to": "planner.models"
+  },
+  {
+   "from": "providers.base",
+   "to": "providers"
+  },
+  {
+   "from": "providers.gemini",
+   "to": "config"
+  },
+  {
+   "from": "providers.gemini",
+   "to": "providers"
+  },
+  {
+   "from": "providers.gemini",
+   "to": "providers.base"
+  },
+  {
+   "from": "providers.router",
+   "to": "config"
+  },
+  {
+   "from": "providers.router",
+   "to": "providers"
+  },
+  {
+   "from": "providers.router",
+   "to": "providers.base"
+  },
+  {
+   "from": "providers.router",
+   "to": "providers.gemini"
+  },
+  {
+   "from": "readiness_audit",
+   "to": "agents"
+  },
+  {
+   "from": "readiness_audit",
+   "to": "agents.service"
+  },
+  {
+   "from": "readiness_audit",
+   "to": "comms"
+  },
+  {
+   "from": "readiness_audit",
+   "to": "comms.autopilot"
+  },
+  {
+   "from": "readiness_audit",
+   "to": "comms.bgworkflows"
+  },
+  {
+   "from": "readiness_audit",
+   "to": "comms.conversation_state"
+  },
+  {
+   "from": "readiness_audit",
+   "to": "comms.engine"
+  },
+  {
+   "from": "readiness_audit",
+   "to": "comms.models"
+  },
+  {
+   "from": "readiness_audit",
+   "to": "comms.overrides"
+  },
+  {
+   "from": "readiness_audit",
+   "to": "comms.quality"
+  },
+  {
+   "from": "readiness_audit",
+   "to": "comms.store"
+  },
+  {
+   "from": "readiness_audit",
+   "to": "connectivity_audit"
+  },
+  {
+   "from": "readiness_audit",
+   "to": "intent"
+  },
+  {
+   "from": "readiness_audit",
+   "to": "intent.commands"
+  },
+  {
+   "from": "readiness_audit",
+   "to": "knowledge.database"
+  },
+  {
+   "from": "readiness_audit",
+   "to": "runtime.selfcheck"
+  },
+  {
+   "from": "readiness_audit",
+   "to": "tools.manager"
+  },
+  {
+   "from": "readiness_audit",
+   "to": "tools.registry"
+  },
+  {
+   "from": "runtime",
+   "to": "runtime.health"
+  },
+  {
+   "from": "runtime",
+   "to": "runtime.lockfile"
+  },
+  {
+   "from": "runtime.__main__",
+   "to": "runtime"
+  },
+  {
+   "from": "runtime.__main__",
+   "to": "runtime.autostart"
+  },
+  {
+   "from": "runtime.__main__",
+   "to": "runtime.lockfile"
+  },
+  {
+   "from": "runtime.__main__",
+   "to": "runtime.selfcheck"
+  },
+  {
+   "from": "runtime.__main__",
+   "to": "runtime.service"
+  },
+  {
+   "from": "runtime.autostart",
+   "to": "runtime"
+  },
+  {
+   "from": "runtime.greeting",
+   "to": "runtime"
+  },
+  {
+   "from": "runtime.greeting",
+   "to": "runtime.rcfg"
+  },
+  {
+   "from": "runtime.greeting",
+   "to": "speech"
+  },
+  {
+   "from": "runtime.health",
+   "to": "runtime"
+  },
+  {
+   "from": "runtime.lockfile",
+   "to": "runtime"
+  },
+  {
+   "from": "runtime.logging",
+   "to": "core"
+  },
+  {
+   "from": "runtime.logging",
+   "to": "core.logging"
+  },
+  {
+   "from": "runtime.logging",
+   "to": "runtime"
+  },
+  {
+   "from": "runtime.rcfg",
+   "to": "runtime"
+  },
+  {
+   "from": "runtime.selfcheck",
+   "to": "agents"
+  },
+  {
+   "from": "runtime.selfcheck",
+   "to": "agents.service"
+  },
+  {
+   "from": "runtime.selfcheck",
+   "to": "comms"
+  },
+  {
+   "from": "runtime.selfcheck",
+   "to": "comms.bgworkflows"
+  },
+  {
+   "from": "runtime.selfcheck",
+   "to": "comms.health"
+  },
+  {
+   "from": "runtime.selfcheck",
+   "to": "comms.overrides"
+  },
+  {
+   "from": "runtime.selfcheck",
+   "to": "comms.registry"
+  },
+  {
+   "from": "runtime.selfcheck",
+   "to": "comms.store"
+  },
+  {
+   "from": "runtime.selfcheck",
+   "to": "config"
+  },
+  {
+   "from": "runtime.selfcheck",
+   "to": "constitution.constitution"
+  },
+  {
+   "from": "runtime.selfcheck",
+   "to": "constitution.evolution"
+  },
+  {
+   "from": "runtime.selfcheck",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "runtime.selfcheck",
+   "to": "learning.background"
+  },
+  {
+   "from": "runtime.selfcheck",
+   "to": "learning.engine"
+  },
+  {
+   "from": "runtime.selfcheck",
+   "to": "memory.memory_manager"
+  },
+  {
+   "from": "runtime.selfcheck",
+   "to": "phone.adapter"
+  },
+  {
+   "from": "runtime.selfcheck",
+   "to": "runtime"
+  },
+  {
+   "from": "runtime.selfcheck",
+   "to": "tools.manager"
+  },
+  {
+   "from": "runtime.selfcheck",
+   "to": "ui.server"
+  },
+  {
+   "from": "runtime.service",
+   "to": "agents"
+  },
+  {
+   "from": "runtime.service",
+   "to": "comms.autopilot"
+  },
+  {
+   "from": "runtime.service",
+   "to": "comms.registry"
+  },
+  {
+   "from": "runtime.service",
+   "to": "config"
+  },
+  {
+   "from": "runtime.service",
+   "to": "constitution.constitution"
+  },
+  {
+   "from": "runtime.service",
+   "to": "core"
+  },
+  {
+   "from": "runtime.service",
+   "to": "core.logging"
+  },
+  {
+   "from": "runtime.service",
+   "to": "knowledge.database"
+  },
+  {
+   "from": "runtime.service",
+   "to": "learning.background"
+  },
+  {
+   "from": "runtime.service",
+   "to": "learning.optimizer"
+  },
+  {
+   "from": "runtime.service",
+   "to": "learning.retention"
+  },
+  {
+   "from": "runtime.service",
+   "to": "memory.memory_manager"
+  },
+  {
+   "from": "runtime.service",
+   "to": "phone.discovery"
+  },
+  {
+   "from": "runtime.service",
+   "to": "runtime"
+  },
+  {
+   "from": "runtime.service",
+   "to": "runtime.greeting"
+  },
+  {
+   "from": "runtime.service",
+   "to": "runtime.health"
+  },
+  {
+   "from": "runtime.service",
+   "to": "runtime.lockfile"
+  },
+  {
+   "from": "runtime.service",
+   "to": "runtime.logging"
+  },
+  {
+   "from": "runtime.service",
+   "to": "runtime.rcfg"
+  },
+  {
+   "from": "runtime.service",
+   "to": "speech"
+  },
+  {
+   "from": "runtime.service",
+   "to": "tools.manager"
+  },
+  {
+   "from": "runtime.service",
+   "to": "ui.server"
+  },
+  {
+   "from": "security.serious_auth",
+   "to": "security"
+  },
+  {
+   "from": "setup",
+   "to": "constitution.constitution"
+  },
+  {
+   "from": "skills",
+   "to": "skills.manager"
+  },
+  {
+   "from": "skills.base",
+   "to": "skills"
+  },
+  {
+   "from": "skills.domains",
+   "to": "skills"
+  },
+  {
+   "from": "skills.domains",
+   "to": "skills.base"
+  },
+  {
+   "from": "skills.electronics",
+   "to": "skills"
+  },
+  {
+   "from": "skills.electronics",
+   "to": "skills.base"
+  },
+  {
+   "from": "skills.finance",
+   "to": "skills"
+  },
+  {
+   "from": "skills.finance",
+   "to": "skills.base"
+  },
+  {
+   "from": "skills.human",
+   "to": "skills"
+  },
+  {
+   "from": "skills.human",
+   "to": "skills.base"
+  },
+  {
+   "from": "skills.manager",
+   "to": "skills"
+  },
+  {
+   "from": "skills.manager",
+   "to": "skills.base"
+  },
+  {
+   "from": "skills.manager",
+   "to": "skills.domains"
+  },
+  {
+   "from": "skills.manager",
+   "to": "skills.electronics"
+  },
+  {
+   "from": "skills.manager",
+   "to": "skills.finance"
+  },
+  {
+   "from": "skills.manager",
+   "to": "skills.human"
+  },
+  {
+   "from": "skills.manager",
+   "to": "skills.software"
+  },
+  {
+   "from": "skills.software",
+   "to": "skills"
+  },
+  {
+   "from": "skills.software",
+   "to": "skills.base"
+  },
+  {
+   "from": "speech",
+   "to": "config"
+  },
+  {
+   "from": "testing",
+   "to": "testing.runner"
+  },
+  {
+   "from": "testing.runner",
+   "to": "testing"
+  },
+  {
+   "from": "tests.demo_self_teaching",
+   "to": "learning.controller"
+  },
+  {
+   "from": "tests.test_autopilot",
+   "to": "comms"
+  },
+  {
+   "from": "tests.test_autopilot",
+   "to": "comms.approvals"
+  },
+  {
+   "from": "tests.test_autopilot",
+   "to": "comms.audit"
+  },
+  {
+   "from": "tests.test_autopilot",
+   "to": "comms.autopilot"
+  },
+  {
+   "from": "tests.test_autopilot",
+   "to": "comms.bgworkflows"
+  },
+  {
+   "from": "tests.test_autopilot",
+   "to": "comms.connectors.telegram"
+  },
+  {
+   "from": "tests.test_autopilot",
+   "to": "comms.consistency"
+  },
+  {
+   "from": "tests.test_autopilot",
+   "to": "comms.conversation_state"
+  },
+  {
+   "from": "tests.test_autopilot",
+   "to": "comms.decision"
+  },
+  {
+   "from": "tests.test_autopilot",
+   "to": "comms.engine"
+  },
+  {
+   "from": "tests.test_autopilot",
+   "to": "comms.events"
+  },
+  {
+   "from": "tests.test_autopilot",
+   "to": "comms.firewall"
+  },
+  {
+   "from": "tests.test_autopilot",
+   "to": "comms.loopguard"
+  },
+  {
+   "from": "tests.test_autopilot",
+   "to": "comms.models"
+  },
+  {
+   "from": "tests.test_autopilot",
+   "to": "comms.outbox"
+  },
+  {
+   "from": "tests.test_autopilot",
+   "to": "comms.overrides"
+  },
+  {
+   "from": "tests.test_autopilot",
+   "to": "comms.quality"
+  },
+  {
+   "from": "tests.test_autopilot",
+   "to": "comms.registry"
+  },
+  {
+   "from": "tests.test_autopilot",
+   "to": "comms.store"
+  },
+  {
+   "from": "tests.test_autopilot",
+   "to": "config"
+  },
+  {
+   "from": "tests.test_autopilot",
+   "to": "knowledge.database"
+  },
+  {
+   "from": "tests.test_autopilot",
+   "to": "tools.manager"
+  },
+  {
+   "from": "tests.test_bg_flows",
+   "to": "comms"
+  },
+  {
+   "from": "tests.test_bg_flows",
+   "to": "comms.autopilot"
+  },
+  {
+   "from": "tests.test_bg_flows",
+   "to": "comms.bgworkflows"
+  },
+  {
+   "from": "tests.test_bg_flows",
+   "to": "comms.connectors.telegram"
+  },
+  {
+   "from": "tests.test_bg_flows",
+   "to": "comms.conversation_state"
+  },
+  {
+   "from": "tests.test_bg_flows",
+   "to": "comms.decision"
+  },
+  {
+   "from": "tests.test_bg_flows",
+   "to": "comms.engine"
+  },
+  {
+   "from": "tests.test_bg_flows",
+   "to": "comms.events"
+  },
+  {
+   "from": "tests.test_bg_flows",
+   "to": "comms.health"
+  },
+  {
+   "from": "tests.test_bg_flows",
+   "to": "comms.loopguard"
+  },
+  {
+   "from": "tests.test_bg_flows",
+   "to": "comms.models"
+  },
+  {
+   "from": "tests.test_bg_flows",
+   "to": "comms.overrides"
+  },
+  {
+   "from": "tests.test_bg_flows",
+   "to": "comms.quality"
+  },
+  {
+   "from": "tests.test_bg_flows",
+   "to": "comms.ratelimit"
+  },
+  {
+   "from": "tests.test_bg_flows",
+   "to": "comms.registry"
+  },
+  {
+   "from": "tests.test_bg_flows",
+   "to": "comms.store"
+  },
+  {
+   "from": "tests.test_bg_flows",
+   "to": "config"
+  },
+  {
+   "from": "tests.test_bg_flows",
+   "to": "constitution.constitution"
+  },
+  {
+   "from": "tests.test_bg_flows",
+   "to": "intent"
+  },
+  {
+   "from": "tests.test_bg_flows",
+   "to": "intent.commands"
+  },
+  {
+   "from": "tests.test_bg_flows",
+   "to": "knowledge.database"
+  },
+  {
+   "from": "tests.test_bg_flows",
+   "to": "tools.manager"
+  },
+  {
+   "from": "tests.test_capabilities",
+   "to": "capabilities.manager"
+  },
+  {
+   "from": "tests.test_capabilities",
+   "to": "capabilities.reasoning"
+  },
+  {
+   "from": "tests.test_capabilities",
+   "to": "knowledge.database"
+  },
+  {
+   "from": "tests.test_capabilities",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "tests.test_cognition_influence",
+   "to": "api"
+  },
+  {
+   "from": "tests.test_cognition_influence",
+   "to": "config"
+  },
+  {
+   "from": "tests.test_cognition_influence",
+   "to": "intelligence.critic"
+  },
+  {
+   "from": "tests.test_cognition_influence",
+   "to": "knowledge.database"
+  },
+  {
+   "from": "tests.test_cognition_influence",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "tests.test_cognition_influence",
+   "to": "main"
+  },
+  {
+   "from": "tests.test_cognition_influence",
+   "to": "memory.memory_manager"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "agents.service"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "agents.types"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "comms"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "comms.approvals"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "comms.audit"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "comms.calendar"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "comms.classify"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "comms.connectors.email_connector"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "comms.connectors.phone_inbox"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "comms.connectors.telegram"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "comms.contacts"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "comms.engine"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "comms.inbox"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "comms.models"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "comms.ratelimit"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "comms.registry"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "comms.reply"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "comms.scheduler"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "comms.store"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "comms.verify"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "comms.workflow"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "config"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "knowledge.database"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "learning.errors"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "phone.adapter"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "phone.models"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "tools.manager"
+  },
+  {
+   "from": "tests.test_communication_layer",
+   "to": "ui.server"
+  },
+  {
+   "from": "tests.test_constitution_engine",
+   "to": "constitution.constitution"
+  },
+  {
+   "from": "tests.test_constitution_engine",
+   "to": "constitution.evolution"
+  },
+  {
+   "from": "tests.test_constitution_engine",
+   "to": "constitution.registry"
+  },
+  {
+   "from": "tests.test_constitutional",
+   "to": "cognition"
+  },
+  {
+   "from": "tests.test_constitutional",
+   "to": "cognition.curiosity"
+  },
+  {
+   "from": "tests.test_constitutional",
+   "to": "cognition.modes"
+  },
+  {
+   "from": "tests.test_constitutional",
+   "to": "constitution"
+  },
+  {
+   "from": "tests.test_constitutional",
+   "to": "knowledge.database"
+  },
+  {
+   "from": "tests.test_constitutional",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "tests.test_core_stabilization",
+   "to": "intelligence.runtime"
+  },
+  {
+   "from": "tests.test_core_stabilization",
+   "to": "memory.intelligence"
+  },
+  {
+   "from": "tests.test_entrypoint",
+   "to": "main"
+  },
+  {
+   "from": "tests.test_entrypoint",
+   "to": "ui.session"
+  },
+  {
+   "from": "tests.test_execution_safety",
+   "to": "tools.exec_tools"
+  },
+  {
+   "from": "tests.test_final_e2e",
+   "to": "api"
+  },
+  {
+   "from": "tests.test_final_e2e",
+   "to": "cognition"
+  },
+  {
+   "from": "tests.test_final_e2e",
+   "to": "config"
+  },
+  {
+   "from": "tests.test_final_e2e",
+   "to": "main"
+  },
+  {
+   "from": "tests.test_final_e2e",
+   "to": "memory.memory_manager"
+  },
+  {
+   "from": "tests.test_final_e2e",
+   "to": "personality"
+  },
+  {
+   "from": "tests.test_final_e2e",
+   "to": "providers.base"
+  },
+  {
+   "from": "tests.test_final_features",
+   "to": "agents.pool"
+  },
+  {
+   "from": "tests.test_final_features",
+   "to": "cognition"
+  },
+  {
+   "from": "tests.test_final_features",
+   "to": "cognition.reasoning"
+  },
+  {
+   "from": "tests.test_final_features",
+   "to": "constitution.constitution"
+  },
+  {
+   "from": "tests.test_final_features",
+   "to": "constitution.policy"
+  },
+  {
+   "from": "tests.test_final_features",
+   "to": "evolution.engine"
+  },
+  {
+   "from": "tests.test_final_features",
+   "to": "evolution.manifest"
+  },
+  {
+   "from": "tests.test_final_features",
+   "to": "evolution.rollback"
+  },
+  {
+   "from": "tests.test_final_features",
+   "to": "intent"
+  },
+  {
+   "from": "tests.test_final_features",
+   "to": "intent.commands"
+  },
+  {
+   "from": "tests.test_final_features",
+   "to": "memory.memory_manager"
+  },
+  {
+   "from": "tests.test_final_features",
+   "to": "personality"
+  },
+  {
+   "from": "tests.test_final_features",
+   "to": "phone"
+  },
+  {
+   "from": "tests.test_final_features",
+   "to": "phone.device"
+  },
+  {
+   "from": "tests.test_final_features",
+   "to": "skills.manager"
+  },
+  {
+   "from": "tests.test_final_features",
+   "to": "tools.manager"
+  },
+  {
+   "from": "tests.test_gemini_extended",
+   "to": "config"
+  },
+  {
+   "from": "tests.test_gemini_extended",
+   "to": "providers.base"
+  },
+  {
+   "from": "tests.test_gemini_extended",
+   "to": "providers.gemini"
+  },
+  {
+   "from": "tests.test_gemini_extended",
+   "to": "providers.router"
+  },
+  {
+   "from": "tests.test_gemini_only",
+   "to": "config"
+  },
+  {
+   "from": "tests.test_gemini_only",
+   "to": "providers"
+  },
+  {
+   "from": "tests.test_gemini_only",
+   "to": "providers.base"
+  },
+  {
+   "from": "tests.test_gemini_only",
+   "to": "providers.router"
+  },
+  {
+   "from": "tests.test_gemini_transport",
+   "to": "config"
+  },
+  {
+   "from": "tests.test_gemini_transport",
+   "to": "providers.base"
+  },
+  {
+   "from": "tests.test_gemini_transport",
+   "to": "providers.gemini"
+  },
+  {
+   "from": "tests.test_gemini_transport",
+   "to": "speech"
+  },
+  {
+   "from": "tests.test_gemini_voice_only",
+   "to": "config"
+  },
+  {
+   "from": "tests.test_gemini_voice_only",
+   "to": "speech"
+  },
+  {
+   "from": "tests.test_hardening",
+   "to": "memory.memory_manager"
+  },
+  {
+   "from": "tests.test_hardening",
+   "to": "tools.base"
+  },
+  {
+   "from": "tests.test_hardening",
+   "to": "tools.file_tools"
+  },
+  {
+   "from": "tests.test_hardening",
+   "to": "tools.manager"
+  },
+  {
+   "from": "tests.test_integration_map",
+   "to": "config"
+  },
+  {
+   "from": "tests.test_integration_map",
+   "to": "constitution.constitution"
+  },
+  {
+   "from": "tests.test_integration_map",
+   "to": "tools.manager"
+  },
+  {
+   "from": "tests.test_intelligence",
+   "to": "intelligence.models"
+  },
+  {
+   "from": "tests.test_intelligence",
+   "to": "intelligence.registry"
+  },
+  {
+   "from": "tests.test_intelligence",
+   "to": "intelligence.resolver"
+  },
+  {
+   "from": "tests.test_intelligence",
+   "to": "intelligence.world"
+  },
+  {
+   "from": "tests.test_intelligence",
+   "to": "knowledge.database"
+  },
+  {
+   "from": "tests.test_learning_system",
+   "to": "knowledge.database"
+  },
+  {
+   "from": "tests.test_learning_system",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "tests.test_learning_system",
+   "to": "learning.acquisition"
+  },
+  {
+   "from": "tests.test_learning_system",
+   "to": "learning.curriculum"
+  },
+  {
+   "from": "tests.test_learning_system",
+   "to": "learning.errors"
+  },
+  {
+   "from": "tests.test_learning_system",
+   "to": "learning.meta"
+  },
+  {
+   "from": "tests.test_learning_system",
+   "to": "learning.practice"
+  },
+  {
+   "from": "tests.test_learning_system",
+   "to": "learning.progress"
+  },
+  {
+   "from": "tests.test_learning_system",
+   "to": "learning.retention"
+  },
+  {
+   "from": "tests.test_learning_system",
+   "to": "learning.verification"
+  },
+  {
+   "from": "tests.test_learning_system",
+   "to": "tests.demo_self_teaching"
+  },
+  {
+   "from": "tests.test_learning_system",
+   "to": "tools.manager"
+  },
+  {
+   "from": "tests.test_main_integration",
+   "to": "api"
+  },
+  {
+   "from": "tests.test_main_integration",
+   "to": "config"
+  },
+  {
+   "from": "tests.test_main_integration",
+   "to": "main"
+  },
+  {
+   "from": "tests.test_main_integration",
+   "to": "memory.memory_manager"
+  },
+  {
+   "from": "tests.test_main_integration",
+   "to": "planner"
+  },
+  {
+   "from": "tests.test_main_integration",
+   "to": "planner.planner"
+  },
+  {
+   "from": "tests.test_main_integration",
+   "to": "providers.base"
+  },
+  {
+   "from": "tests.test_memory_intelligence",
+   "to": "knowledge.database"
+  },
+  {
+   "from": "tests.test_memory_intelligence",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "tests.test_memory_intelligence",
+   "to": "memory.intelligence"
+  },
+  {
+   "from": "tests.test_orchestrator",
+   "to": "agents"
+  },
+  {
+   "from": "tests.test_orchestrator",
+   "to": "agents.messages"
+  },
+  {
+   "from": "tests.test_orchestrator",
+   "to": "agents.orchestrator"
+  },
+  {
+   "from": "tests.test_orchestrator",
+   "to": "agents.pool"
+  },
+  {
+   "from": "tests.test_orchestrator",
+   "to": "agents.types"
+  },
+  {
+   "from": "tests.test_orchestrator",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "tests.test_orchestrator",
+   "to": "tools.manager"
+  },
+  {
+   "from": "tests.test_orchestrator",
+   "to": "tools.test_tools"
+  },
+  {
+   "from": "tests.test_phase4",
+   "to": "knowledge.database"
+  },
+  {
+   "from": "tests.test_phase4",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "tests.test_phase4",
+   "to": "learning.experience"
+  },
+  {
+   "from": "tests.test_phase4",
+   "to": "learning.reflection"
+  },
+  {
+   "from": "tests.test_phase4",
+   "to": "memory.long_term"
+  },
+  {
+   "from": "tests.test_phase4",
+   "to": "skills.manager"
+  },
+  {
+   "from": "tests.test_phase5",
+   "to": "evolution.analyzer"
+  },
+  {
+   "from": "tests.test_phase5",
+   "to": "evolution.engine"
+  },
+  {
+   "from": "tests.test_phase5",
+   "to": "evolution.manifest"
+  },
+  {
+   "from": "tests.test_phase5",
+   "to": "evolution.rollback"
+  },
+  {
+   "from": "tests.test_phone",
+   "to": "phone.engine"
+  },
+  {
+   "from": "tests.test_phone",
+   "to": "phone.models"
+  },
+  {
+   "from": "tests.test_phone_body",
+   "to": "constitution"
+  },
+  {
+   "from": "tests.test_phone_body",
+   "to": "constitution.policy"
+  },
+  {
+   "from": "tests.test_phone_body",
+   "to": "learning.engine"
+  },
+  {
+   "from": "tests.test_phone_body",
+   "to": "phone.actions"
+  },
+  {
+   "from": "tests.test_phone_body",
+   "to": "phone.adapter"
+  },
+  {
+   "from": "tests.test_phone_body",
+   "to": "phone.controllers"
+  },
+  {
+   "from": "tests.test_phone_body",
+   "to": "phone.discovery"
+  },
+  {
+   "from": "tests.test_phone_body",
+   "to": "phone.dispatch"
+  },
+  {
+   "from": "tests.test_phone_body",
+   "to": "phone.engine"
+  },
+  {
+   "from": "tests.test_phone_body",
+   "to": "phone.extract"
+  },
+  {
+   "from": "tests.test_phone_body",
+   "to": "phone.manager"
+  },
+  {
+   "from": "tests.test_phone_body",
+   "to": "phone.models"
+  },
+  {
+   "from": "tests.test_phone_body",
+   "to": "phone.verifier"
+  },
+  {
+   "from": "tests.test_phone_dispatch",
+   "to": "phone.dispatch"
+  },
+  {
+   "from": "tests.test_phone_dispatch",
+   "to": "phone.extract"
+  },
+  {
+   "from": "tests.test_phone_dispatch",
+   "to": "phone.models"
+  },
+  {
+   "from": "tests.test_phone_extract",
+   "to": "phone.extract"
+  },
+  {
+   "from": "tests.test_reasoning",
+   "to": "cognition.reasoning"
+  },
+  {
+   "from": "tests.test_reasoning",
+   "to": "constitution.constitution"
+  },
+  {
+   "from": "tests.test_reasoning",
+   "to": "knowledge.database"
+  },
+  {
+   "from": "tests.test_reasoning",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "tests.test_runtime",
+   "to": "constitution.constitution"
+  },
+  {
+   "from": "tests.test_runtime",
+   "to": "runtime"
+  },
+  {
+   "from": "tests.test_runtime",
+   "to": "runtime.autostart"
+  },
+  {
+   "from": "tests.test_runtime",
+   "to": "runtime.greeting"
+  },
+  {
+   "from": "tests.test_runtime",
+   "to": "runtime.health"
+  },
+  {
+   "from": "tests.test_runtime",
+   "to": "runtime.lockfile"
+  },
+  {
+   "from": "tests.test_runtime",
+   "to": "runtime.logging"
+  },
+  {
+   "from": "tests.test_runtime",
+   "to": "runtime.service"
+  },
+  {
+   "from": "tests.test_runtime_integration",
+   "to": "intelligence.runtime"
+  },
+  {
+   "from": "tests.test_runtime_pipeline",
+   "to": "api"
+  },
+  {
+   "from": "tests.test_runtime_pipeline",
+   "to": "llm"
+  },
+  {
+   "from": "tests.test_self_critic",
+   "to": "config"
+  },
+  {
+   "from": "tests.test_self_critic",
+   "to": "intelligence.critic"
+  },
+  {
+   "from": "tests.test_serious_mode",
+   "to": "comms"
+  },
+  {
+   "from": "tests.test_serious_mode",
+   "to": "comms.audit"
+  },
+  {
+   "from": "tests.test_serious_mode",
+   "to": "comms.bgworkflows"
+  },
+  {
+   "from": "tests.test_serious_mode",
+   "to": "comms.conversation_state"
+  },
+  {
+   "from": "tests.test_serious_mode",
+   "to": "comms.decision"
+  },
+  {
+   "from": "tests.test_serious_mode",
+   "to": "comms.models"
+  },
+  {
+   "from": "tests.test_serious_mode",
+   "to": "comms.quality"
+  },
+  {
+   "from": "tests.test_serious_mode",
+   "to": "comms.store"
+  },
+  {
+   "from": "tests.test_serious_mode",
+   "to": "config"
+  },
+  {
+   "from": "tests.test_serious_mode",
+   "to": "constitution.constitution"
+  },
+  {
+   "from": "tests.test_serious_mode",
+   "to": "intent"
+  },
+  {
+   "from": "tests.test_serious_mode",
+   "to": "intent.commands"
+  },
+  {
+   "from": "tests.test_serious_mode",
+   "to": "intent.multilingual"
+  },
+  {
+   "from": "tests.test_serious_mode",
+   "to": "knowledge.database"
+  },
+  {
+   "from": "tests.test_serious_mode",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "tests.test_serious_mode",
+   "to": "memory.memory_manager"
+  },
+  {
+   "from": "tests.test_serious_mode",
+   "to": "personality"
+  },
+  {
+   "from": "tests.test_serious_mode",
+   "to": "security"
+  },
+  {
+   "from": "tests.test_serious_mode",
+   "to": "security.serious_auth"
+  },
+  {
+   "from": "tests.test_serious_mode",
+   "to": "tools.manager"
+  },
+  {
+   "from": "tests.test_serious_mode",
+   "to": "ui.server"
+  },
+  {
+   "from": "tests.test_setup",
+   "to": "setup"
+  },
+  {
+   "from": "tests.test_ui_bridge",
+   "to": "intent.classifier"
+  },
+  {
+   "from": "tests.test_ui_bridge",
+   "to": "tools.manager"
+  },
+  {
+   "from": "tests.test_ui_bridge",
+   "to": "ui.events"
+  },
+  {
+   "from": "tests.test_ui_bridge",
+   "to": "ui.server"
+  },
+  {
+   "from": "tests.test_ui_bridge",
+   "to": "ui.session"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "agents"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "agents.orchestrator"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "agents.pool"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "config"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "intelligence.world"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "intent"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "intent.commands"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "intent.engine"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "intent.history"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "knowledge.database"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "learning"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "learning.acquisition"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "learning.background"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "learning.controller"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "learning.engine"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "learning.errors"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "learning.meta"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "learning.triggers"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "learning.verification"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "runtime.logging"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "runtime.service"
+  },
+  {
+   "from": "tests.test_universal_integration",
+   "to": "ui.tts"
+  },
+  {
+   "from": "tests.test_voice_service",
+   "to": "config"
+  },
+  {
+   "from": "tests.test_voice_service",
+   "to": "speech"
+  },
+  {
+   "from": "tests.test_voice_service",
+   "to": "ui.server"
+  },
+  {
+   "from": "tests.test_voice_service",
+   "to": "ui.tts"
+  },
+  {
+   "from": "tests.test_world_class",
+   "to": "agents.orchestrator"
+  },
+  {
+   "from": "tests.test_world_class",
+   "to": "agents.pool"
+  },
+  {
+   "from": "tests.test_world_class",
+   "to": "api"
+  },
+  {
+   "from": "tests.test_world_class",
+   "to": "benchmarks"
+  },
+  {
+   "from": "tests.test_world_class",
+   "to": "cognition.context"
+  },
+  {
+   "from": "tests.test_world_class",
+   "to": "cognition.decisions"
+  },
+  {
+   "from": "tests.test_world_class",
+   "to": "intent.classifier"
+  },
+  {
+   "from": "tests.test_world_class",
+   "to": "intent.fast_planner"
+  },
+  {
+   "from": "tests.test_world_class",
+   "to": "llm"
+  },
+  {
+   "from": "tests.test_world_class",
+   "to": "meta"
+  },
+  {
+   "from": "tests.test_world_class",
+   "to": "providers.gemini"
+  },
+  {
+   "from": "tools.agent_tools",
+   "to": "agents.service"
+  },
+  {
+   "from": "tools.agent_tools",
+   "to": "agents.types"
+  },
+  {
+   "from": "tools.agent_tools",
+   "to": "tools"
+  },
+  {
+   "from": "tools.agent_tools",
+   "to": "tools.base"
+  },
+  {
+   "from": "tools.autopilot_tools",
+   "to": "comms"
+  },
+  {
+   "from": "tools.autopilot_tools",
+   "to": "comms.autopilot"
+  },
+  {
+   "from": "tools.autopilot_tools",
+   "to": "comms.bgworkflows"
+  },
+  {
+   "from": "tools.autopilot_tools",
+   "to": "comms.models"
+  },
+  {
+   "from": "tools.autopilot_tools",
+   "to": "comms.outbox"
+  },
+  {
+   "from": "tools.autopilot_tools",
+   "to": "comms.overrides"
+  },
+  {
+   "from": "tools.autopilot_tools",
+   "to": "comms.quality"
+  },
+  {
+   "from": "tools.autopilot_tools",
+   "to": "comms.registry"
+  },
+  {
+   "from": "tools.autopilot_tools",
+   "to": "comms.store"
+  },
+  {
+   "from": "tools.autopilot_tools",
+   "to": "config"
+  },
+  {
+   "from": "tools.autopilot_tools",
+   "to": "tools"
+  },
+  {
+   "from": "tools.autopilot_tools",
+   "to": "tools.base"
+  },
+  {
+   "from": "tools.base",
+   "to": "tools"
+  },
+  {
+   "from": "tools.comm_tools",
+   "to": "comms"
+  },
+  {
+   "from": "tools.comm_tools",
+   "to": "comms.approvals"
+  },
+  {
+   "from": "tools.comm_tools",
+   "to": "comms.calendar"
+  },
+  {
+   "from": "tools.comm_tools",
+   "to": "comms.contacts"
+  },
+  {
+   "from": "tools.comm_tools",
+   "to": "comms.engine"
+  },
+  {
+   "from": "tools.comm_tools",
+   "to": "comms.inbox"
+  },
+  {
+   "from": "tools.comm_tools",
+   "to": "comms.models"
+  },
+  {
+   "from": "tools.comm_tools",
+   "to": "comms.registry"
+  },
+  {
+   "from": "tools.comm_tools",
+   "to": "comms.reply"
+  },
+  {
+   "from": "tools.comm_tools",
+   "to": "comms.store"
+  },
+  {
+   "from": "tools.comm_tools",
+   "to": "comms.workflow"
+  },
+  {
+   "from": "tools.comm_tools",
+   "to": "tools"
+  },
+  {
+   "from": "tools.comm_tools",
+   "to": "tools.base"
+  },
+  {
+   "from": "tools.datetime_tools",
+   "to": "tools"
+  },
+  {
+   "from": "tools.datetime_tools",
+   "to": "tools.base"
+  },
+  {
+   "from": "tools.device_state_tool",
+   "to": "phone.device"
+  },
+  {
+   "from": "tools.device_state_tool",
+   "to": "tools"
+  },
+  {
+   "from": "tools.device_state_tool",
+   "to": "tools.base"
+  },
+  {
+   "from": "tools.device_tools",
+   "to": "tools"
+  },
+  {
+   "from": "tools.device_tools",
+   "to": "tools.base"
+  },
+  {
+   "from": "tools.device_tools",
+   "to": "tools.system_tools"
+  },
+  {
+   "from": "tools.exec_tools",
+   "to": "core"
+  },
+  {
+   "from": "tools.exec_tools",
+   "to": "core.logging"
+  },
+  {
+   "from": "tools.exec_tools",
+   "to": "tools"
+  },
+  {
+   "from": "tools.exec_tools",
+   "to": "tools.base"
+  },
+  {
+   "from": "tools.file_tools",
+   "to": "tools"
+  },
+  {
+   "from": "tools.file_tools",
+   "to": "tools.base"
+  },
+  {
+   "from": "tools.learning_tools",
+   "to": "learning.controller"
+  },
+  {
+   "from": "tools.learning_tools",
+   "to": "learning.retention"
+  },
+  {
+   "from": "tools.learning_tools",
+   "to": "tools"
+  },
+  {
+   "from": "tools.learning_tools",
+   "to": "tools.base"
+  },
+  {
+   "from": "tools.manager",
+   "to": "constitution.policy"
+  },
+  {
+   "from": "tools.manager",
+   "to": "tools"
+  },
+  {
+   "from": "tools.manager",
+   "to": "tools.base"
+  },
+  {
+   "from": "tools.manager",
+   "to": "tools.registry"
+  },
+  {
+   "from": "tools.network_tools",
+   "to": "tools"
+  },
+  {
+   "from": "tools.network_tools",
+   "to": "tools.base"
+  },
+  {
+   "from": "tools.orchestrator_tools",
+   "to": "agents.orchestrator"
+  },
+  {
+   "from": "tools.orchestrator_tools",
+   "to": "tools"
+  },
+  {
+   "from": "tools.orchestrator_tools",
+   "to": "tools.base"
+  },
+  {
+   "from": "tools.registry",
+   "to": "tools"
+  },
+  {
+   "from": "tools.registry",
+   "to": "tools.base"
+  },
+  {
+   "from": "tools.skill_tools",
+   "to": "skills.manager"
+  },
+  {
+   "from": "tools.skill_tools",
+   "to": "tools"
+  },
+  {
+   "from": "tools.skill_tools",
+   "to": "tools.base"
+  },
+  {
+   "from": "tools.system_tools",
+   "to": "tools"
+  },
+  {
+   "from": "tools.system_tools",
+   "to": "tools.base"
+  },
+  {
+   "from": "tools.test_tools",
+   "to": "tools"
+  },
+  {
+   "from": "tools.test_tools",
+   "to": "tools.base"
+  },
+  {
+   "from": "tools.test_tools",
+   "to": "tools.exec_tools"
+  },
+  {
+   "from": "tools.utility_tools",
+   "to": "tools"
+  },
+  {
+   "from": "tools.utility_tools",
+   "to": "tools.base"
+  },
+  {
+   "from": "ui.events",
+   "to": "ui"
+  },
+  {
+   "from": "ui.metrics",
+   "to": "ui"
+  },
+  {
+   "from": "ui.server",
+   "to": "comms"
+  },
+  {
+   "from": "ui.server",
+   "to": "comms.audit"
+  },
+  {
+   "from": "ui.server",
+   "to": "comms.bgworkflows"
+  },
+  {
+   "from": "ui.server",
+   "to": "comms.engine"
+  },
+  {
+   "from": "ui.server",
+   "to": "comms.health"
+  },
+  {
+   "from": "ui.server",
+   "to": "comms.inbox"
+  },
+  {
+   "from": "ui.server",
+   "to": "comms.models"
+  },
+  {
+   "from": "ui.server",
+   "to": "comms.outbox"
+  },
+  {
+   "from": "ui.server",
+   "to": "comms.overrides"
+  },
+  {
+   "from": "ui.server",
+   "to": "comms.quality"
+  },
+  {
+   "from": "ui.server",
+   "to": "comms.registry"
+  },
+  {
+   "from": "ui.server",
+   "to": "comms.store"
+  },
+  {
+   "from": "ui.server",
+   "to": "config"
+  },
+  {
+   "from": "ui.server",
+   "to": "constitution.constitution"
+  },
+  {
+   "from": "ui.server",
+   "to": "core"
+  },
+  {
+   "from": "ui.server",
+   "to": "core.logging"
+  },
+  {
+   "from": "ui.server",
+   "to": "memory.memory_manager"
+  },
+  {
+   "from": "ui.server",
+   "to": "personality"
+  },
+  {
+   "from": "ui.server",
+   "to": "phone.engine"
+  },
+  {
+   "from": "ui.server",
+   "to": "runtime"
+  },
+  {
+   "from": "ui.server",
+   "to": "runtime.greeting"
+  },
+  {
+   "from": "ui.server",
+   "to": "speech"
+  },
+  {
+   "from": "ui.server",
+   "to": "tools.manager"
+  },
+  {
+   "from": "ui.server",
+   "to": "ui"
+  },
+  {
+   "from": "ui.server",
+   "to": "ui.events"
+  },
+  {
+   "from": "ui.server",
+   "to": "ui.metrics"
+  },
+  {
+   "from": "ui.server",
+   "to": "ui.session"
+  },
+  {
+   "from": "ui.server",
+   "to": "ui.tts"
+  },
+  {
+   "from": "ui.session",
+   "to": "capabilities"
+  },
+  {
+   "from": "ui.session",
+   "to": "cognition"
+  },
+  {
+   "from": "ui.session",
+   "to": "cognition.reasoning"
+  },
+  {
+   "from": "ui.session",
+   "to": "config"
+  },
+  {
+   "from": "ui.session",
+   "to": "core"
+  },
+  {
+   "from": "ui.session",
+   "to": "core.logging"
+  },
+  {
+   "from": "ui.session",
+   "to": "core.turn_pipeline"
+  },
+  {
+   "from": "ui.session",
+   "to": "intelligence.critic"
+  },
+  {
+   "from": "ui.session",
+   "to": "intelligence.runtime"
+  },
+  {
+   "from": "ui.session",
+   "to": "intent"
+  },
+  {
+   "from": "ui.session",
+   "to": "intent.commands"
+  },
+  {
+   "from": "ui.session",
+   "to": "intent.engine"
+  },
+  {
+   "from": "ui.session",
+   "to": "intent.history"
+  },
+  {
+   "from": "ui.session",
+   "to": "intent.models"
+  },
+  {
+   "from": "ui.session",
+   "to": "intent.session_state"
+  },
+  {
+   "from": "ui.session",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "ui.session",
+   "to": "learning.background"
+  },
+  {
+   "from": "ui.session",
+   "to": "learning.engine"
+  },
+  {
+   "from": "ui.session",
+   "to": "llm"
+  },
+  {
+   "from": "ui.session",
+   "to": "main"
+  },
+  {
+   "from": "ui.session",
+   "to": "memory.memory_manager"
+  },
+  {
+   "from": "ui.session",
+   "to": "phone.engine"
+  },
+  {
+   "from": "ui.session",
+   "to": "planner"
+  },
+  {
+   "from": "ui.session",
+   "to": "planner.planner"
+  },
+  {
+   "from": "ui.session",
+   "to": "tools.manager"
+  },
+  {
+   "from": "ui.session",
+   "to": "ui"
+  },
+  {
+   "from": "ui.session",
+   "to": "ui.events"
+  },
+  {
+   "from": "ui.tts",
+   "to": "config"
+  },
+  {
+   "from": "ui.tts",
+   "to": "core"
+  },
+  {
+   "from": "ui.tts",
+   "to": "core.logging"
+  },
+  {
+   "from": "ui.tts",
+   "to": "speech"
+  },
+  {
+   "from": "ui.tts",
+   "to": "ui"
+  }
+ ]
+}

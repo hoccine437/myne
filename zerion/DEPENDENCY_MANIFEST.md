@@ -33,6 +33,7 @@ set; `REQUIRES TERMUX PACKAGE` = needs a `pkg install` step;
     {"name": "dumpsys", "why": "optional screen probe on Android", "present_in": "android", "classification": "OPTIONAL (probe guarded by shutil.which)"},
     {"name": "xrandr", "why": "optional screen probe on X11 desktops", "present_in": "desktop", "classification": "DESKTOP ONLY (probe guarded)"},
     {"name": "termux-wallpaper", "why": "legacy probe guard only", "present_in": "termux", "classification": "OPTIONAL"},
+    {"name": "sh", "why": "runtime/selfcheck.py shell-sanity probe (non-Termux detection); never used to execute user commands", "classification": "OPTIONAL"},
     {"name": "pytest", "why": "test runner invoked via `python -m pytest` by tools/test_tools.py", "present_in": "python-package", "classification": "DESKTOP ONLY (development)"}
   ],
   "environment_variables_documented": [

@@ -1040,6 +1040,23 @@ honestly and documented, none claimed.
 Constitution, memory, learning, agents, tools, comms spine all unchanged in
 shape — this pass added guarantees, not parallel systems.
 
+## 27f. FINAL INTEGRATION + READINESS (2026-08-08, closing pass)
+
+Verified facts:: readiness_audit.py recomputes everything each run — the
+numbers belong to the code, not to this text.
+
+| Delivery | Status | Evidence |
+|---|---|---|
+| Startup self-diagnostic (`runtime/selfcheck.py` + `runtime --check`) | LIVE | prints PASS/DEGRADED/… with real probes (14 rows) |
+| Setup contract (PHONE_SETUP.md; extended setup.py) | LIVE (doc + installer verified in sandbox) | setup --check run |
+| Machine system graph (SYSTEM_GRAPH.json, 365 nodes / 1068 edges) | LIVE | emission test inside readiness |
+| Readiness scoring (evidence-weighted) | overall 92.0% READY-WITH-LIMITATIONS | READINESS_REPORT.json |
+| Device-dependent rows (real soak, camera/telephony binaries, email/telegram live delivery) | UNVERIFIED (documented; never claimed) | readiness reports list them by name |
+
+Nothing in this pass is cosmetic: every audit check calls the subsystem it
+scores, and `READY`/`PHONE READY` claims stay withheld where the sandbox
+has no phone.
+
 ## 28. FINAL SUMMARY (§38 contract)
 
 **Actual Entry Point:** `main.py:main()` → Web UI default (`_run_ui` → uvicorn/hosting `ui.server.app`); `main.py --terminal` REPL; `python -m runtime` service supervising the same UI in a thread plus health maintenance.

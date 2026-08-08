@@ -1,0 +1,350 @@
+[
+  {
+    "file": "agents/orchestrator.py",
+    "line": 275,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "agents/pool.py",
+    "line": 53,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "comms/autopilot.py",
+    "line": 286,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "comms/autopilot.py",
+    "line": 292,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "comms/connectors/email_connector.py",
+    "line": 128,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "comms/connectors/email_connector.py",
+    "line": 166,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "comms/decision.py",
+    "line": 173,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "comms/health.py",
+    "line": 64,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "comms/inbox.py",
+    "line": 29,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "comms/loopguard.py",
+    "line": 65,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "comms/reply.py",
+    "line": 81,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "comms/scheduler.py",
+    "line": 59,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "providers/base.py",
+    "line": 29,
+    "kind": "not-implemented",
+    "text": "raise NotImplementedError"
+  },
+  {
+    "file": "runtime/__main__.py",
+    "line": 49,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "runtime/greeting.py",
+    "line": 93,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "runtime/health.py",
+    "line": 288,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "runtime/health.py",
+    "line": 293,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "runtime/health.py",
+    "line": 300,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "runtime/lockfile.py",
+    "line": 23,
+    "kind": "coverage-note",
+    "text": "except ImportError:  # pragma: no cover - Windows"
+  },
+  {
+    "file": "runtime/lockfile.py",
+    "line": 73,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "runtime/lockfile.py",
+    "line": 78,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "runtime/lockfile.py",
+    "line": 84,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "runtime/lockfile.py",
+    "line": 102,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "runtime/lockfile.py",
+    "line": 144,
+    "kind": "coverage-note",
+    "text": "def _acquire_fallback(self) -> None:  # pragma: no cover - POSIX in CI"
+  },
+  {
+    "file": "runtime/logging.py",
+    "line": 92,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "runtime/logging.py",
+    "line": 106,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "runtime/service.py",
+    "line": 333,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "runtime/service.py",
+    "line": 600,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "runtime/service.py",
+    "line": 624,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "runtime/service.py",
+    "line": 635,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "runtime/service.py",
+    "line": 699,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "runtime/service.py",
+    "line": 738,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "runtime/service.py",
+    "line": 747,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "runtime/service.py",
+    "line": 763,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "runtime/service.py",
+    "line": 791,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "tools/base.py",
+    "line": 80,
+    "kind": "not-implemented",
+    "text": "raise NotImplementedError"
+  },
+  {
+    "file": "tools/base.py",
+    "line": 87,
+    "kind": "not-implemented",
+    "text": "raise NotImplementedError"
+  },
+  {
+    "file": "ui/events.py",
+    "line": 116,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "ui/events.py",
+    "line": 139,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "ui/metrics.py",
+    "line": 19,
+    "kind": "coverage-note",
+    "text": "except Exception:  # pragma: no cover - environment-dependent"
+  },
+  {
+    "file": "ui/metrics.py",
+    "line": 36,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "ui/metrics.py",
+    "line": 62,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "ui/metrics.py",
+    "line": 68,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "ui/metrics.py",
+    "line": 74,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "ui/metrics.py",
+    "line": 79,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "ui/metrics.py",
+    "line": 83,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "ui/metrics.py",
+    "line": 92,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "ui/metrics.py",
+    "line": 99,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "ui/metrics.py",
+    "line": 103,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "ui/metrics.py",
+    "line": 107,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "ui/metrics.py",
+    "line": 123,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "ui/metrics.py",
+    "line": 127,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "ui/server.py",
+    "line": 228,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "ui/server.py",
+    "line": 239,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "ui/server.py",
+    "line": 283,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "ui/server.py",
+    "line": 352,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "ui/server.py",
+    "line": 766,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "ui/session.py",
+    "line": 712,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  }
+]

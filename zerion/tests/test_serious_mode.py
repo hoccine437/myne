@@ -141,18 +141,29 @@ class TestAuthFlow(Guard):
         self.assertGreater(out["locked_for"], 0)
 
     def test_no_secret_persistence_anywhere(self):
+        # the password's IDENTITY is what must never persist — a bare "808"
+        # match would false-positive on timestamps/hex ids; we assert on the
+        # code's distinctive forms (word+digits), and on the wordpair together
         import memory.memory_manager as mm
         from knowledge.manager import KnowledgeManager
         self.cmd("turn on serious mode")
         self.cmd("Nano 808")
+        distinctive = ("nano 808", "nano808", "نانو 808", "نانو808", "Nano 808")
         memory_blob = json.dumps(mm.load_memory())
-        self.assertNotIn("808", memory_blob, "memory must never carry the code")
+        for form in distinctive:
+            self.assertNotIn(form, memory_blob, "memory must never carry the code")
         rows = KnowledgeManager().db.query("SELECT content FROM records")
-        self.assertFalse(any("808" in r["content"] for r in rows))
+        blob = "\n".join(r["content"] for r in rows)
+        for form in distinctive:
+            self.assertNotIn(form, blob)
+        # and no record may hold BOTH word and digits separately
+        body = blob.lower()
+        self.assertFalse("nano" in body and "808" in body,
+                         "even split-form persistence is a leak")
         from comms import audit
         journal = json.dumps(audit.tail(50))
-        self.assertNotIn("808", journal)
-        self.assertNotIn("nano", journal.lower())
+        for form in distinctive:
+            self.assertNotIn(form, journal)
 
     def test_no_secret_in_stdout_or_pending_state(self):
         buf = io.StringIO()

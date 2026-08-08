@@ -1,0 +1,44 @@
+{
+  "scores": {
+    "testing": 100.0,
+    "integration": 100.0,
+    "architecture": 87.5,
+    "ui": 100.0,
+    "runtime": 87.5,
+    "constitution": 100.0,
+    "memory": 100.0,
+    "knowledge": 100.0,
+    "learning": 100.0,
+    "tools": 100.0,
+    "agents": 100.0,
+    "phone": 43.8,
+    "communication": 100.0,
+    "background": 100.0,
+    "self-evolution": 100.0,
+    "models": 50.0,
+    "security": 100.0
+  },
+  "overall": 92.3,
+  "verdict": "READY-WITH-LIMITATIONS",
+  "hard_failures": [],
+  "unverified": [
+    {
+      "domain": "phone",
+      "check": "system check: phone",
+      "why": "not a Termux host (expected off-device)"
+    },
+    {
+      "domain": "phone",
+      "check": "device-limit: real-device soak UNVERIFIED (no hardware in audit env)",
+      "why": "real-device soak UNVERIFIED (no hardware in audit env)"
+    },
+    {
+      "domain": "phone",
+      "check": "device-limit: camera/telephony/sms guarded-but-unverified (need Termux bin",
+      "why": "camera/telephony/sms guarded-but-unverified (need Termux binaries)"
+    }
+  ],
+  "checks_total": 34,
+  "elapsed_s": 40.9,
+  "generated": "2026-08-08 21:44:27"
+}

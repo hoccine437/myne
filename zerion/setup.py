@@ -40,7 +40,8 @@ UI_REQUIRED = {"uvicorn": "uvicorn", "starlette": "starlette"}
 
 REQUIRED_DIRS = (
     "memory", "constitution", "providers", "tools", "skills", "agents",
-    "phone", "runtime", "ui", "tests",
+    "phone", "runtime", "ui", "tests", "comms", "security", "intent",
+    "knowledge", "learning",
 )
 REQUIRED_FILES = ("main.py", "config.py", "prompt.txt", "VERSION", ".env.example")
 
@@ -85,7 +86,9 @@ def verify_imports(ui: bool = True) -> list:
     """Post-install import sanity across the load-bearing surfaces."""
     surfaces = ["config", "speech", "tools.manager", "memory.memory_manager",
                 "knowledge.manager", "intent.engine", "planner", "phone.engine",
-                "agents", "skills.manager", "personality", "runtime.service"]
+                "agents", "skills.manager", "personality", "runtime.service",
+                "comms.engine", "comms.autopilot", "security.serious_auth",
+                "learning.controller", "intent.multilingual"]
     if ui:
         surfaces.append("ui.server")
     failed = []
@@ -137,7 +140,8 @@ def run(argv=None) -> int:
 
     print("Platform:", "Termux" if termux() else "non-Termux")
     commands = ["termux-media-player", "termux-battery-status", "termux-clipboard-get",
-                "termux-telephony-call"]
+                "termux-telephony-call", "termux-notification-list",
+                "termux-contact-list", "termux-sms-send"]
     available = [x for x in commands if shutil.which(x)]
     print("Termux API commands:", ", ".join(available) if available else "none (optional)")
 
@@ -145,15 +149,26 @@ def run(argv=None) -> int:
     print("Audio player for voice output:", ", ".join(players) if players else "none found (voice output needs one)")
 
     print()
+    if termux():
+        print("Background operation (Termux):")
+        print("  • keep-alive: termux-wake-lock before long runs; exclude Termux")
+        print("    from Android battery optimization for 24/7 mode")
+        print("  • notifications: install Termux:API + grant notification access")
+        print("  • contacts (optional): grant Contacts permission to Termux:API")
+        print("  • sms/calls (optional): Termux:API permissions, confirmation-gated")
+        print("  • boot autostart: python -m runtime --install-autostart termux --yes")
+        print("  (full contract: PHONE_SETUP.md)")
+    print()
     print("Next:")
     print("  python main.py                  # official entry — Web UI by default (--terminal = REPL)")
     if want_ui and not pkgs.get("ui"):
         print("  python -m ui.server --port 8765 # browser UI")
         print("  python -m runtime               # 24/7 service (hosts UI)")
-    print("  python -m runtime --check       # one-shot health check")
+    print("  python -m runtime --check       # system check + one-shot health probe")
     print("  python -m pytest tests/ -q      # full test suite")
     print()
     print("Setup complete. Configure GEMINI_API_KEY in .env for Gemini text and speech.")
+    print("Email/Telegram connectors activate with EMAIL_*/TELEGRAM_BOT_TOKEN env vars.")
     return 0 if not failed else 3
 
 

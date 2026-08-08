@@ -93,7 +93,12 @@ def _stop(runtime_dir: str) -> int:
 
 
 def _check() -> int:
-    """One-shot health probe. No lock, no service — just the monitor."""
+    """One-shot health probe + the ZERION SYSTEM CHECK matrix."""
+    from runtime.selfcheck import run_checks
+    report = run_checks()
+    print("\nZERION SYSTEM CHECK")
+    for r in report["rows"]:
+        print(f"  {r['name']:16s} {r['state']:11s} {r['detail'][:90]}")
     svc = ZerionService(enable_ui=False, greet=False)
     # --check shouldn't claim the instance lock: probe directly
     svc._stage_core()
@@ -106,7 +111,8 @@ def _check() -> int:
                 "recovering": "…", "disabled": "-"}.get(sub["state"], "?")
         err = f" — {sub['last_error']}" if sub.get("last_error") else ""
         print(f" {mark} {name:10s} {sub['state']:10s}{err}")
-    return 0 if snap["overall"] in ("healthy", "degraded") else 1
+    failed = report["overall"] == "FAILED" or snap["overall"] not in ("healthy", "degraded")
+    return 1 if failed else 0
 
 
 def main(argv=None) -> int:

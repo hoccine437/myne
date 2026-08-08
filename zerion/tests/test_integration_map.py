@@ -61,6 +61,7 @@ KNOWN_DORMANT_PREFIXES = (
     "constitution.evolution",  # evolution policy glue (used by phase5 path)
     "runtime",         # 24/7 service daemon (own entry point)
     "comms.scheduler", # trigger pump — driven by runtime/service maintenance + workflow tools (service cadence, not per-turn)
+    "readiness_audit", # final readiness audit (own entry, operator-run)
     "setup",           # first-run bootstrap CLI (own entry point)
     "second_audit",        # release-gate audit tool (own entry point, dev-only)
     "connectivity_audit",  # final-gate connectivity audit (own entry point, dev-only)
