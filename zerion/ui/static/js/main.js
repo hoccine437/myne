@@ -9,6 +9,7 @@ import { initDevice, fullscreen } from "./core/device.js";
 import { on, emit } from "./core/bus.js";
 import { connect } from "./core/net.js";
 import { store } from "./core/store.js";
+import { h } from "./core/dom.js";
 
 const isMonitor = new URLSearchParams(location.search).get("view") === "monitor";
 
@@ -76,9 +77,11 @@ async function boot() {
   const pill = document.getElementById("core-state-pill");
   const pillLabel = document.getElementById("core-state-label");
   const STATE_LABELS = {
-    idle: "Idle", thinking: "Thinking", listening: "Listening", speaking: "Speaking",
+    idle: "Idle", ready: "Ready", thinking: "Thinking", analyzing: "Analyzing",
+    executing: "Executing", listening: "Listening", speaking: "Speaking",
     searching: "Searching", coding: "Coding", learning: "Learning",
-    updating: "Updating", error: "Error", success: "Success",
+    updating: "Self-Upgrading", warning: "Warning", offline: "Offline",
+    focus: "Focus Mode", error: "Error", success: "Success",
   };
   on("core:core_state", (d) => {
     store.core.state = d.state;
@@ -88,10 +91,79 @@ async function boot() {
     pillLabel.textContent = d.detail ? `${STATE_LABELS[d.state] || d.state} — ${d.detail}` : (STATE_LABELS[d.state] || d.state);
   });
 
-  /* ---- focus mode ---- */
+  /* ---- focus mode (with task detail + real stop control) ---- */
+  let focusDetail = null;
+  const focusBar = h("div", { class: "focus-bar hidden", role: "status", "aria-live": "polite" });
+  document.getElementById("orb-stage").appendChild(focusBar);
+
+  function renderFocusBar() {
+    if (!focusBar) return;
+    if (!focusDetail) { focusBar.classList.add("hidden"); focusBar.innerHTML = ""; return; }
+    focusBar.classList.remove("hidden");
+    const d = focusDetail;
+    focusBar.innerHTML = "";
+    const kb = document.createElement("span");
+    kb.className = "focus-badge";
+    kb.textContent = "FOCUS";
+    const task = document.createElement("span");
+    task.className = "focus-task";
+    task.textContent = d.task || d.reason || "complex task";
+    const progress = document.createElement("span");
+    progress.className = "focus-progress mono";
+    progress.textContent = d.progress || "";
+    const stop = document.createElement("button");
+    stop.className = "mini-btn focus-stop";
+    stop.textContent = "STOP";
+    stop.title = "Cancel Zerion's current pending action (real backend cancel)";
+    stop.addEventListener("click", async () => {
+      (await import("./core/net.js")).core.cancel();
+      focusDetail = null;
+      renderFocusBar();
+    });
+    focusBar.append(kb, task, progress, stop);
+  }
+
   on("core:focus", (d) => {
     document.getElementById("app").dataset.focus = d.active ? "true" : "false";
-    emit("focus", { active: !!d.active, reason: d.reason || "" });
+    if (d.active) {
+      focusDetail = { task: d.task || d.task_goal || d.reason, reason: d.reason,
+                      progress: d.progress || "" };
+      window.__zerionOrb?.setState("focus", d.task || d.reason || "complex task");
+    } else {
+      focusDetail = null;
+      window.__zerionOrb?.setState("idle");
+    }
+    renderFocusBar();
+    emit("focus", { active: !!d.active, reason: d.reason || "", task: d.task || "" });
+  });
+  on("tasks", (d) => {
+    if (!focusDetail) return;
+    const t = d.tasks || [];
+    const done = t.filter(x => x.state === "completed").length;
+    focusDetail.progress = t.length ? `${done}/${t.length} steps` : "";
+    if (d.goal && !focusDetail.task) focusDetail.task = d.goal;
+    renderFocusBar();
+  });
+
+  /* ---- orb context: agents + tools + connection state ---- */
+  on("core:agents", (d) => {
+    const n = Object.values(d.agents || {}).filter(a => {
+      const ts = a.ts || 0;
+      return a.state === "active" && (Date.now() / 1000 - ts) < 30;
+    }).length;
+    window.__zerionOrb?.setAgents(n);
+  });
+  const runningTools = new Set();
+  on("core:tool", (d) => {
+    const key = { run_python: "executecode", run_shell: "executecode", read_file: "file", write_file: "file",
+                  search_files: "file", list_directory: "file", http_get: "net", http_post: "net",
+                  phone_state: "phone", agent_delegate: "agent" }[d.tool] || "tool";
+    if (d.phase === "start") runningTools.add(key);
+    if (d.phase === "end" || d.phase === "cancelled") runningTools.delete(key);
+    window.__zerionOrb?.setTools([...runningTools]);
+  });
+  on("connection", ({ connected }) => {
+    window.__zerionOrb?.setState(connected ? "ready" : "offline");
   });
 
   /* ---- workspace switch requests from UI gestures ---- */

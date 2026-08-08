@@ -87,6 +87,12 @@ function renderMetrics(m) {
     : `↑ ${fmtBits(net.up_bps)}  ↓ ${fmtBits(net.down_bps)}`;
   document.getElementById("fact-network").textContent = netText;
   document.getElementById("fact-uptime").textContent = fmtUptime(m.uptime_s);
+
+  // storage shows only when we actually have data (never fake)
+  const storEl = document.getElementById("fact-storage");
+  if (m.storage && storEl) {
+    storEl.textContent = `${fmtBytes(m.storage.free)} free`;
+  }
 }
 
 function renderModelFacts() {

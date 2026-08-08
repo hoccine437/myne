@@ -26,13 +26,19 @@
 
   /* core-state palette (drives orb + state pill) */
   --st-idle: #66e3ff;
+  --st-ready: #66e3ff;
   --st-thinking: #66e3ff;
+  --st-analyzing: #9d7bff;
+  --st-executing: #ffb454;
   --st-listening: #43e6a4;
   --st-speaking: #9d7bff;
   --st-searching: #58a6ff;
   --st-coding: #ffb454;
   --st-learning: #ff6fd8;
   --st-updating: #2ee6c8;
+  --st-warning: #ffb454;
+  --st-offline: #5a6b8c;
+  --st-focus: #b8c6ff;
   --st-error: #ff5d73;
   --st-success: #43e6a4;
 

@@ -11,6 +11,7 @@ fallback so the panel still lights up on Termux-style environments.
 from __future__ import annotations
 
 import os
+import shutil
 import time
 
 try:
@@ -47,11 +48,18 @@ def sample() -> dict:
         "cpu": {"percent": None, "cores": os.cpu_count(), "freq_mhz": None, "load": None},
         "ram": {"percent": None, "used": None, "total": None},
         "swap": {"percent": None},
+        "storage": None,      # populated below for real, never guessed
+        "gpu": None,          # never fabricated: None unless detected exists
         "net": {"up_bps": None, "down_bps": None},
         "battery": {"percent": None, "plugged": None},
         "processes": None,
         "platform": os.name,
     }
+    try:
+        usage = shutil.disk_usage(os.path.expanduser("~"))
+        data["storage"] = {"used": usage.used, "free": usage.free, "total": usage.total}
+    except Exception:
+        pass
 
     if psutil is not None:
         try:

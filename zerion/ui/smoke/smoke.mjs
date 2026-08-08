@@ -238,6 +238,32 @@ pushServer("focus", { active: false });
 await new Promise(r => setTimeout(r, 30));
 check("focus mode released", $("#app").dataset.focus === "false");
 
+console.log("\n— core state vocabulary & pill…");
+const stroller = ["ready", "thinking", "analyzing", "executing", "listening", "speaking",
+                  "searching", "learning", "updating", "warning", "coding", "error",
+                  "success", "offline", "focus", "idle"];
+for (const s of stroller) pushServer("core_state", { state: s });
+await new Promise(r => setTimeout(r, 60));
+check("pill rides new states", $("#core-state-label").textContent.toLowerCase().length > 2);
+pushServer("focus", { active: true, task: "fixing auth.py", reason: "multi-step task" });
+pushServer("tasks", { tasks: [
+  { id: 1, description: "read", tool_name: null, parameters: {}, depends_on: [], state: "completed" },
+  { id: 2, description: "fix", tool_name: "run_python", parameters: {}, depends_on: [1], state: "running" },
+], goal: "fix auth"});
+await new Promise(r => setTimeout(r, 60));
+check("focus bar visible with task + progress",
+      !!$(".focus-bar:not(.hidden)") && $(".focus-task")?.textContent.includes("fixing auth.py"));
+const stopBtn = $(".focus-stop");
+stopBtn?.click();
+await new Promise(r => setTimeout(r, 30));
+check("focus stop sends real cancel to backend", sent.some(m => m.type === "cancel"));
+
+console.log("\n— phone body workspace…");
+pushServer("phone_state", { current_action: "abc123", platform: "android/termux",
+  available_capabilities: ["torch"], permissions: { denied: [] }, capabilities_total: 13, recent_actions: [] });
+await new Promise(r => setTimeout(r, 120));
+check("phone workspace activates on action", $("#ws-phone")?.dataset.active === "true");
+
 console.log("\n— voice service (server-authoritative Gemini path)…");
 // hello declared server-gemini voice path
 pushServer("hello", { version: "1.0.0-test", settings: { model: "test-model", voice_path: "server-gemini" }, tools: [] });

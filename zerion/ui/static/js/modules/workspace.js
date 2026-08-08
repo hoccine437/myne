@@ -15,6 +15,7 @@ const MODES = {
   trading:    { label: "Trading",      sub: "market posture · signals", loader: () => import("./modes/trading.js") },
   vision:     { label: "Vision",       sub: "image analysis workspace", loader: () => import("./modes/vision.js") },
   automation: { label: "Automation",   sub: "workflow graph · execution", loader: () => import("./modes/automation.js") },
+  phone:      { label: "Phone Control", sub: "physical body state · approvals · audit", loader: () => import("./modes/phone.js") },
 };
 
 const instances = new Map();   // name → { root, activate(ctx), event(type, data) }
@@ -73,6 +74,17 @@ export function initWorkspace() {
 
   // Source of truth for switching: Core classification events.
   on("core:workspace", (d) => setWorkspace(d.mode, { source: d.source }));
+
+  // Phone body activity drives the phone-control workspace automatically;
+  // it settles back to conversation when the action completes.
+  let phoneSettle = null;
+  on("core:phone_state", (snap) => {
+    clearTimeout(phoneSettle);
+    if (snap.current_action) {
+      setWorkspace("phone", { source: "phone_body" });
+      phoneSettle = setTimeout(() => setWorkspace("chat", { source: "phone_body" }), 4000);
+    }
+  });
 
   // Router for mode-scoped Core events → the active (or owning) view.
   on("core:tool", (d) => {

@@ -20,8 +20,14 @@ const TAU = Math.PI * 2;
 const STATES = {
   idle:      { h: 192, s: 100, l: 68, speed: 0.22, converge: 0.0, breath: 0.055, jitter: 0,
                ripples: false, wave: false, sweep: false, runes: false, spiral: 0, label: "IDLE" },
+  ready:     { h: 192, s: 100, l: 70, speed: 0.26, converge: 0.08, breath: 0.05, jitter: 0,
+               ripples: false, wave: false, sweep: false, runes: false, spiral: 0, label: "READY" },
   thinking:  { h: 192, s: 100, l: 62, speed: 1.7, converge: 0.72, breath: 0.10, jitter: 0.12,
                ripples: false, wave: false, sweep: false, runes: false, spiral: 0, label: "THINKING" },
+  analyzing: { h: 258, s: 85, l: 68, speed: 1.25, converge: 0.55, breath: 0.07, jitter: 0.05,
+               ripples: false, wave: false, sweep: true, runes: false, spiral: 0.3, label: "ANALYZING" },
+  executing: { h: 28, s: 100, l: 62, speed: 1.6, converge: 0.5, breath: 0.08, jitter: 0.08,
+               ripples: false, wave: false, sweep: false, runes: true, spiral: 0, toolRing: true, label: "EXECUTING" },
   listening: { h: 152, s: 90, l: 60, speed: 0.55, converge: 0.25, breath: 0.07, jitter: 0,
                ripples: true, wave: false, sweep: false, runes: false, spiral: 0, label: "LISTENING" },
   speaking:  { h: 258, s: 85, l: 70, speed: 0.8, converge: 0.45, breath: 0.085, jitter: 0.05,
@@ -33,7 +39,13 @@ const STATES = {
   learning:  { h: 316, s: 90, l: 68, speed: 1.3, converge: 0.6, breath: 0.09, jitter: 0.06,
                ripples: false, wave: false, sweep: false, runes: false, spiral: 1, label: "LEARNING" },
   updating:  { h: 172, s: 90, l: 60, speed: 1.5, converge: 0.4, breath: 0.06, jitter: 0.15,
-               ripples: false, wave: false, sweep: true, runes: true, spiral: 0, label: "UPDATING" },
+               ripples: false, wave: false, sweep: true, runes: true, spiral: 0, label: "SELF-UPGRADING" },
+  warning:   { h: 43, s: 100, l: 60, speed: 0.55, converge: 0.2, breath: 0.16, jitter: 0.18,
+               ripples: false, wave: false, sweep: false, runes: false, spiral: 0, label: "WARNING" },
+  offline:   { h: 214, s: 18, l: 42, speed: 0.10, converge: 0.0, breath: 0.025, jitter: 0,
+               ripples: false, wave: false, sweep: false, runes: false, spiral: 0, label: "OFFLINE" },
+  focus:     { h: 258, s: 60, l: 78, speed: 0.32, converge: 0.16, breath: 0.05, jitter: 0,
+               ripples: false, wave: false, sweep: false, runes: false, spiral: 0, label: "FOCUS MODE" },
   error:     { h: 350, s: 100, l: 64, speed: 1.9, converge: 0.68, breath: 0.14, jitter: 1.0,
                ripples: false, wave: false, sweep: false, runes: false, spiral: 0, label: "FAULT" },
   success:   { h: 152, s: 95, l: 62, speed: 1.4, converge: 0.3, breath: 0.08, jitter: 0,
@@ -61,6 +73,8 @@ class Orb {
     this.errorUntil = 0;        // error auto-return timer
     this.visible = true;
     this.quality = 1;           // 0..1 particle budget multiplier
+    this.agentsOnline = 0;      // active agents driving stream halos
+    this.toolsActive = [];      // live tool codes shown as orbital markers
 
     this.particles = [];
     this.stars = [];
@@ -161,6 +175,9 @@ class Orb {
     if (this.state === "error") this.errorUntil = performance.now() + 2600;
   }
 
+  /* live activity context from the Core */
+  setAgents(count) { this.agentsOnline = Math.max(0, count | 0); }
+  setTools(list) { this.toolsActive = Array.isArray(list) ? list.slice(0, 5) : []; }
   setAmplitude(v) { this.amp = Math.max(0, Math.min(1, v)); }
 
   frame(now) {
@@ -331,6 +348,40 @@ class Orb {
         ctx.strokeStyle = col(c.l + 20, 0.6); ctx.lineWidth = 2;
         ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(R * 1.4, 0); ctx.stroke();
         ctx.restore();
+      }
+    }
+
+    // --- agent links: nodes around the core when agents are working ---
+    if (this.agentsOnline > 0) {
+      const n = Math.min(this.agentsOnline, 6);
+      for (let i = 0; i < n; i++) {
+        const th = this.rot * 0.55 + (i / n) * TAU;
+        const nx = px + Math.cos(th) * R * 1.85;
+        const ny = py + Math.sin(th) * R * 1.55;
+        // stream between agent node and the core
+        const flick = 0.28 + 0.24 * Math.sin(t * 2.4 + i * 2.1);
+        ctx.strokeStyle = col(c.l, Math.max(0.08, flick));
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(nx, ny); ctx.stroke();
+        ctx.fillStyle = col(c.l + 12, 0.85);
+        ctx.beginPath(); ctx.arc(nx, ny, 2.4, 0, TAU); ctx.fill();
+      }
+    }
+
+    // --- tool markers: running tools orbit as small runes ---
+    if (this.toolsActive.length) {
+      ctx.font = "600 10px " + getComputedStyle(canvas).getPropertyValue("--font-mono");
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      for (let i = 0; i < this.toolsActive.length; i++) {
+        const th = this.rot * 1.3 + (i / this.toolsActive.length) * TAU;
+        const tx = px + Math.cos(th) * R * 1.52;
+        const ty = py + Math.sin(th) * R * 1.38;
+        ctx.fillStyle = col(c.l + 16, 0.9);
+        const glyph = { executecode: ">", file: "□", net: "◎", phone: "▣" }[this.toolsActive[i]] || "◆";
+        ctx.fillText(glyph, tx, ty);
+        // halo tick
+        ctx.strokeStyle = col(c.l, 0.35);
+        ctx.beginPath(); ctx.arc(tx, ty, 8, 0, TAU); ctx.stroke();
       }
     }
 

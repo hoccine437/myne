@@ -472,7 +472,7 @@ class ZerionUISession:
         #     reasoning → runtime intelligence (same order as main.py) ---
         t0 = time.monotonic()
         self._agent("Knowledge", "active", "retrieving context")
-        self._state("searching", "retrieving memory and knowledge")
+        self._state("analyzing", "assembling reasoning context")
         long_term_memory = load_memory()
         memory_for_prompt = minimal_memory_for_prompt(long_term_memory)
         retrieved = self.knowledge.retrieve_context(text, limit=5)
@@ -533,13 +533,16 @@ class ZerionUISession:
             bus.emit("workspace", {"mode": workspace, "source": "classification",
                                    "confidence": cls.get("confidence")})
 
-        # Focus mode: multi-step work collapses peripheral UI.
+        # Focus mode: multi-step work collapses peripheral UI, and the focus
+        # bar carries the actual task + progress so the user sees the work.
         if classification.intent == Intent.PLANNER or (cls.get("estimated_tool_count") or 0) >= 2:
-            bus.emit("focus", {"active": True, "reason": "multi-step task"})
+            bus.emit("focus", {"active": True, "reason": "multi-step task",
+                               "task": text[:120]})
 
         if fast_result is not None:
             if fast_result.get("tool_used"):
                 self._agent("Fast Planner", "active", f"tool: {fast_result['tool_used']}")
+                self._state("executing", f"fast tool {fast_result['tool_used']}")
                 bus.emit("tool", {"phase": "end", "tool": fast_result["tool_used"],
                                   "success": True, "via": "fast_planner"})
             else:
@@ -576,7 +579,9 @@ class ZerionUISession:
             else:
                 self._emit_workflow("finished")
                 self._state("success")
-                self._render_plan_summary(plan_outcome)
+                self._state("warning" if not plan_outcome.get("all_succeeded") else "success",
+                        "partial failure" if not plan_outcome.get("all_succeeded") else "")
+            self._render_plan_summary(plan_outcome)
             return
 
         # --- LLM (main.py's ui.start_speaking → core_state: thinking) ---
@@ -663,8 +668,7 @@ class ZerionUISession:
         if tool is not None:
             self._agent("Tool Manager", "active", intent)
             bus.emit("tool", {"phase": "start", "tool": intent, "parameters": parameters})
-            self._state("coding" if intent in ("run_python", "run_shell") else "thinking",
-                        f"running {intent}")
+            self._state("executing", f"executing {intent}")
             result = tool_manager.execute(intent, parameters)
             if result.error == "confirmation_required":
                 bus.emit("tool", {"phase": "confirm", "tool": intent,
