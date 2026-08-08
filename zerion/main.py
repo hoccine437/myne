@@ -38,7 +38,8 @@ from intent.models import Intent
 
 from memory.memory_manager import load_memory, update_memory
 
-INTERRUPT_COMMANDS = {"quit", "exit", "stop"}
+from core.turn_pipeline import (INTERRUPT_COMMANDS, is_confirm_answer,
+                                plan_summary_text)
 
 
 class SessionMemory:
@@ -147,20 +148,9 @@ def minimal_memory_for_prompt(memory: dict) -> dict:
 
 def _render_plan_summary(summary: dict, ui):
     """Turn a planner execution summary into a short spoken/printed
-    report — which steps ran, which failed, overall outcome."""
-    tasks = summary.get("tasks", [])
-    done = [t for t in tasks if t["state"] == "completed"]
-    failed = [t for t in tasks if t["state"] == "failed"]
-
-    if summary.get("all_succeeded"):
-        msg = f"Done — completed all {len(done)} step(s) for: {summary.get('goal', '')}"
-    elif summary.get("aborted"):
-        msg = (f"Stopped partway through '{summary.get('goal', '')}' — "
-               f"{len(done)} step(s) succeeded, {len(failed)} failed.")
-    else:
-        msg = (f"Finished '{summary.get('goal', '')}' with some issues — "
-               f"{len(done)} step(s) succeeded, {len(failed)} failed or skipped.")
-
+    report — which steps ran, which failed, overall outcome. The prose
+    itself is owned by core.turn_pipeline (shared with the UI front end)."""
+    msg = plan_summary_text(summary)
     ui.write_log(f"AI: {msg}")
     speak(msg)
 
@@ -245,7 +235,7 @@ def run_loop(ui):
             continue
 
         if pending_phone is not None:
-            if user_text.strip().lower() in ("confirm", "yes", "y"):
+            if is_confirm_answer(user_text):
                 goal, intent = pending_phone
                 result = phone.dispatcher.dispatch(goal, intent, approved=True)
                 ui.write_log(f"AI: {result.message}")
@@ -311,7 +301,7 @@ def run_loop(ui):
         # confirmation below, since a plan's confirmation takes priority
         # over any stray pending single-tool call.
         if planning_engine.has_paused_plan():
-            if user_text.strip().lower() in ("confirm", "yes", "y"):
+            if is_confirm_answer(user_text):
                 pending_tool_result = None
                 if tool_manager.has_pending_confirmation():
                     pending_tool_result = tool_manager.confirm_pending()
@@ -334,7 +324,7 @@ def run_loop(ui):
         # A destructive tool (delete/move/run shell, etc.) is waiting on a
         # yes/no before it will actually execute.
         if tool_manager.has_pending_confirmation():
-            if user_text.strip().lower() in ("confirm", "yes", "y"):
+            if is_confirm_answer(user_text):
                 result = tool_manager.confirm_pending()
                 msg = result.message or ("Done." if result.success else "That didn't work.")
                 ui.write_log(f"AI: {msg}")

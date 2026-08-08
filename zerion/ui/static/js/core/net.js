@@ -36,6 +36,7 @@ export const core = {
   confirm: () => send({ type: "confirm" }),
   cancel: () => send({ type: "cancel" }),
   terminal: (command) => send({ type: "terminal", command }),
+  tts: (text, seq) => send({ type: "tts", text, seq }),
 };
 
 export function connect() {

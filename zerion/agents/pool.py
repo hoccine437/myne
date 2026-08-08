@@ -35,18 +35,39 @@ _AGENT_TTL = 600.0          # finished agents are reaped after 10 minutes
 _DEFAULT_CAP = None          # computed lazily from host resources
 
 
+def _host_resources() -> dict:
+    """RAM + cores, with honest fallbacks (never raises)."""
+    cores = os.cpu_count() or 2
+    mem_gb = None
+    try:
+        import psutil
+        mem_gb = psutil.virtual_memory().total / 1024 ** 3
+    except Exception:
+        try:
+            with open("/proc/meminfo", "r", encoding="utf-8") as f:
+                for line in f:
+                    if line.startswith("MemTotal"):
+                        mem_gb = int(line.split()[1]) / 1024 ** 2
+                        break
+        except Exception:
+            pass
+    return {"cores": cores, "mem_gb": mem_gb}
+
+
+def _effective_capacity(cores: int, mem_gb: float | None) -> int:
+    """Execution concurrency derived from the host, never a hardcoded cap:
+    2 × cores, bounded by 2/GB RAM, clamped to [2, 64] as a sanity band."""
+    raw = max(cores * 2, 2)
+    if mem_gb is not None:
+        raw = min(raw, int(mem_gb * 2))
+    return max(2, min(raw, 64))
+
+
 def _default_capacity() -> int:
     global _DEFAULT_CAP
     if _DEFAULT_CAP is None:
-        cores = os.cpu_count() or 2
-        cap = max(2, min(cores, 4))
-        try:
-            import psutil
-            if psutil.virtual_memory().total < 3 * 1024 ** 3:
-                cap = min(cap, 2)   # low-RAM hosts (phones) get a tight pool
-        except Exception:
-            pass
-        _DEFAULT_CAP = cap
+        r = _host_resources()
+        _DEFAULT_CAP = _effective_capacity(r["cores"], r["mem_gb"])
     return _DEFAULT_CAP
 
 
@@ -75,30 +96,49 @@ class AgentInstance:
 
 
 class AgentPool:
-    def __init__(self, max_agents: int | None = None):
+    def __init__(self, max_agents: int | None = None, resources: dict | None = None):
         env = os.getenv("ZERION_MAX_AGENTS", "").strip()
         try:
             cap = int(env) if env else None
         except ValueError:
             cap = None
-        self.max_agents = max_agents or cap or _default_capacity()
-        self._sem = threading.Semaphore(self.max_agents)
+        if max_agents is None and cap is None:
+            res = resources or _host_resources()
+            self.max_agents = _effective_capacity(res["cores"], res.get("mem_gb"))
+            self.resources = res
+        else:
+            self.max_agents = max_agents or cap
+            self.resources = resources or {"cores": os.cpu_count() or 2, "mem_gb": None}
+        # execution concurrency is resource-bounded; instances may QUEUE up
+        # to a resource-informed backlog (pending bound), not a fixed number
+        self.max_pending = self.max_agents * 16
+        self._sem = threading.Semaphore(self.max_agents)   # execution gate
+        self._by_type_sem_lock = threading.Lock()
         self._by_type_sem: dict[str, threading.Semaphore] = {}
         self._agents: dict[str, AgentInstance] = {}
+        self._inflight = 0
         self._lock = threading.Lock()
         self._closed = False
 
     # ------------------------------------------------------------------
 
     def _type_sem(self, type_name: str) -> threading.Semaphore:
-        with self._lock:
+        with self._by_type_sem_lock:
             if type_name not in self._by_type_sem:
-                limit = get_type(type_name).max_parallel
+                limit = self._type_cap(get_type(type_name))
                 self._by_type_sem[type_name] = threading.Semaphore(limit)
             return self._by_type_sem[type_name]
 
+    def _type_cap(self, atype) -> int:
+        # per-type execution concurrency: at least its baseline, scaled so a
+        # single type may use up to ~75% of the resource-derived pool
+        scaled = max(1, int(self.max_agents * 0.75))
+        return max(atype.max_parallel, scaled)
+
     def spawn(self, type_name: str, task: dict, wait: bool = True) -> dict:
-        """Spawn an agent instance. task: {tool, parameters} or {query}."""
+        """Create an agent instance. Creation is unbounded by hardcoded agent
+        counts; execution is bounded by host resources (workers wait on the
+        gates). Creation volume is capped by a resource-informed backlog."""
         if self._closed:
             return _err(None, "pool_closed", "agent pool is shut down")
 
@@ -106,16 +146,16 @@ class AgentPool:
         if atype is None:
             return _err(None, "unknown_type",
                         f"unknown agent type {type_name!r}; types: {', '.join(sorted(_type_names()))}")
-        agent = AgentInstance(atype.name, task or {})
-
-        if not self._sem.acquire(blocking=False):
-            return _err(agent.id, "capacity", "agent pool at capacity — try again shortly")
-        if not self._type_sem(atype.name).acquire(blocking=False):
-            self._sem.release()
-            return _err(agent.id, "capacity", f"type '{atype.name}' is at its instance cap")
 
         with self._lock:
+            unfinished = sum(1 for a in self._agents.values() if a.finished is None)
+            if unfinished >= self.max_pending:
+                return _err(None, "backlog",
+                            f"agent backlog full ({self.max_pending} pending) — "
+                            f"executing capacity: {self.max_agents}")
+            agent = AgentInstance(atype.name, task or {})
             self._agents[agent.id] = agent
+
         threading.Thread(target=self._run_guarded, args=(agent,),
                          name=f"agent-{agent.id}", daemon=True).start()
         if wait:
@@ -168,11 +208,31 @@ class AgentPool:
     # ------------------------------------------------------------------
 
     def _run_guarded(self, agent: AgentInstance) -> None:
+        # execution gates live inside the worker: agents queue as "queued"
+        # until the resource budget frees, then execute, then release.
+        with self._lock:
+            self._inflight += 1
         try:
-            self._execute(agent)
+            if self._sem.acquire(timeout=30):
+                try:
+                    if self._type_sem(agent.type_name).acquire(timeout=30):
+                        try:
+                            self._execute(agent)
+                        finally:
+                            self._type_sem(agent.type_name).release()
+                    else:
+                        agent.status = "failed"
+                        agent.error = "type concurrency window expired"
+                        agent.finished = time.time()
+                finally:
+                    self._sem.release()
+            else:
+                agent.status = "failed"
+                agent.error = "execution window expired (system saturated)"
+                agent.finished = time.time()
         finally:
-            self._sem.release()
-            self._type_sem(agent.type_name).release()
+            with self._lock:
+                self._inflight -= 1
 
     def _execute(self, agent: AgentInstance) -> None:
         agent.status = "running"
@@ -220,11 +280,14 @@ class AgentPool:
     def stats(self) -> dict:
         with self._lock:
             live = list(self._agents.values())
+            inflight = self._inflight
         counts = {}
         for a in live:
             counts.setdefault(a.type_name, {}).setdefault(a.status, 0)
             counts[a.type_name][a.status] = counts[a.type_name].get(a.status, 0) + 1
-        return {"capacity": self.max_agents, "tracked": len(live), "by_type": counts}
+        return {"capacity": self.max_agents, "max_pending": self.max_pending,
+                "resources": self.resources, "inflight": inflight,
+                "tracked": len(live), "by_type": counts}
 
     def shutdown(self) -> None:
         self._closed = True

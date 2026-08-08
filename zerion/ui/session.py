@@ -60,9 +60,10 @@ from intent import session_state
 
 from memory.memory_manager import load_memory, update_memory
 
-from ui.events import bus
+from core.turn_pipeline import (CONFIRM_WORDS, is_confirm_answer,
+                                is_interrupt, plan_summary_text)
 
-CONFIRM_WORDS = ("confirm", "yes", "y")
+from ui.events import bus
 
 # Workspace modes the client knows how to render.
 WORKSPACES = {"chat", "coding", "research", "trading", "vision", "automation"}
@@ -237,21 +238,10 @@ class ZerionUISession:
     # -- main.py equivalents ---------------------------------------------
 
     def _render_plan_summary(self, summary: dict) -> None:
-        """Line-comparable port of main.py's _render_plan_summary."""
-        tasks = summary.get("tasks", [])
-        done = [t for t in tasks if t["state"] == "completed"]
-        failed = [t for t in tasks if t["state"] == "failed"]
-
-        if summary.get("all_succeeded"):
-            msg = f"Done — completed all {len(done)} step(s) for: {summary.get('goal', '')}"
-        elif summary.get("aborted"):
-            msg = (f"Stopped partway through '{summary.get('goal', '')}' — "
-                   f"{len(done)} step(s) succeeded, {len(failed)} failed.")
-        else:
-            msg = (f"Finished '{summary.get('goal', '')}' with some issues — "
-                   f"{len(done)} step(s) succeeded, {len(failed)} failed or skipped.")
-
-        self._say(msg, kind="plan")
+        """Emit the planner summary in the canonical shared prose
+        (core.turn_pipeline.plan_summary_text — single source of truth
+        with main.py's own _render_plan_summary)."""
+        self._say(plan_summary_text(summary), kind="plan")
 
     # ------------------------------------------------------------------
     # public entry points (called from the server layer)
@@ -341,7 +331,7 @@ class ZerionUISession:
         bus.emit("chat", {"role": "user", "text": text, "kind": origin})
 
         # --- interrupt words: the web equivalent of quitting the loop ---
-        if lowered in ("quit", "exit", "stop"):
+        if is_interrupt(lowered):
             self._say("Session ended on this device — the Core stays ready. "
                       "Reconnect or send another message to resume.")
             return
@@ -355,7 +345,7 @@ class ZerionUISession:
 
         # --- pending phone approval ------------------------------------
         if self.pending_phone is not None:
-            if lowered in CONFIRM_WORDS:
+            if is_confirm_answer(lowered):
                 goal, intent = self.pending_phone
                 self._agent("Tool Manager", "active", "phone dispatch (approved)")
                 result = self.phone.dispatcher.dispatch(goal, intent, approved=True)
@@ -416,7 +406,7 @@ class ZerionUISession:
         # --- paused-plan confirmation (before single-tool confirmation)--
         if planning_engine.has_paused_plan():
             self._agent("AI Planner", "active", "paused plan decision")
-            if lowered in CONFIRM_WORDS:
+            if is_confirm_answer(lowered):
                 pending_tool_result = None
                 if tool_manager.has_pending_confirmation():
                     pending_tool_result = tool_manager.confirm_pending()
@@ -449,7 +439,7 @@ class ZerionUISession:
         # --- single destructive-tool confirmation -----------------------
         if tool_manager.has_pending_confirmation():
             self._agent("Constitution", "active", "approval decision")
-            if lowered in CONFIRM_WORDS:
+            if is_confirm_answer(lowered):
                 result = tool_manager.confirm_pending()
                 bus.emit("confirm_required", {"pending": False})
                 self._clear_pending_origin()

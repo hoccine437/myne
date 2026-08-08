@@ -18,6 +18,7 @@ so the common case has zero added latency.
 import json
 
 import api
+from llm import safe_json_parse as _safe_json_parse
 from planner.models import Plan, Task
 
 _DECOMPOSE_PROMPT = """You are a task planner. Given a user request and a list of \
@@ -53,34 +54,6 @@ Available tools:
 
 User request: "{request}"
 """
-
-
-def _safe_json_parse(text: str):
-    if not text:
-        return None
-    text = text.strip()
-    if "```json" in text:
-        try:
-            start = text.index("```json") + 7
-            end = text.index("```", start)
-            text = text[start:end].strip()
-        except ValueError:
-            pass
-    elif "```" in text:
-        try:
-            start = text.index("```") + 3
-            end = text.index("```", start)
-            text = text[start:end].strip()
-        except ValueError:
-            pass
-    if "{" not in text or "}" not in text:
-        return None
-    try:
-        start = text.index("{")
-        end = text.rindex("}") + 1
-        return json.loads(text[start:end])
-    except Exception:
-        return None
 
 
 def decompose(user_text: str, available_tools: list) -> Plan:

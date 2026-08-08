@@ -30,7 +30,11 @@ export function maybeShowWelcome(container) {
   show(container);
 }
 
+let mounted = null;
+
 export function show(container) {
+  // idempotent: repeated hello/reconnect events must not stack overlays
+  if (mounted && mounted.isConnected) return;
   container = container || document.getElementById("floating-layer");
   const overlay = h("div", {
     class: "confirm-overlay", role: "dialog", "aria-modal": "true",
@@ -67,6 +71,7 @@ export function show(container) {
 
   overlay.appendChild(card);
   document.body.appendChild(overlay);
+  mounted = overlay;
 
   // readiness fills in when bootstrap/hello data is available
   const renderReadiness = () => {
@@ -92,6 +97,7 @@ export function show(container) {
 }
 
 function dismiss(overlay, persist) {
+  if (mounted === overlay) mounted = null;
   if (persist) {
     try { localStorage.setItem(KEY, "1"); } catch { }
   }

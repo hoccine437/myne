@@ -224,25 +224,25 @@ def classify_all():
 
         # --- connection status (Part 19 vocabulary) ---
         if cls == "C":
-            conn = "TEST ONLY"
+            conn = "TEST ONLY (C)"
         elif cls in ("D",):
             conn = "DEVELOPMENT ONLY"
         elif cls == "E":
             conn = "DOCUMENTATION"
         elif cls == "G":
-            conn = "ORPHANED?"
+            conn = "DEAD?"
         elif cls in ("B", "H"):
             conn = "SUPPORTING" if cls == "B" else "UNKNOWN"
         elif cls == "F":
-            conn = "DYNAMICALLY CONNECTED"
+            conn = "DYNAMICALLY REACHABLE"
         elif mod and mod in main_reach:
-            conn = "CONNECTED (main.py)"
+            conn = "REACHABLE (main.py)"
         elif rel.startswith("ui/") or (mod and mod in ui_reach):
-            conn = "CONNECTED (ui entry)"
+            conn = "REACHABLE (ui.server)"
         elif mod and mod in rt_reach:
-            conn = "CONNECTED (runtime entry)"
+            conn = "REACHABLE (runtime)"
         else:
-            conn = "PARTIALLY CONNECTED"
+            conn = "LEGACY / OWNER-INVOKED"
 
         inventory[rel] = {"class": cls, "connection": conn, "module": mod}
     return inventory, mods, edges, (main_reach, ui_reach, rt_reach, js_reach, js_files)
@@ -349,8 +349,10 @@ def prove_dynamic_discovery():
 
 def ui_connectivity():
     server = (BASE / "ui/server.py").read_text(encoding="utf-8")
-    routes = set(re.findall(r'@app\.get\("([^"]+)"\)|@app\.post\("([^"]+)"', server))
-    routes = {a or b for a, b in routes}
+    # @route("...") decorators AND direct Route(...)/WebSocketRoute(...) entries
+    routes = set(re.findall(r'@route\("([^"]+)"', server))
+    routes |= set(re.findall(r'Route\("([^"]+)"', server))
+    routes |= set(re.findall(r'WebSocketRoute\("([^"]+)"', server))
 
     client_js = ""
     for p in (BASE / "ui/static/js").rglob("*.js"):
@@ -361,9 +363,16 @@ def ui_connectivity():
     check("every client REST call has a server route", not missing_on_server,
           str(missing_on_server))
     server_unhit = routes - client_calls - {"/", "/health"}  # / & /health are ops/SPA
-    known_public = {"/api/bootstrap", "/api/status", "/api/logs"}
+    # legitimate non-REST-fetch routes:
+    #   /api/bootstrap + /api/status + /api/logs → operator/external-API surface
+    #   /ws           → opened over the WebSocket protocol (not fetch)
+    #   /api/tts/{}   → server-issued token URL, fetched dynamically by the client
+    known_public = {"/api/bootstrap", "/api/status", "/api/logs", "/ws",
+                    "/api/tts/{token}"}
     check("server routes all consumed (public ops API documented)",
           server_unhit <= known_public, str(server_unhit))
+    check("ws route exists and is the realtime channel",
+          "/ws" in routes and "/api/tts/{token}" in routes)
 
     # WS message contract
     client_sends = set(re.findall(r'type:\s*"(\w+)"', (BASE / "ui/static/js/core/net.js").read_text()))
@@ -514,7 +523,7 @@ def main() -> int:
     check("zero unexplained dead/orphaned files", not dead, "; ".join(dead[:10]))
     # documented dormant-but-intentional sets
     dormant_known = [rel for rel, info in inventory.items()
-                     if info["connection"] == "PARTIALLY CONNECTED" and info["class"] == "A"]
+                     if info["connection"] == "LEGACY / OWNER-INVOKED" and info["class"] == "A"]
     check("partial paths are exactly the documented owner-invoked set",
           all(r.startswith(("evolution/", "skills/", "testing/", "memory/long_term"))
               or r == "constitution/evolution.py" for r in dormant_known),

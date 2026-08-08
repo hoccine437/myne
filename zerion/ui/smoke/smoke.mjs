@@ -94,6 +94,11 @@ window.ResizeObserver = class { observe() { } unobserve() { } disconnect() { } }
 window.IntersectionObserver = class { constructor(cb) { } observe() { } unobserve() { } disconnect() { } };
 window.requestAnimationFrame = (cb) => { /* run once for fps meter loops */ if (!window.__rafReplayed) { window.__rafReplayed = true; setTimeout(() => cb(performance.now()), 0); } return 1; };
 window.cancelAnimationFrame = () => { };
+// deterministic <audio> stub for the voice-state machine
+class FakeAudio { constructor(src) { this.src = src; } play() { return Promise.resolve(); } pause() { } addEventListener() { } }
+FakeAudio.prototype.pause = function () { };
+window.Audio = FakeAudio;
+globalThis.Audio = FakeAudio;
 if (!window.speechSynthesis) delete window.speechSynthesis; // exercise the "unavailable" path
 
 globalThis.window = window;
@@ -232,6 +237,26 @@ check("focus mode applied", $("#app").dataset.focus === "true");
 pushServer("focus", { active: false });
 await new Promise(r => setTimeout(r, 30));
 check("focus mode released", $("#app").dataset.focus === "false");
+
+console.log("\n— voice service (server-authoritative Gemini path)…");
+// hello declared server-gemini voice path
+pushServer("hello", { version: "1.0.0-test", settings: { model: "test-model", voice_path: "server-gemini" }, tools: [] });
+await new Promise(r => setTimeout(r, 40));
+check("voice chip exists and shows GEMINI", $("#voice-state-chip")?.dataset.vstate === "GEMINI_TTS");
+pushServer("chat", { role: "ai", text: "say this aloud", kind: "" });
+await new Promise(r => setTimeout(r, 40));
+check("TTS requested over WS for AI message", sent.some(m => m.type === "tts" && m.text === "say this aloud"));
+check("chip shows GENERATING while server works", $("#voice-state-chip")?.dataset.vstate === "GENERATING");
+pushServer("tts", { state: "ready", voice: "gemini", url: "/api/tts/faketoken123", seq: 99 });
+await new Promise(r => setTimeout(r, 40));
+check("ready envelope → GEMINI_TTS state", $("#voice-state-chip")?.dataset.vstate === "GEMINI_TTS");
+pushServer("chat", { role: "ai", text: "fallback probe", kind: "" });
+await new Promise(r => setTimeout(r, 30));
+pushServer("tts", { state: "browser_fallback", reason: "test", seq: null });
+await new Promise(r => setTimeout(r, 60));
+// JSAudio stubbed ok; browser tts would be attempted; state shows either BROWSER_TTS or UNAVAILABLE in jsdom
+check("fallback state is labeled, never disguised",
+      ["BROWSER_TTS", "UNAVAILABLE", "ERROR"].includes($("#voice-state-chip")?.dataset.vstate));
 
 console.log("\n— connection loss handling…");
 FakeWS.last.close();

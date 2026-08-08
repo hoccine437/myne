@@ -1,0 +1,27 @@
+{
+  "generated": "2026-08-08",
+  "environment": "sandbox x86_64 Linux + observed physical Termux device log (user-provided)",
+  "matrix": [
+    {"feature": "Main entry point (python main.py)", "status": "VERIFIED", "evidence": "tests/test_entrypoint.py (UI default, --terminal, --help, graceful SIGTERM/SIGINT); second_audit section D; user's Termux device log shows startup loop running on real device"},
+    {"feature": "LLM pipeline (main → llm → api → router → gemini)", "status": "VERIFIED", "evidence": "test_main_integration + test_cognition_influence record real prompt flow through run_loop; 173+ tests"},
+    {"feature": "Gemini provider (code path)", "status": "VERIFIED", "evidence": "test_gemini_transport (12) + test_gemini_extended (9): auth/shape/401/429/Retry-After/5xx/timeout/network/malformed/empty/deduped"},
+    {"feature": "Gemini live API", "status": "VERIFIED on user device; NOT VERIFIED in sandbox", "evidence": "user's Termux log: real model answers + self-critic chain + quota fallback; sandbox probe: network reachable, no API key available"},
+    {"feature": "Gemini TTS code path", "status": "VERIFIED", "evidence": "test_voice_service TtsServiceTests+X http: mocked Gemini payload → WAV parse (24kHz/mono); ui/tts.py reuses speech._generate_audio (single impl)"},
+    {"feature": "Gemini TTS live audio", "status": "PARTIALLY VERIFIED (path engaged on device; live speaker audio quota-blocked at test time)", "evidence": "user log shows 'Speech: Gemini voice ready' + quota-skip fallback proven graceful"},
+    {"feature": "Web UI", "status": "VERIFIED", "evidence": "66/66 smoke checks incl. voice-state machine; live WS integration tests"},
+    {"feature": "Adaptive UI (workspace modes + device classes)", "status": "VERIFIED (jsdom device classification); browser-visual NOT VERIFIED (no browser in sandbox)", "evidence": "smoke device-class battery ×10 + lazy workmodes"},
+    {"feature": "Memory", "status": "VERIFIED", "evidence": "memory persistence + restart + concurrency tests; cognition influence asserts prompts change"},
+    {"feature": "Self-Critic", "status": "VERIFIED", "evidence": "review/improve gating tests + E2E revise chain observed on real device log"},
+    {"feature": "Agents (5 types × N instances)", "status": "VERIFIED", "evidence": "test_final_features: spawn/queue/aggregate/failure/restart/cleanup/backlog + resource-scaled capacity"},
+    {"feature": "Skills (14 domains)", "status": "VERIFIED", "evidence": "routing tests per domain + tool surface + legacy contract preserved"},
+    {"feature": "Tools (discovery/execution/confirmations)", "status": "VERIFIED", "evidence": "registry tests + confirmation-gate flows + dynamic-add-no-hardcode path"},
+    {"feature": "Phone architecture (adapter/dispatch/verifier/device probe)", "status": "VERIFIED (chain) — real Android calls NOT VERIFIED (no device)", "evidence": "phone tests + simulated Termux profile probe + user-device core evidence"},
+    {"feature": "Termux static compatibility", "status": "VERIFIED", "evidence": "connectivity_audit section 7 + dependency audit (pure-Python everywhere)"},
+    {"feature": "Termux real device", "status": "PARTIALLY VERIFIED (user log: main.py startup + Gemini + critic + confirmation gate; UI device run: NEW stack pending user reinstall)", "evidence": "user-provided Termux transcript; starlette conversion removes the native-build blockers observed there"},
+    {"feature": "24/7 lifecycle", "status": "VERIFIED (in-process lifecycle: READY/greeting/heartbeat/recovery/backoff/shutdown/dup-lock/state persistence) — long real-time soak NOT VERIFIED", "evidence": "test_runtime.py (34) + second_audit section E"},
+    {"feature": "Security (no secrets anywhere)", "status": "VERIFIED", "evidence": "audit secret scans (repo + ZIP) + /api/tts token-only serving test + TTS envelope key-free assertion"},
+    {"feature": "Constitution integrity", "status": "VERIFIED", "evidence": "verify_lock passes after each owner-directed main.py change; protection bypass tests reject"},
+    {"feature": "Tests", "status": "VERIFIED", "evidence": "189 backend + service/matrix/entrypoint/transport/influence/voice + 66 smoke = all green at package time"},
+    {"feature": "Second audit", "status": "VERIFIED", "evidence": "second_audit.py 22/22 from repo AND extracted ZIP; connectivity_audit.py 30/30"}
+  ]
+}

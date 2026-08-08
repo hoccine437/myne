@@ -23,6 +23,7 @@ import asyncio
 import json
 import os
 import sys
+import time
 
 # The Core uses package-less imports (``import config``, ``from tools...``)
 # rooted at the zerion/ directory — put it on sys.path when launched from
@@ -43,6 +44,7 @@ from starlette.websockets import WebSocket, WebSocketDisconnect
 
 import config
 from constitution.constitution import ConstitutionEngine
+from core import logging as core_log
 from speech import speech_status
 from tools.manager import tool_manager
 
@@ -89,6 +91,8 @@ def _current_settings() -> dict:
         "llm_configured": bool(config.GEMINI_API_KEY),
         "tts_supported": config.gemini_tts_supported(),
         "speech_status": speech_status(),
+        "voice_path": "server-gemini" if speech_status() == "Speech: Gemini voice ready."
+                      else ("browser-fallback" if config.VOICE_ENABLED else "unavailable"),
     }
 
 
@@ -252,41 +256,50 @@ async def health(request: Request):
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     _clients.add(websocket)
+    # One writer per connection, enforced by this lock — inline replies
+    # (hello/replay/pong/tts) and the subscription sender both go through it.
+    send_lock = asyncio.Lock()
     subscription = await bus.subscribe()
-    sender = asyncio.create_task(_ws_sender(websocket, subscription))
+    sender = asyncio.create_task(_ws_sender(websocket, subscription, send_lock))
     try:
-        await websocket.send_json({"seq": 0, "ts": 0, "type": "hello",
-                                   "data": _bootstrap_payload()})
-        # Replay the recent past so a late-joining client sees state.
-        for event in bus.replay():
-            await websocket.send_json(event)
+        async with send_lock:
+            await websocket.send_json({"seq": 0, "ts": 0, "type": "hello",
+                                       "data": _bootstrap_payload()})
+            # Replay the recent past so a late-joining client sees state.
+            for event in bus.replay():
+                await websocket.send_json(event)
         while True:
             raw = await websocket.receive_text()
             try:
                 message = json.loads(raw)
             except ValueError:
                 continue
-            await _handle_client_message(websocket, message)
+            await _handle_client_message(websocket, message, send_lock)
     except WebSocketDisconnect:
         pass
-    except Exception:
-        pass
+    except Exception as _exc:
+        # never swallow silently: surface in the UI Logs panel + console
+        core_log.error(f"ws handler error: {type(_exc).__name__}: {_exc}")
+        bus.emit("log", {"level": "ERROR",
+                         "text": f"ws handler error: {type(_exc).__name__}: {_exc}"})
     finally:
         _clients.discard(websocket)
         sender.cancel()
         await bus.unsubscribe(subscription)
 
 
-async def _ws_sender(websocket: WebSocket, subscription) -> None:
+async def _ws_sender(websocket: WebSocket, subscription, send_lock: asyncio.Lock) -> None:
     try:
         while True:
             event = await subscription.queue.get()
-            await websocket.send_json(event)
+            async with send_lock:
+                await websocket.send_json(event)
     except Exception:
         return
 
 
-async def _handle_client_message(websocket: WebSocket, message: dict) -> None:
+async def _handle_client_message(websocket: WebSocket, message: dict,
+                                 send_lock: asyncio.Lock) -> None:
     """Client → Core. Every state-changing type goes through the session,
     which runs the Core pipeline; read-only types are answered inline."""
     mtype = message.get("type")
@@ -302,20 +315,47 @@ async def _handle_client_message(websocket: WebSocket, message: dict) -> None:
     elif mtype == "terminal":
         command = str(message.get("command", ""))[:2000]
         session.run_terminal_command(command)
+    elif mtype == "tts":
+        # Server-side voice: Core speech module → /api/tts/<token> URL
+        # pushed back on the same socket. generation never blocks the loop.
+        from ui import tts as tts_mod
+        text = str(message.get("text", ""))[:tts_mod.MAX_TEXT + 1]
+        seq = message.get("seq")
+        try:
+            result = await tts_mod.service.request(text, seq=seq)
+        except Exception as _e:
+            result = {"state": "error", "reason": f"{type(_e).__name__}: {_e}"}
+        async with send_lock:
+            await websocket.send_json({"seq": 0, "ts": time.time(),
+                                       "type": "tts", "data": result})
     elif mtype == "ping":
-        await websocket.send_json({"seq": 0, "ts": 0, "type": "pong", "data": {}})
+        async with send_lock:
+            await websocket.send_json({"seq": 0, "ts": 0, "type": "pong", "data": {}})
     elif mtype == "replay":
         try:
             since = int(message.get("since_seq", 0))
         except Exception:
             since = 0
-        for event in bus.replay(since_seq=since):
-            await websocket.send_json(event)
+        async with send_lock:
+            for event in bus.replay(since_seq=since):
+                await websocket.send_json(event)
 
 
 # ---------------------------------------------------------------------------
 # REST panel data
 # ---------------------------------------------------------------------------
+
+@route("/api/tts/{token}")
+async def api_tts_audio(request: Request):
+    """Serve a generated WAV by token. The endpoint never takes a path
+    from the client: tokens are the only handle, they expire, and files
+    live exclusively in the Core's speech cache."""
+    from ui.tts import service as tts_service
+    entry = tts_service.resolve(request.path_params.get("token", ""))
+    if entry is None:
+        return JSONResponse(status_code=404, content={"error": "unknown or expired audio"})
+    return FileResponse(entry["path"], media_type=entry["mime"])
+
 
 @route("/api/bootstrap")
 async def api_bootstrap(request: Request):

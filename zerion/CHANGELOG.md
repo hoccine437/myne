@@ -1,5 +1,33 @@
 # Changelog
 
+## 1.0.0 — emergency repair pass (voice service + pipeline unification)
+- FIX THE GEMINI TTS GAP: Web UI voice now goes through ONE authoritative
+  path — the Core's own speech.py Gemini TTS — served as expiring
+  /api/tts/<token> URLs. ui/tts.py service: content-hash dedupe, rate
+  limit, TTL tokens, threadpool off the event loop, zero key exposure, no
+  client-supplied paths. Voice-state chip shows GEMINI VOICE / VOICE… /
+  BROWSER VOICE (explicitly-labeled fallback) / VOICE OFF / VOICE ERROR.
+- TURN PIPELINE UNIFICATION: new core/turn_pipeline.py owns shared turn
+  semantics (confirmation vocabulary, interrupt words, canonical plan
+  summary prose) — consumed by BOTH main.py and ui/session.py. Also
+  unified the duplicated JSON-extraction helper (planner now imports
+  llm.safe_json_parse).
+- Agents are now unbounded by fixed counts: instances queue; execution
+  concurrency is derived from host resources (cores/RAM) with a
+  resource-informed backlog limit. stats() exposes capacity + resources.
+- Audit system now parses the custom @route() registry + knows
+  WS/token-URL routes; vocabulary: REACHABLE / DYNAMICALLY REACHABLE /
+  LEGACY / INTENTIONALLY UNUSED / DEAD / UNKNOWN.
+- New evidence tests: cognition-influence proofs (memory/knowledge/
+  reasoning/confidence/tool-results provably reach the prompt), Gemini
+  edge battery (5xx, Retry-After, empty/malformed), voice-service unit +
+  LIVE-WS integration battery, agent resource scaling.
+- Bugs found and fixed by this pass: MAX_TEXT instance-attribute crash,
+  WS single-writer race (per-connection send lock), welcome overlay
+  duplication on re-hello, cross-test knowledge-DB pollution.
+- Suite: 189+ backend tests · 66 UI smoke checks · second audit 22/22 ·
+  connectivity audit 30/30.
+
 ## 1.0.0 — entry-point consolidation
 - main.py is now the single official door and boots the Web UI by default:
   `python main.py [--host --port]`. A minimal built-in REPL remains via

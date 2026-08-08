@@ -30,6 +30,20 @@ client is dependency-free ES modules + CSS.
 > working; model answers report the missing provider — exactly like the
 > terminal front end.
 
+## Voice — one authoritative path
+
+Zerion speaks once, on the server: replies are rendered by the Core's
+Gemini TTS (`speech.py`), served to the UI as single-use, expiring
+`/api/tts/<token>` URLs (`ui/tts.py` service: dedupe by content hash,
+rate-limited, TTL tokens, never exposes the API key, never takes a
+filesystem path from the client).
+
+`Zerion reply → speech._generate_audio (Core) → WAV → UI <audio> → phone speaker`
+
+Browser speechSynthesis exists ONLY as an explicitly labeled fallback —
+the voice-state chip says BROWSER VOICE and never pretends it's Gemini.
+Chip states: GEMINI VOICE · VOICE… · BROWSER VOICE · VOICE OFF · VOICE ERROR.
+
 ## Architecture
 
 ```

@@ -45,7 +45,7 @@ export function addMessage(m) {
   messages.push(m);
   if (messages.length > 2000) messages = messages.slice(-1500);
   renderOne(m);
-  if (m.role === "ai" && speakHook && store.settings.voiceOutput) speakHook(m.text);
+  if (m.role === "ai" && speakHook && store.settings.voiceOutput) speakHook(m.text, m.seq);
 }
 
 export function initChat() {
@@ -53,7 +53,9 @@ export function initChat() {
   scrollEl = document.getElementById("chat-scroll");
   jumpBtn = document.getElementById("chat-jump");
 
-  on("core:chat", (d) => addMessage({ role: d.role, text: d.text, kind: d.kind || "", ts: Date.now() / 1000 }));
+  on("core:chat", (d, msg) =>
+    addMessage({ role: d.role, text: d.text, kind: d.kind || "",
+                 ts: (msg && msg.ts) || Date.now() / 1000, seq: msg?.seq }));
 
   scrollEl.addEventListener("scroll", () => {
     if (nearBottom()) jumpBtn.dataset.show = "false";

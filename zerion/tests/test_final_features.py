@@ -44,10 +44,12 @@ class AgentPoolTests(unittest.TestCase):
         self.assertEqual(agg["succeeded"], 3, str(agg))
         self.assertEqual(agg["failed"], 0)
 
-    def test_capacity_is_bounded(self):
-        # Deterministic: cap 1 and a blocked worker forces rejection.
+    def test_execution_bounded_backlog_capable(self):
+        """Instances queue (creation unbounded by hardcoded counts); execution
+        is resource-bounded; backlog over max_pending is refused."""
         from agents.pool import AgentPool
-        pool = AgentPool(max_agents=1)
+        pool = AgentPool(max_agents=1, resources={"cores": 1, "mem_gb": 1})
+        self.assertEqual(pool.max_pending, 16)
         hold = threading.Event()
         orig_execute = pool._execute
 
@@ -56,15 +58,33 @@ class AgentPoolTests(unittest.TestCase):
             orig_execute(agent)
         pool._execute = slow
         try:
-            first = pool.spawn("monitor", {"tool": "get_time"}, wait=False)
-            self.assertTrue(first["ok"])
-            second = pool.spawn("monitor", {"tool": "get_time"}, wait=False)
-            self.assertFalse(second["ok"])
-            self.assertEqual(second["error"], "capacity")
+            results = [pool.spawn("monitor", {"tool": "get_time"}, wait=False)
+                       for _ in range(25)]
+            accepted = [r for r in results if r.get("ok")]
+            rejected = [r for r in results if not r.get("ok")]
+            self.assertEqual(len(accepted), 16, f"{len(accepted)} accepted")
+            self.assertTrue(rejected, "backlog bound must refuse")
+            self.assertEqual(rejected[0]["error"], "backlog")
         finally:
             hold.set()
-        pool.wait(first["agent"]["id"])
+        for r in [r for r in results if r.get("ok")]:
+            pool.wait(r["agent"]["id"], timeout=10)
+        done = pool.collect([r["agent"]["id"] for r in accepted])
+        self.assertEqual(done["succeeded"], 16)
         pool.shutdown()
+
+    def test_capacity_scales_with_resources(self):
+        from agents.pool import AgentPool, _effective_capacity
+        big = AgentPool(resources={"cores": 64, "mem_gb": 128})
+        small = AgentPool(resources={"cores": 2, "mem_gb": 2})
+        self.assertGreaterEqual(big.max_agents, 32)
+        self.assertEqual(small.max_agents, 4)
+        # big-host acceptance of 100 researcher instances, no fixed cap
+        r = big.spawn("researcher", {"query": "noop"}, wait=False)
+        self.assertTrue(r["ok"])
+        self.assertGreaterEqual(big.max_pending, 100)
+        big.shutdown(); small.shutdown()
+        self.assertEqual(_effective_capacity(1, 1), 2)
 
     def test_destructive_tools_are_refused(self):
         r = self.pool.spawn("coder", {"tool": "delete_file", "parameters": {"path": "/x"}})
