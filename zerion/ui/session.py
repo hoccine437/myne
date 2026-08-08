@@ -149,6 +149,7 @@ class ZerionUISession:
             "Runtime Intel": {"state": "standby", "detail": "composition & quality", "ts": None},
             "Tool Manager": {"state": "standby", "detail": "execution + approvals", "ts": None},
             "Constitution": {"state": "standby", "detail": "policy boundary", "ts": None},
+            "Agent Orchestrator": {"state": "standby", "detail": "multi-agent task lanes", "ts": None},
         }
 
     # -- session_state.snapshot compatibility (intent/session_state.py
@@ -666,6 +667,8 @@ class ZerionUISession:
 
         tool = tool_manager.get_tool(intent)
         if tool is not None:
+            if intent in ("agent_delegate", "agent_orchestrate", "agent_performance"):
+                self._agent("Agent Orchestrator", "active", intent)
             self._agent("Tool Manager", "active", intent)
             bus.emit("tool", {"phase": "start", "tool": intent, "parameters": parameters})
             self._state("executing", f"executing {intent}")

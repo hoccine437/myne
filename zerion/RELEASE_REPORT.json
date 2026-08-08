@@ -2,7 +2,7 @@
   "VERSION": "1.0.0",
   "BUILD DATE": "2026-08-08",
   "ENTRY POINT": "main.py (Web UI default; --terminal minimal REPL; --host/--port)",
-  "TESTS PASSED": 198,
+  "TESTS PASSED": 209,
   "TESTS FAILED": 0,
   "STATICALLY VERIFIED": [
     "Termux dependency classification (dependency manifest)",

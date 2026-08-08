@@ -452,6 +452,23 @@ class ZerionService:
             "workers", probe=probe_workers, recover=recover_workers,
             provenance="idle-maintenance cadence"))
 
+        # --- agents (ecosystem liveness: queue + failure posture) ----------
+        def probe_agents():
+            try:
+                from agents.service import agent_pool
+                s = agent_pool.stats()
+                if s["tracked"] > s["max_pending"]:
+                    return f"agent backlog beyond bound ({s['tracked']}/{s['max_pending']})"
+                failed_recent = sum(v.get("failed", 0) for v in s["by_type"].values())
+                if s["tracked"] and failed_recent > max(4, s["tracked"] // 2):
+                    return f"abnormal failure rate ({failed_recent}/{s['tracked']} failed)"
+            except Exception as e:
+                return f"agent pool probe failed: {e}"
+            return None
+        self.monitor.register(Subsystem(
+            "agents", probe=probe_agents, recover=None,
+            provenance="agents.service pool capacity + failure posture"))
+
     # ------------------------------------------------------------------
     # supervisor loop — event-driven; one iteration per scheduled duty
     # ------------------------------------------------------------------

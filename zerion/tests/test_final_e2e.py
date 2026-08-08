@@ -81,6 +81,12 @@ class ScriptedProvider:
                 "parameters": {"text": "compute a chemical reaction balance"},
                 "text": None, "memory_update": None,
             })
+        if "orchestrate" in msg:
+            return json.dumps({
+                "intent": "agent_orchestrate",
+                "parameters": {"goal": "analyze this trading strategy"},
+                "text": None, "memory_update": None,
+            })
         if "what device" in msg:
             return json.dumps({"intent": "device_state", "parameters": {},
                                "text": None, "memory_update": None})
@@ -134,6 +140,7 @@ class FinalE2E(unittest.TestCase):
             "delegate the arithmetic check",        # agent delegation through tools
             "route my domain",                      # skill routing
             "what device are you on",               # phone-body device probe
+            "orchestrate this analysis for me",     # agent orchestration via tool
             "start serious mode",                   # personality on
             "hello",                                # chat under serious persona
             "stop serious mode",                    # personality off
@@ -156,6 +163,10 @@ class FinalE2E(unittest.TestCase):
 
         # PHONE BODY probe through the tool contract
         self.assertIn("Device:", out)
+
+        # ORCHESTRATION through the tool contract (headline + aggregate cap 600)
+        self.assertIn("Orchestrated 4 agent(s)", out)
+        self.assertIn("verdict", out)
 
         # PERSONALITY engaged both directions via natural phrase
         self.assertIn("Serious mode active", out)

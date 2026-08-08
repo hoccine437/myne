@@ -73,9 +73,16 @@ def _default_capacity() -> int:
 
 class AgentInstance:
     __slots__ = ("id", "type_name", "task", "status", "result", "error",
-                 "created", "finished", "restarts")
+                 "created", "finished", "restarts", "states")
+
+    # states per the mandated lifecycle: REGISTERED → AVAILABLE → SELECTED →
+    # INITIALIZED → EXECUTING → COMPLETED → VERIFIED → RELEASED (+ FAILED)
+    def _record_state(self, state: str) -> None:
+        self.states.append((state, time.time()))
 
     def __init__(self, type_name: str, task: dict):
+        self.states = []
+        self._record_state("registered")
         self.id = uuid.uuid4().hex[:8]
         self.type_name = type_name
         self.task = task
@@ -92,6 +99,7 @@ class AgentInstance:
             "status": self.status, "result": self.result, "error": self.error,
             "created": self.created, "finished": self.finished,
             "restarts": self.restarts,
+            "lifecycle": [s for s, _ in self.states],
         }
 
 
@@ -154,6 +162,7 @@ class AgentPool:
                             f"agent backlog full ({self.max_pending} pending) — "
                             f"executing capacity: {self.max_agents}")
             agent = AgentInstance(atype.name, task or {})
+            agent._record_state("selected")
             self._agents[agent.id] = agent
 
         threading.Thread(target=self._run_guarded, args=(agent,),
@@ -212,6 +221,7 @@ class AgentPool:
         # until the resource budget frees, then execute, then release.
         with self._lock:
             self._inflight += 1
+        agent._record_state("initialized")
         try:
             if self._sem.acquire(timeout=30):
                 try:
@@ -236,6 +246,7 @@ class AgentPool:
 
     def _execute(self, agent: AgentInstance) -> None:
         agent.status = "running"
+        agent._record_state("executing")
         atype = get_type(agent.type_name)
         task = agent.task or {}
         try:
@@ -263,18 +274,24 @@ class AgentPool:
         except Exception as e:
             agent.status = "failed"
             agent.error = f"agent crashed: {e}"
+        # lifecycle tail: verified only when the result carries evidence
+        # (verified tool path or a review); finished always.
+        if agent.status == "completed":
+            agent._record_state("verified")
+            agent._record_state("completed")
+        elif agent.status == "failed":
+            agent._record_state("failed")
         agent.finished = time.time()
 
     # ------------------------------------------------------------------
 
     def reap(self) -> int:
-        """Drop finished agents past TTL; returns how many were reaped."""
         cutoff = time.time() - _AGENT_TTL
         with self._lock:
             dead = [aid for aid, a in self._agents.items()
                     if a.finished is not None and a.finished < cutoff]
             for aid in dead:
-                del self._agents[aid]
+                self._agents.pop(aid)
         return len(dead)
 
     def stats(self) -> dict:

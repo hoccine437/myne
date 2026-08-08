@@ -435,7 +435,9 @@ def prove_dynamic_discovery():
         "execution": "pool worker → ToolManager (whitelist) or knowledge search",
         "evidence": sorted(AGENT_TYPES),
     }
-    check(f"agent types registered ({len(AGENT_TYPES)})", len(AGENT_TYPES) == 5)
+    check(f"agent types registered ({len(AGENT_TYPES)})",
+          len(AGENT_TYPES) >= 5 and
+          {"researcher", "coder", "verifier", "controller", "monitor"} <= set(AGENT_TYPES))
 
     # command palette registry
     from intent import commands

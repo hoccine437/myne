@@ -65,6 +65,46 @@ AGENT_TYPES: dict[str, AgentType] = {t.name: t for t in (
         can_search_memory=False,
         max_parallel=2,
     ),
+    # --- specialist extensions (gaps the master map mandates) -------------
+    AgentType(
+        "architect",
+        "repository/dependency analysis, module boundaries, integration planning",
+        allowed_tools=("read_file", "search_files", "list_directory", "format_json"),
+        can_search_memory=True,
+        max_parallel=3,
+    ),
+    AgentType(
+        "tester",
+        "bounded test execution + failure extraction; never unlimited compute",
+        allowed_tools=("run_pytest", "read_file", "search_files", "list_directory",
+                       "text_stats", "calculate"),
+        can_search_memory=True,
+        max_parallel=2,
+    ),
+    AgentType(
+        "security",
+        "vuln/secret/permission audit; read-only by constitution — never writes",
+        allowed_tools=("read_file", "search_files", "list_directory", "hash_text",
+                       "format_json", "text_stats"),
+        can_search_memory=False,   # auditors don't read user memory by default
+        max_parallel=3,
+    ),
+    AgentType(
+        "data",
+        "parse / transform / validate structured data",
+        allowed_tools=("calculate", "format_json", "text_stats", "base64_convert",
+                       "hash_text", "read_file", "search_files"),
+        can_search_memory=True,
+        max_parallel=4,
+    ),
+    AgentType(
+        "finance",
+        "market analysis from fetched data; never fabricates positions or returns",
+        allowed_tools=("http_get", "read_file", "calculate", "format_json",
+                       "text_stats", "search_files"),
+        can_search_memory=True,
+        max_parallel=2,
+    ),
 )}
 
 

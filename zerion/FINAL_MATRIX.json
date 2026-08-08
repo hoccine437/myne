@@ -106,6 +106,15 @@
       "feature": "Second audit",
       "status": "VERIFIED",
       "evidence": "second_audit.py 22/22 from repo AND extracted ZIP; connectivity_audit.py 30/30"
+    },
+    {
+      "feature": "Orchestrator (classify\u2192select\u2192run\u2192aggregate\u2192critic\u2192verify\u2192learn)",
+      "status": "VERIFIED",
+      "evidence": "tests/test_orchestrator.py (11) + full main-path e2e link via agent_orchestrate tool"
+    },
+    {
+      "feature": "Specialist agents (architect/tester/security/data/finance) bounded & wired",
+      "status": "VERIFIED (lanes); physical device execution n/a"
     }
   ],
   "fresh_gate_run": {

@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.0.0 — the canonical Agent Orchestrator
+- agents/orchestrator.py: minimal-capable offline classification → type
+  selection → bounded pool lanes → aggregate → self-critic review →
+  verification marker → telemetry record → release. AgentMessage schema in
+  agents/messages.py implements the required fields. Full lifecycle states
+  (registered→selected→initialized→executing→verified→completed→released)
+  recorded on every agent.
+- agents/types.py extended by the true specialist gaps: architect, tester,
+  security, data, finance; mandated five behavioral types retained. All
+  whitelists remain read-only — output never bypasses the confirmation path.
+- tools/test_tools.py: bounded run_pytest (rlimits reuse, 120s ceiling,
+  project-relative paths only); orchestrator_tools.py: agent_orchestrate +
+  agent_performance through the Tool Manager contract.
+- runtime/service.py: 'agents' HealthMonitor subsystem probe (backlog +
+  failure-posture); ui/session.py: orchestrator roster row on agent runs.
+- Telemetry-informed improvement: orchestration outcomes stored as KB
+  capability records (layer='capability') so future selection is learned,
+  not hardcoded.
+- Verified: 209/209 backend tests · 70/70 UI smoke · 45/45 connectivity ·
+  22/22 second audit · orchestration reaches the real main.py loop message
+  chain (test_final_e2e).
+
 ## 1.0.0 — single-screen AI-OS UI deepening
 - Core orb: full mandated state vocabulary (ready/thinking/analyzing/
   executing/listening/speaking/searching/coding/learning/self-upgrading/

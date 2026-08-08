@@ -32,7 +32,8 @@ set; `REQUIRES TERMUX PACKAGE` = needs a `pkg install` step;
   "system_executables_expected": [
     {"name": "dumpsys", "why": "optional screen probe on Android", "present_in": "android", "classification": "OPTIONAL (probe guarded by shutil.which)"},
     {"name": "xrandr", "why": "optional screen probe on X11 desktops", "present_in": "desktop", "classification": "DESKTOP ONLY (probe guarded)"},
-    {"name": "termux-wallpaper", "why": "legacy probe guard only", "present_in": "termux", "classification": "OPTIONAL"}
+    {"name": "termux-wallpaper", "why": "legacy probe guard only", "present_in": "termux", "classification": "OPTIONAL"},
+    {"name": "pytest", "why": "test runner invoked via `python -m pytest` by tools/test_tools.py", "present_in": "python-package", "classification": "DESKTOP ONLY (development)"}
   ],
   "environment_variables_documented": [
     "GEMINI_API_KEY", "GEMINI_MODEL", "GEMINI_TTS_MODEL", "GEMINI_URL(env-derived)",
