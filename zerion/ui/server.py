@@ -357,6 +357,34 @@ async def api_tts_audio(request: Request):
     return FileResponse(entry["path"], media_type=entry["mime"])
 
 
+@route("/api/phone/state")
+async def api_phone_state(request: Request):
+    """Read-only live Phone Body snapshot — the UI surface for device state.
+    Observation only: actions never originate from this endpoint."""
+    from phone.engine import PhoneIntelligence
+    if not hasattr(app.state, "phone_engine"):
+        app.state.phone_engine = PhoneIntelligence()
+    eng = app.state.phone_engine
+    body = eng.body
+    snap = dict(body.state.snapshot(force=False))
+    snap["pending_approvals"] = body.pending_approvals()
+    snap["recent_actions"] = body.recent_actions(limit=10)
+    return JSONResponse({"phone": snap})
+
+
+@route("/api/phone/action/{action_id}")
+async def api_phone_action(request: Request):
+    if not hasattr(app.state, "phone_engine"):
+        from phone.engine import PhoneIntelligence
+        app.state.phone_engine = PhoneIntelligence()
+    body = app.state.phone_engine.body
+    aid = request.path_params.get("action_id", "")
+    action = body.action(aid)
+    if action is None:
+        return JSONResponse(status_code=404, content={"error": "no such action"})
+    return JSONResponse({"action": action})
+
+
 @route("/api/bootstrap")
 async def api_bootstrap(request: Request):
     return JSONResponse(_bootstrap_payload())

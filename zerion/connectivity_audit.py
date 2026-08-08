@@ -507,7 +507,7 @@ def ui_connectivity():
     #   /ws           → opened over the WebSocket protocol (not fetch)
     #   /api/tts/{}   → server-issued token URL, fetched dynamically by the client
     known_public = {"/api/bootstrap", "/api/status", "/api/logs", "/ws",
-                    "/api/tts/{token}"}
+                    "/api/tts/{token}", "/api/phone/action/{action_id}"}
     check("server routes all consumed (public ops API documented)",
           server_unhit <= known_public, str(server_unhit))
     check("ws route exists and is the realtime channel",

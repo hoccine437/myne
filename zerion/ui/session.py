@@ -348,8 +348,9 @@ class ZerionUISession:
             if is_confirm_answer(lowered):
                 goal, intent = self.pending_phone
                 self._agent("Tool Manager", "active", "phone dispatch (approved)")
-                result = self.phone.dispatcher.dispatch(goal, intent, approved=True)
+                result = self.phone.body.dispatch(goal, intent, approved=True)
                 self._say(result.message)
+                bus.emit("phone_state", self.phone.body.snapshot())
             else:
                 self._say("Cancelled — no phone action was performed.")
             self.pending_phone = None
@@ -370,7 +371,7 @@ class ZerionUISession:
                     self.pending_phone_missing = (goal_text, extracted_phone)
                 return
             self.pending_phone_missing = None
-            result = self.phone.dispatcher.dispatch(retry_text, extracted_phone, approved=False)
+            result = self.phone.body.dispatch(retry_text, extracted_phone, approved=False)
             if "Approval required" in result.message:
                 self.pending_phone = (retry_text, extracted_phone)
                 self._ask_confirmation(result.message + " Reply 'confirm' to proceed.")
@@ -386,12 +387,13 @@ class ZerionUISession:
                 self.pending_phone_missing = (text, extracted_phone)
                 self._say("Missing required information: " + ", ".join(extracted_phone.missing) + ".")
                 return
-            result = self.phone.dispatcher.dispatch(text, extracted_phone, approved=False)
+            result = self.phone.body.dispatch(text, extracted_phone, approved=False)
             if "Approval required" in result.message:
                 self.pending_phone = (text, extracted_phone)
                 self._ask_confirmation(result.message + " Reply 'confirm' to proceed.")
             else:
                 self._say(result.message)
+            bus.emit("phone_state", self.phone.body.snapshot())
             return
 
         # --- command palette: fully local, unchanged --------------------

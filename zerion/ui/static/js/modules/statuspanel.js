@@ -5,6 +5,32 @@
 import { h, clear, fmtBytes, fmtBits, fmtUptime } from "../core/dom.js";
 import { on } from "../core/bus.js";
 import { store } from "../core/store.js";
+import { api } from "../core/net.js";
+
+/* Phone body — the live device row in System Status. Data flows:
+   phone_engine on the server (composed by phone.manager) → snapshot() →
+   /api/phone/state (read-only) or the phone_state WS event after actions. */
+let phoneRow = null;
+function renderPhoneFact(snap) {
+  const grid = document.querySelector(".fact-grid");
+  if (!grid) return;
+  if (!snap) return;
+  if (!phoneRow) {
+    phoneRow = h("div", { class: "fact" }, h("dt", {}, "Body"), h("dd", { class: "mono" }, ""));
+    grid.appendChild(phoneRow);
+  }
+  const platform = snap.platform || (snap.is_termux ? "android/termux" : "device");
+  const caps = snap.available_capabilities?.length ?? 0;
+  const battery = snap.battery?.percent != null ? `${snap.battery.percent}%` : "—";
+  const dd = phoneRow.querySelector("dd");
+  dd.textContent = `${platform} · ${battery} · ${caps} caps`;
+  dd.title = snap.current_action ? `busy: action ${snap.current_action}` : "Zerion's physical body (read-only in UI)";
+}
+on("core:phone_state", renderPhoneFact);
+setInterval(async () => {
+  if (!store.core.connected) return;
+  try { renderPhoneFact(await api("/api/phone/state")); } catch { /* optional */ }
+}, 30000);
 
 const SPARK_LEN = 60;
 const cpuHist = [];

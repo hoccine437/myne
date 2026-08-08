@@ -19,3 +19,11 @@ class CameraController(PhoneController):
  def capture(self,path):return self.adapter.run('termux-camera-photo','-c','0',path,timeout=20)
 class NotificationController(PhoneController):
  def notify(self,title,content):return self.adapter.run('termux-notification','--title',title,'--content',content)
+
+class VolumeController(PhoneController):
+ def set_level(self,stream,level):return self.adapter.run('termux-volume',str(stream),str(level))
+class VibrateController(PhoneController):
+ def vibrate(self,duration_ms=150):return self.adapter.run('termux-vibrate','-d',str(int(duration_ms)))
+class DeviceReadController(PhoneController):
+ def battery(self):return self.adapter.run('termux-battery-status')
+ def wifi(self):return self.adapter.run('termux-wifi-connectioninfo')

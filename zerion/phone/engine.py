@@ -2,7 +2,7 @@
 from __future__ import annotations
 from constitution import Constitution
 from learning.engine import LearningEngine
-from .controllers import ClipboardController,MediaController,SystemController,CommunicationController,CameraController,NotificationController
+from .controllers import ClipboardController,MediaController,SystemController,CommunicationController,CameraController,NotificationController,VolumeController,VibrateController,DeviceReadController
 from .discovery import CapabilityDiscovery
 from .models import ActionResult,PhoneAction,PhonePlan
 from .verifier import ExecutionVerifier
@@ -12,7 +12,11 @@ class PhoneIntelligence:
  def __init__(self):
   self.discovery=CapabilityDiscovery(); self.constitution=Constitution();self.verify=ExecutionVerifier();self.learning=LearningEngine()
   self.controllers={'clipboard_read':ClipboardController(),'clipboard_write':ClipboardController(),'media':MediaController(),'open_url':SystemController(),'torch':SystemController(),'telephony':CommunicationController(),'sms':CommunicationController(),'camera':CameraController(),'notification':NotificationController()}
+  self.controllers.update({'volume':VolumeController(),'vibrate':VibrateController(),'battery_state':DeviceReadController(),'wifi':DeviceReadController()})
   self.extractor=PhoneIntentExtractor();self.dispatcher=PhoneDispatcher(self.controllers,self.verify,self.constitution)
+  # first-class physical body: full action lifecycle + live state + audit
+  from .manager import PhoneBodyManager
+  self.body=PhoneBodyManager(self.dispatcher,self.discovery,self.constitution)
  def supervised_intent(self,goal:str,approved:bool=False):
   """Extract then dispatch only complete, explicitly approved phone requests."""
   intent=self.extractor.extract(goal)

@@ -1,5 +1,32 @@
 # Changelog
 
+## 1.0.0 — phone becomes first-class physical body
+- New phone body layer: phone/state.py (live PhoneState with TTL refresh;
+  honest None where unprobed; permission posture; current-action tracking;
+  last-verification tracking), phone/actions.py (structured PhoneAction with
+  full lifecycle: action_id, risk, approval, execution, verification), and
+  phone/manager.py (PhoneBodyManager orchestrator: capability validation →
+  constitution gate → approval gate → existing PhoneDispatcher execution →
+  failure classification and bounded retry → honest verification → state
+  refresh + append-only audit at runtime/run/phone_audit.jsonl).
+- Verification is honest: verified_success requires platform readback; when
+  the platform offers none, the result is reported as execution_unverified
+  and the message says so. Failure is never faked.
+- Existing phone modules extended additively, never duplicated: controllers
+  gained volume/vibrate/state-read tools; dispatcher call table extended
+  (volume, vibrate, battery_state, wifi, media); extractor vocabulary grew
+  (battery, wifi, vibrate, volume %, music play/pause/resume); engine composes
+  the body (phone.engine.PhoneIntelligence.body). ui/session drives the body
+  so Web UI conversations go through the complete lifecycle; main.py terminal
+  path (hash-locked) keeps the same dispatcher + approval behavior.
+- UI surface: /api/phone/state (read-only snapshot incl. pending approvals
+  and recent actions), phone_state WS events on every action, System-Status
+  body fact row in the left rail.
+- 9 new tests (test_phone_body.py) prove: approval parking, constitution
+  non-bypass, missing capabilities denying cleanly, transient-only retry,
+  audit trail, and all five self-aware state queries.
+- Full suite: 198 passed.
+
 ## 1.0.0 — emergency repair pass (voice service + pipeline unification)
 - FIX THE GEMINI TTS GAP: Web UI voice now goes through ONE authoritative
   path — the Core's own speech.py Gemini TTS — served as expiring
