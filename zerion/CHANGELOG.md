@@ -1,5 +1,74 @@
 # Changelog
 
+## 1.2.0 — Universal Communication & Action Layer
+
+**comms/ package (16 modules) — the intelligent action layer:**
+- models: UnifiedMessage + Draft contracts (platform normalization, stable
+  dedupe ids, permission facts carried per message)
+- connectors: Email (imaplib/smtplib, env-only credentials), Telegram
+  Bot API (urllib, env-only token), Phone inbox (termux-notification-list
+  → social/phone notifications). Connectors register only when actually
+  configured; health states are honest (disconnected/error/degraded/
+  connected/authenticated); one broken connector never affects the others
+- inbox: unified store (comm_* tables on the existing SQLite file),
+  classify (urgent/work/financial/social/system/spam/low), urgency, views:
+  search/filter/prioritize/group-by-person/group-by-task/summarize
+- reply engine: context = conversation history + contact context +
+  knowledge retrieval + user preferences; tone from classification;
+  online drafting via the existing provider chain, offline template
+  explicitly marked generated_locally (never impersonates model output)
+- approvals: 4-level ladder (observe/draft/confirm/trusted) with one-way
+  escalation — risk markers (financial/credentials/legal/sensitive/
+  irreversible/mass) force confirmation even on trusted rules; scopes
+  revocable per platform/account
+- anti-spam rails: platform rate window, recipient cooldown, recipient cap,
+  duplicate content detection — fail-closed on ledger errors
+- engine: the ONLY send path — policy → pre-send checklist → rails →
+  connector → platform-result verification → audit + ledger + learning
+- workflow engine: data-defined workflows (trigger/conditions/steps),
+  adaptive on_fail alternatives, step outcomes observed between steps;
+  learning integration stores workflow PATTERNS (never message bodies)
+  and routes failures into error memory
+- scheduler: trigger pump on the 24/7 service maintenance cadence
+  (bounded, no-op without connectors, degrades in logs not crashes)
+- calendar: local authorized calendar — create/list/update/cancel, conflict
+  detection, availability math, due reminders, meeting-request suggestions
+- contacts: minimal purpose-bound contact intelligence (book + guarded
+  termux contact list); sync from inbox keeps senders only, never content
+- audit: append-only JSONL trail; credential-pattern keys auto-redacted;
+  secrets (EMAIL_PASSWORD, tokens) are never logged anywhere
+
+**Security invariants kept:** comm_send/calendar_add/workflow_run are
+destructive tools → the existing Constitution policy check + human
+confirmation flow applies byte-identically. Agent 'communicator' type can
+read and draft but its whitelist excludes comm_send — only humans approve
+sends. No bypass exists.
+
+**Tools:** +9 → 50 total (comm_inbox, comm_draft, comm_send, comm_health,
+contact_lookup, calendar_list, calendar_add, workflow_list, workflow_run).
+
+**UI:** Communication panel (connectors, unified inbox, pending drafts with
+approve&send, workflows + recent runs, audit tail); 6 new /api/comm/*
+endpoints, all consumed by the panel; nothing faked — empty connectors show
+honest empty states.
+
+**24/7:** new 'comm' health subsystem reports connector errors; maintenance
+loop polls triggers.
+
+**Tests:** tests/test_communication_layer.py — 53 tests incl. the four
+mission-mandated E2E chains (email / telegram / phone-social / workflow)
+over injected fake transports, approval ladder, anti-spam rails, audit
+redaction, calendar math, connector honesty.
+
+Bugs found while wiring (all fixed, all proven by tests): calendar free-slot
+math used busy-end instead of busy-start; short risk markers now match on
+word boundaries ('nda' no longer fires inside 'calendar'); telegram
+normalize handled absent bot profile; reply targets are platform-correct
+(bare email addresses, telegram chat ids).
+
+Suite: 306/306 pytest, 22/22 second audit, 45/45 connectivity, 70/70 UI
+smoke, arch_map preserved.
+
 ## 1.1.0 — Reality-Map Integration (agents + learning wired into runtime)
 
 **P0 defect repairs (verified in REALITY_MAP.md, now fixed and re-verified):**

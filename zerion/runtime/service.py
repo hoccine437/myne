@@ -475,6 +475,27 @@ class ZerionService:
             "agents", probe=probe_agents, recover=None,
             provenance="agents.service pool capacity + failure posture"))
 
+        # --- communication layer: connector health, never fatal -------------
+        def probe_comm():
+            if not config.COMM_ENABLED:
+                svc.monitor.subsystems.get("comm")
+                return None  # layer disabled by configuration — clean state
+            from comms.registry import connectors
+            states = connectors.health()
+            if not states:
+                # no connectors configured: the layer idles, honestly quiet
+                return None
+            bad = {p: h for p, h in states.items()
+                   if h.get("state") == "error"}
+            if bad:
+                return "connector error(s): " + "; ".join(
+                    f"{p}: {h.get('detail', '')[:80]}" for p, h in bad.items())
+            return None
+        self.monitor.register(Subsystem(
+            "comm", probe=probe_comm, recover=None,
+            enabled=config.COMM_ENABLED,
+            provenance="comms.registry connector health sweep"))
+
     # ------------------------------------------------------------------
     # supervisor loop — event-driven; one iteration per scheduled duty
     # ------------------------------------------------------------------
@@ -526,6 +547,18 @@ class ZerionService:
         except Exception as e:
             self._last_maintenance = time.monotonic()
             self.log.warning("maintenance.error", "workers", f"deferred: {e}")
+        # communication trigger pump: bounded sweep, no-op without connectors;
+        # errors degrade the layer in logs/health only, never the service
+        if config.COMM_ENABLED:
+            try:
+                from comms.scheduler import poll_once
+                pulse = poll_once()
+                if pulse.get("ingested") or pulse.get("workflows"):
+                    self.log.info("comm.poll", "comm",
+                                  f"{pulse['ingested']} ingested, "
+                                  f"{pulse['workflows']} workflow(s) fired")
+            except Exception as e:
+                self.log.warning("comm.poll.error", "comm", f"deferred: {e}")
 
     # ------------------------------------------------------------------
     # reload, escalation, callbacks

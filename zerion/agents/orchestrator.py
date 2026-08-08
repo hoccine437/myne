@@ -35,6 +35,8 @@ from agents.types import get_type, AGENT_TYPES
 
 DOMAIN_TO_TYPES = (
     # ordering matters: first match wins; the most specialized sets come first
+    (("email", "inbox", "telegram", "whatsapp", "message me", "reply to",
+      "draft a reply", "my messages", "notifications"), ("communicator", "researcher", "verifier")),
     (("security", "vulnerability", "permission", "audit", "secret"),
      ("security", "verifier")),
     (("trading", "market", "portfolio", "financial", "stock", "strategy", "backtest"),

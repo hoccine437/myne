@@ -212,3 +212,112 @@ registerPanel("devtools", {
     return () => { offStage(); offTurn(); offTool(); offFps(); };
   },
 });
+
+/* ======================= Communication ======================= */
+registerPanel("comms", {
+  title: "Communication",
+  mount(body) {
+    const healthBox = h("div", { class: "comm-health" });
+    const countsBox = h("div", { class: "comm-counts mono" });
+    const inboxList = h("div", { class: "comm-list" });
+    const draftsList = h("div", { class: "comm-list" });
+    const flowsList = h("div", { class: "comm-list" });
+    const auditList = h("div", { class: "comm-list" });
+
+    body.append(
+      h("h4", { class: "section-title" }, "Connectors"), healthBox,
+      h("h4", { class: "section-title" }, "Unified Inbox"), countsBox, inboxList,
+      h("h4", { class: "section-title" }, "Pending Drafts (approval)"), draftsList,
+      h("h4", { class: "section-title" }, "Workflows"), flowsList,
+      h("h4", { class: "section-title" }, "Audit Trail"), auditList,
+    );
+
+    async function refresh() {
+      // connector + account state
+      try {
+        const ov = await api("/api/comm/overview");
+        clear(healthBox);
+        const entries = Object.entries(ov.connectors || {});
+        healthBox.appendChild(entries.length
+          ? h("div", {}, entries.map(([p, st]) =>
+              h("div", { class: "fact" },
+                h("span", { class: "mono" }, `${p}`),
+                h("span", {}, ` ${st.state}${st.detail ? " — " + st.detail : ""}`))))
+          : h("div", { class: "empty-hint" }, "No connectors configured (email/telegram env or Termux access)."));
+        clear(countsBox);
+        const by = Object.entries(ov.inbox?.by_platform || {}).map(([p, n]) => `${p}:${n}`).join("  ");
+        countsBox.append(`messages ${ov.inbox?.total ?? 0}${by ? "  (" + by + ")" : ""}  ·  drafts ${ov.drafts_pending ?? 0}  ·  workflows ${ov.workflows ?? 0}`);
+      } catch (e) { countsBox.textContent = `overview unavailable: ${e.message || e}`; }
+
+      try {
+        const data = await api("/api/comm/inbox?limit=15");
+        clear(inboxList);
+        for (const m of data.messages || []) {
+          inboxList.appendChild(h("div", { class: "comm-item" },
+            h("span", { class: "mono" }, `[${m.platform}] `),
+            h("b", {}, m.sender || "?"),
+            h("span", {}, ` — ${(m.content || m.reply_context || "").slice(0, 120)}`),
+            h("span", { class: "mono" }, ` ${m.urgency || ""}`)));
+        }
+        if (!(data.messages || []).length) inboxList.append(h("div", { class: "empty-hint" }, "(inbox empty)"));
+      } catch (e) { inboxList.textContent = `inbox unavailable: ${e.message || e}`; }
+
+      try {
+        const d = await api("/api/comm/drafts");
+        clear(draftsList);
+        for (const dr of d.drafts || []) {
+          const btn = h("button", { class: "mini-btn" }, "approve & send");
+          btn.addEventListener("click", async () => {
+            btn.disabled = true;
+            try {
+              const res = await api("/api/comm/send", {
+                method: "POST", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ draft_id: dr.draft_id, confirmed: true }),
+              });
+              btn.textContent = res.ok ? "sent ✓" : (res.status || "failed");
+            } catch (e) { btn.textContent = "error"; }
+            refresh();
+          });
+          const risk = (dr.risk_markers || []).length ? ` risk:${dr.risk_markers.join(",")}` : "";
+          draftsList.appendChild(h("div", { class: "comm-item" },
+            h("span", { class: "mono" }, `[${dr.platform}] `),
+            h("b", {}, dr.recipient || "?"),
+            h("span", {}, ` — ${(dr.body || "").slice(0, 90)}`),
+            h("span", { class: "mono" }, risk),
+            btn));
+        }
+        if (!(d.drafts || []).length) draftsList.append(h("div", { class: "empty-hint" }, "(no drafts waiting)"));
+      } catch (e) { draftsList.textContent = `drafts unavailable: ${e.message || e}`; }
+
+      try {
+        const w = await api("/api/comm/workflows");
+        clear(flowsList);
+        for (const wf of w.workflows || []) {
+          flowsList.appendChild(h("div", { class: "comm-item" },
+            h("span", { class: "mono" }, `${wf.definition?.trigger?.type || "?"}`),
+            h("span", {}, ` ${wf.name}`),
+            h("span", { class: "mono" }, wf.enabled ? "" : " (disabled)")));
+        }
+        if (!(w.workflows || []).length) flowsList.append(h("div", { class: "empty-hint" }, "(no workflows)"));
+        for (const r of (w.recent_runs || []).slice(0, 5)) {
+          flowsList.appendChild(h("div", { class: "comm-item mono" },
+            `run ${r.run_id} ${r.success ? "ok" : "FAIL"} ${r.trigger_summary || ""}`.slice(0, 120)));
+        }
+      } catch (e) { flowsList.textContent = `workflows unavailable: ${e.message || e}`; }
+
+      try {
+        const a = await api("/api/comm/audit?limit=10");
+        clear(auditList);
+        for (const e of a.entries || []) {
+          auditList.appendChild(h("div", { class: "comm-item mono" },
+            `${e.action} ${e.platform} → ${e.target || "-"} [${e.result || e.error || ""}]`.slice(0, 140)));
+        }
+        if (!(a.entries || []).length) auditList.append(h("div", { class: "empty-hint" }, "(no external actions yet)"));
+      } catch (e) { auditList.textContent = `audit unavailable: ${e.message || e}`; }
+    }
+
+    refresh();
+    const timer = setInterval(refresh, 30000);
+    return () => clearInterval(timer);
+  },
+});

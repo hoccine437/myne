@@ -71,6 +71,7 @@ async function boot() {
   document.getElementById("btn-logs").addEventListener("click", () => toggle("logs"));
   document.getElementById("btn-memory").addEventListener("click", () => toggle("memory"));
   document.getElementById("btn-devtools").addEventListener("click", () => toggle("devtools"));
+  document.getElementById("btn-comms").addEventListener("click", () => toggle("comms"));
   async function toggle(id) { (await import("./modules/floating.js")).togglePanel(id); }
 
   /* ---- core state pill + root state reflect ---- */

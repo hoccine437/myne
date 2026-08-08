@@ -48,7 +48,11 @@ set; `REQUIRES TERMUX PACKAGE` = needs a `pkg install` step;
     "ZERION_HEALTH_INTERVAL", "ZERION_HEARTBEAT_INTERVAL",
     "ZERION_MAINTENANCE_INTERVAL", "ZERION_NETWORK_CHECK_INTERVAL",
     "ZERION_BACKOFF_BASE", "ZERION_BACKOFF_MAX", "ZERION_MAX_RECOVERY_ATTEMPTS",
-    "ZERION_RESTART_BUDGET", "ZERION_RESTART_WINDOW", "ZERION_FAILED_REPROBE_FACTOR"
+    "ZERION_RESTART_BUDGET", "ZERION_RESTART_WINDOW", "ZERION_FAILED_REPROBE_FACTOR",
+    "COMM_ENABLED", "COMM_DEFAULT_LEVEL", "COMM_TRUSTED", "COMM_RATE_PER_MINUTE",
+    "COMM_MAX_RECIPIENTS", "COMM_DUPLICATE_WINDOW", "COMM_RECIPIENT_COOLDOWN",
+    "EMAIL_HOST", "EMAIL_USER", "EMAIL_PASSWORD",
+    "EMAIL_IMAP_PORT", "EMAIL_SMTP_PORT", "TELEGRAM_BOT_TOKEN"
   ],
   "platform_environment_used_but_not_installable": [
     "PREFIX", "TERM", "DISPLAY", "ANDROID_ROOT", "ANDROID_DATA", "PATH"
@@ -57,8 +61,12 @@ set; `REQUIRES TERMUX PACKAGE` = needs a `pkg install` step;
   "required_permissions": [
     "filesystem write in project dir (memory/knowledge/runtime stores)",
     "network egress to generativelanguage.googleapis.com (LLM/TTS)",
-    "android battery batteryStats via termux-api where available"
-  ]
+    "android battery batteryStats via termux-api where available",
+    "OPTIONAL email IMAP/SMTP egress to EMAIL_HOST (only when EMAIL_* configured)",
+    "OPTIONAL HTTPS egress to api.telegram.org (only when TELEGRAM_BOT_TOKEN set)",
+    "OPTIONAL termux-notification-list via Termux:API (phone inbox connector)"
+  ],
+  "secret_handling": "EMAIL_PASSWORD and TELEGRAM_BOT_TOKEN are read from the environment at call time only; never written to the knowledge DB, comm tables, audit log, or any file. audit.py redacts keys matching credential patterns."
 }
 ```
 

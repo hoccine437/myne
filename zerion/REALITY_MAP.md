@@ -986,8 +986,25 @@ Changes applied (every item runtime-verified; full battery: **253/253 pytest** i
 
 Still open (unchanged, by design/environment): evolution DEFINED_NOT_EXECUTED at runtime (constitutional stance), STT browser-side only, Gemini LLM/TTS bytes and phone hardware rows ENV-GATED, finance/OCR documented MISSING, confirmation-only sandboxing posture.
 
-## 28. FINAL SUMMARY (§38 contract)
+## 27c. COMMUNICATION LAYER UPDATE (2026-08-08, same-day continuation)
 
+New subsystem `comms/` (16 modules) + 9 tools + 6 UI endpoints + workflow engine.
+Updates to the map's subsystem table:
+
+| Component | Status | Evidence |
+|---|---|---|
+| comms/ unified layer (inbox/classify/reply/approvals/rails/audit/verify/engine) | LIVE | tests/test_communication_layer.py 53 tests green incl. 4 E2E chains |
+| email connector (IMAP/SMTP stdlib) | PARTIALLY_LIVE (transport-injected tests verified; live mailbox NOT VERIFIED — needs authorized account) | test fakes + honest disconnected state |
+| telegram connector (Bot API) | PARTIALLY_LIVE (same rule) | injected-http E2E |
+| phone/social notification intake | PARTIALLY_LIVE (termux-notification-list gated; sandbox shows disconnected, honestly) | FakeAdapter tests + live probe |
+| contacts / calendar (local authoritative) | LIVE (local tables work offline, conflicts/availability computed) | calendar math tests |
+| workflow engine + scheduler | LIVE (service maintenance trigger pump; manual runs via workflow_run) | workflow tests incl. failure→error-memory |
+| UI Communication panel | LIVE | 6 endpoints 200 on live boot; smoke 70/70 |
+
+Approval ladder defaults to LEVEL 2 (confirm before send); high-risk markers
+force confirmation even on trusted rules; audit never stores secrets.
+
+## 28. FINAL SUMMARY (§38 contract)
 
 **Actual Entry Point:** `main.py:main()` → Web UI default (`_run_ui` → uvicorn/hosting `ui.server.app`); `main.py --terminal` REPL; `python -m runtime` service supervising the same UI in a thread plus health maintenance.
 

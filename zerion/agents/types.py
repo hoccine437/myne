@@ -105,6 +105,16 @@ AGENT_TYPES: dict[str, AgentType] = {t.name: t for t in (
         can_search_memory=True,
         max_parallel=2,
     ),
+    AgentType(
+        "communicator",
+        "communication lanes: inbox reads, contact lookup, draft preparation. "
+        "Sends are NEVER in this whitelist — outbound stays on the supervised "
+        "confirmation path (Constitution: approved humans send, agents draft)",
+        allowed_tools=("comm_inbox", "comm_draft", "comm_health",
+                       "contact_lookup", "calendar_list"),
+        can_search_memory=True,
+        max_parallel=2,
+    ),
 )}
 
 

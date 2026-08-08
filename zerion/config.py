@@ -115,6 +115,40 @@ VOICE_CACHE = os.getenv("VOICE_CACHE", "true").strip().lower() in (
 )
 
 # ---------------------------------------------------------------------------
+# Communication Layer (comms/)
+# ---------------------------------------------------------------------------
+# Master switch for connectors + workflow scheduler. All offline machinery
+# (inbox, classification, drafting fallback, workflows) works regardless;
+# this gates only external platform traffic.
+COMM_ENABLED = os.getenv("COMM_ENABLED", "true").strip().lower() in (
+    "1", "true", "yes", "on"
+)
+
+# Approval levels: 0 observe, 1 draft, 2 confirm-before-send (default),
+# 3 trusted automation (only for explicitly whitelisted low-risk rules).
+COMM_DEFAULT_LEVEL = _env_int("COMM_DEFAULT_LEVEL", 2, minimum=0)
+
+# Trusted-automation rules: JSON list of {"platform","account","recipient"}
+# dicts. Empty by default — nothing is ever auto-sent out of the box.
+COMM_TRUSTED_RAW = os.getenv("COMM_TRUSTED", "[]")
+
+# Anti-abuse rails (hard caps; a draft counts against these once SENT).
+COMM_RATE_PER_MINUTE = _env_int("COMM_RATE_PER_MINUTE", 12, minimum=1)
+COMM_MAX_RECIPIENTS = _env_int("COMM_MAX_RECIPIENTS", 5, minimum=1)
+COMM_DUPLICATE_WINDOW = _env_int("COMM_DUPLICATE_WINDOW", 3600, minimum=60)
+COMM_RECIPIENT_COOLDOWN = _env_int("COMM_RECIPIENT_COOLDOWN", 20, minimum=0)
+
+# Connector credentials: environment ONLY, never written to the knowledge
+# DB, audit log, or any file. Absent credentials simply leave the connector
+# unregistered — no failure, no fake "connected" state.
+EMAIL_HOST = os.getenv("EMAIL_HOST", "")
+EMAIL_USER = os.getenv("EMAIL_USER", "")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD", "")
+EMAIL_IMAP_PORT = _env_int("EMAIL_IMAP_PORT", 993, minimum=1)
+EMAIL_SMTP_PORT = _env_int("EMAIL_SMTP_PORT", 465, minimum=1)
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
+
+# ---------------------------------------------------------------------------
 # Misc
 # ---------------------------------------------------------------------------
 REQUEST_TIMEOUT = _env_int("REQUEST_TIMEOUT", 30, minimum=1)

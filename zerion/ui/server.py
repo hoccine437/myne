@@ -500,6 +500,104 @@ async def api_fs_read(request: Request):
                          "content": result.data or ""})
 
 
+# ---------------------------------------------------------------------------
+# Communication Layer panel data (all backed by comms/* — no fabrication)
+# ---------------------------------------------------------------------------
+
+@route("/api/comm/overview")
+async def api_comm_overview(request: Request):
+    def _read():
+        from comms.inbox import overview
+        from comms.registry import connectors
+        from comms import store
+        return {
+            "connectors": connectors.health(),
+            "inbox": overview(),
+            "drafts_pending": len(store.pending_drafts()),
+            "workflows": len(store.list_workflows()),
+        }
+    return JSONResponse(await asyncio.to_thread(_read))
+
+
+@route("/api/comm/inbox")
+async def api_comm_inbox(request: Request):
+    platform = _q(request, "platform", "")
+    query = _q(request, "query", "")
+    limit = _q(request, "limit", 40, int, 1, 200)
+
+    def _read():
+        from comms.inbox import prioritized, search
+        rows = search(query, platform=platform, limit=limit) if query else \
+            prioritized(platform=platform, limit=limit)
+        return [dict(r) for r in rows]
+    return JSONResponse({"messages": await asyncio.to_thread(_read)})
+
+
+@route("/api/comm/drafts")
+async def api_comm_drafts(request: Request):
+    def _read():
+        from comms import store
+        return store.pending_drafts()
+    return JSONResponse({"drafts": await asyncio.to_thread(_read)})
+
+
+@route("/api/comm/send", methods=("POST",))
+async def api_comm_send(request: Request):
+    """Approve-and-send from the Communication panel. `confirmed:true` is the
+    panel's approve action (the LEVEL-2 user decision); the send engine still
+    runs policy, checklist, anti-spam rails, connector and audit — the button
+    NEVER bypasses them."""
+    try:
+        payload = await request.json()
+    except Exception:
+        payload = {}
+    draft_id = str((payload or {}).get("draft_id") or "")
+    confirmed = bool((payload or {}).get("confirmed"))
+
+    def _send():
+        from comms import store
+        from comms.engine import send_draft
+        from comms.models import Draft
+        row = store.get_draft(draft_id)
+        if row is None:
+            return None
+        draft = Draft(platform=row["platform"], recipient=row["recipient"],
+                      body=row["body"], subject=row.get("subject", ""),
+                      conversation_id=row.get("conversation_id", ""),
+                      account=row.get("account", ""), tone=row.get("tone", "casual"),
+                      generated_locally=bool(row.get("generated_locally")),
+                      checks=row.get("checks") or {},
+                      risk_markers=tuple(row.get("risk_markers") or ()),
+                      draft_id=row["draft_id"])
+        return send_draft(draft, confirmed=confirmed)
+
+    result = await asyncio.to_thread(_send)
+    if result is None:
+        return JSONResponse(status_code=404, content={"error": "no such draft"})
+    bus.emit("decision", {"source": "Communication",
+                          "text": f"draft {draft_id}: {result['status']}"})
+    return JSONResponse(result)
+
+
+@route("/api/comm/workflows")
+async def api_comm_workflows(request: Request):
+    def _read():
+        from comms import store
+        return {"workflows": store.list_workflows(),
+                "recent_runs": store.recent_runs(limit=10)}
+    return JSONResponse(await asyncio.to_thread(_read))
+
+
+@route("/api/comm/audit")
+async def api_comm_audit(request: Request):
+    limit = _q(request, "limit", 40, int, 1, 200)
+
+    def _read():
+        from comms import audit
+        return audit.tail(limit)
+    return JSONResponse({"entries": await asyncio.to_thread(_read)})
+
+
 @route("/api/settings")
 async def api_settings_get(request: Request):
     return JSONResponse(_current_settings())
