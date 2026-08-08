@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.0.0 — world-class intelligence integration
+- cognition/decisions.py: structured option-stacking (options/cost/risk/
+  benefit/uncertainty/reversibility/evidence → decision with bounded
+  confidence); decision tasks ride the reasoning-mode channel as
+  "decision_analysis" so every terminal+UI turn gets honest consequences.
+- cognition/context.py: relevance-ordered, budget-bounded prompt assembly;
+  llm.py now goes through it, so EVERY entry point benefits without a second
+  prompt engine. Long contexts get hierarchical head+tail compression.
+- providers/gemini.py + plain kwargs multimodal chain: image_b64 flows
+  through the single Gemini provider as an inline part; older 2-arg fakes
+  and providers stay compatible (kwargs only when an image exists).
+- ui vision turn: image bytes → same brain (same critic, same memory).
+- meta.py: honest self-knowledge answers (memory stats, tools count, agent
+  types, device state) — zero-cost via fast_planner.
+- benchmarks.py: REAL measured lenses (reasoning, decision, tool, memory,
+  orchestration, offline-intent, constitution), appended to runtime/run/
+  benchmarks.jsonl for the evolution self-competition loop.
+- fixes found while extending: meta-prompt markers no longer swallow recall,
+  legacy 2-arg provider contract guarded, vision tail restored intact.
+
 ## 1.0.0 — the canonical Agent Orchestrator
 - agents/orchestrator.py: minimal-capable offline classification → type
   selection → bounded pool lanes → aggregate → self-critic review →

@@ -20,6 +20,7 @@ from intent.history import action_history
 COMMANDS = {
     "/status", "/tools", "/memory", "/history", "/goals",
     "/plugins", "/debug", "/help", "/plan", "/serious", "/normal",
+    "/benchmark",
 }
 
 # Persona switches also accept the natural-language (exact-phrase) forms —
@@ -125,6 +126,18 @@ def handle(user_text: str, session, memory: dict) -> str:
             planning_engine.set_debug(False)
             return "Debug mode off."
         return f"Debug mode is currently {'on' if planning_engine.DEBUG else 'off'}. Use /debug on|off."
+
+    if cmd == "/benchmark":
+        # live capability checks; both entry points share this local command
+        import benchmarks
+        report = benchmarks.run_all()
+        parts2 = []
+        for lens, sub in report["results"].items():
+            quality = ",".join(f"{k}={v}" for k, v in sub.items()
+                               if not k.endswith("_ms") and not isinstance(v, (list, dict)))
+            parts2.append(f"{lens}: {quality or 'ok'}")
+        parts2.append(f"overall: {'OK' if report['all_ok'] else 'DEGRADED'} in {report['total_latency_s']}s")
+        return "\n".join(parts2)
 
     if cmd == "/plan":
         workflow = planning_engine.current_workflow()

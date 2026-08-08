@@ -147,13 +147,18 @@ def _tools_block() -> str:
     return "\n".join(lines)
 
 
-def get_llm_output(user_text: str, memory_block: dict = None) -> dict:
+def get_llm_output(user_text: str, memory_block: dict = None,
+                   image_b64: str = None, image_mime: str = None) -> dict:
     if not user_text or not user_text.strip():
-        return _fallback("I didn't catch that.")
+        return _fallback("I didn't catch that.") if not image_b64 else _fallback(
+            "Describe this image in detail and tell me what you see.")
 
+    from cognition.context import assemble
     memory_str = ""
     if memory_block:
-        memory_str = "\n".join(f"{k}: {v}" for k, v in memory_block.items())
+        # bounded, relevance-ordered assembly (context manager) — see
+        # cognition/context.py for the priority/budget logic
+        memory_str = assemble(memory_block)
 
     tools_str = _tools_block()
 
@@ -170,7 +175,12 @@ def get_llm_output(user_text: str, memory_block: dict = None) -> dict:
     rendered_system_prompt = render_prompt(SYSTEM_PROMPT, {"user_name": memory_block.get("user_name", "")} if memory_block else None)
 
     try:
-        content = api.call_llm(rendered_system_prompt, user_prompt)
+        # image kwargs only appear when an image is actually attached — older
+        # providers/fakes with a 2-arg contract keep working unchanged
+        extra = {}
+        if image_b64:
+            extra = {"image_b64": image_b64, "image_mime": image_mime or "image/jpeg"}
+        content = api.call_llm(rendered_system_prompt, user_prompt, **extra)
     except Exception as e:
         log.error(f"LLM call failed: {e}")
         return _fallback("I ran into a system error reaching the AI provider.")

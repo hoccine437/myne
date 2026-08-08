@@ -9,8 +9,8 @@ def _get_provider():
   _instance=GeminiProvider()
  return _instance
 def available_providers():return ['gemini'] if _get_provider().is_configured() else []
-def call_llm(system_prompt,user_prompt,provider_name=None):
+def call_llm(system_prompt,user_prompt,provider_name=None,**kw):
  if provider_name and provider_name!='gemini':raise ProviderError('Only Gemini is supported in this release.')
  provider=_get_provider()
  if not provider.is_configured():raise ProviderError('GEMINI_API_KEY is not set. Configure it in .env before sending requests.')
- return provider.call(system_prompt,user_prompt,timeout=config.REQUEST_TIMEOUT)
+ return provider.call(system_prompt,user_prompt,timeout=config.REQUEST_TIMEOUT,**kw)

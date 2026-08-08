@@ -37,6 +37,7 @@ export const core = {
   cancel: () => send({ type: "cancel" }),
   terminal: (command) => send({ type: "terminal", command }),
   tts: (text, seq) => send({ type: "tts", text, seq }),
+  image: ({ text, data, name, mime }) => send({ type: "image", text, data, name, mime }),
 };
 
 export function connect() {

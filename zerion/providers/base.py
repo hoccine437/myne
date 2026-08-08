@@ -29,8 +29,14 @@ class Provider(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def call(self, system_prompt: str, user_prompt: str, timeout: int) -> str:
+    def call(self, system_prompt: str, user_prompt: str, timeout: int,
+             image_b64: str | None = None, image_mime: str | None = None) -> str:
         """Send one request and return the response text. Raises
         ProviderError on any failure -- never returns None, never raises
-        a raw requests/network exception to the caller."""
-        raise NotImplementedError
+        a raw requests/network exception to the caller.
+
+        When supplied, the image is attached as an inline image part using
+        the provider's multimodal convention (Gemini: inline_data). Providers
+        that don't support multimodal input must raise a clear ProviderError
+        rather than silently dropping the image — caller then falls back
+        text-only."""

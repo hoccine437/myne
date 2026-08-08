@@ -34,8 +34,7 @@ export function createMode() {
           h("button", { class: "mini-btn", type: "button", onclick: () => fileInput.click() }, "Choose image"),
           h("button", {
             class: "mini-btn hidden", type: "button", id: "vision-ask",
-            onclick: () => core.message("I'm looking at an image titled '" + (currentName || "image") +
-              "'. Describe what you can infer about it and help me analyze it."),
+            onclick: () => sendImageToCore(),
           }, "Ask Zerion about it"),
         ),
       ),
@@ -131,8 +130,28 @@ export function createMode() {
     });
   }
 
-  kv(objects, "ocr", "—");
-  kv(objects, "objects", "awaiting Core analysis events");
+  kv(objects, "ocr", "via shared vision pipeline (no separate OCR engine — never faked)");
+  kv(objects, "objects", "detected by the model's real visual analysis, not invented here");
+
+  // wire the real multimodal turn: actual image bytes → Core → same brain
+  let currentFile = null;
+  const origStage = stageFile;
+  function sendImageToCore() {
+    const file = currentFile;
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      core.image({
+        text: "Describe this image precisely: content, layout, quality, and anything readable in it.",
+        data: String(reader.result).split(",").pop(),
+        name: file.name, mime: file.type || "image/jpeg",
+
+      });
+    };
+    reader.readAsDataURL(file);
+  }
+  window.__zerionSendImage = sendImageToCore;
+  stageFile = (file) => { currentFile = file; origStage(file); };
 
   // global drag & drop of an image stages here (gestures.js); a stash
   // covers the race where the drop preceded this mode's creation

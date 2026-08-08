@@ -328,6 +328,27 @@ async def _handle_client_message(websocket: WebSocket, message: dict,
         async with send_lock:
             await websocket.send_json({"seq": 0, "ts": time.time(),
                                        "type": "tts", "data": result})
+    elif mtype == "image":
+        # Multimodal turn: image from the vision workspace, through the
+        # same brain — same critic, same memory update, one model.
+        caption = str(message.get("text", ""))[:2000]
+        b64 = str(message.get("data", "")).replace("\n", "")
+        name = str(message.get("name", "image"))[:120]
+        mime = str(message.get("mime", "image/jpeg"))[:80]
+        # strict size cap: ~8MB binary → ~10.6MB b64
+        if len(b64) > 11_000_000:
+            try:
+                async with send_lock:
+                    await websocket.send_json({
+                        "seq": 0, "ts": time.time(), "type": "chat",
+                        "data": {"role": "ai", "kind": "vision",
+                                 "text": "Image too large for this bridge (10MB cap)."},
+                    })
+            except Exception:
+                pass
+        elif b64:
+            asyncio.create_task(asyncio.to_thread(
+                session.process_image, caption, b64, mime, name))
     elif mtype == "ping":
         async with send_lock:
             await websocket.send_json({"seq": 0, "ts": 0, "type": "pong", "data": {}})

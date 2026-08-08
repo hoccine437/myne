@@ -72,6 +72,16 @@ def try_handle(classification, user_text: str, memory: dict) -> dict:
     """
     intent = classification.intent
 
+    # Meta-intelligence questions ("what do you know/can you do/…"):
+    # answered from live state with zero LLM cost and zero hallucination.
+    try:
+        from meta import answer as meta_answer
+        answer = meta_answer(user_text)
+        if answer is not None:
+            return {"text": answer, "handled_by": "fast_planner", "meta": True}
+    except Exception:
+        pass
+
     if intent == Intent.MEMORY:
         return _handle_memory_lookup(user_text, memory)
 

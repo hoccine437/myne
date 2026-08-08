@@ -653,6 +653,77 @@ class ZerionUISession:
                 self._state("success")
         self._emit_goal()
 
+    def process_image(self, caption: str, image_b64: str, image_mime: str = "image/jpeg",
+                      name: str = "image") -> None:
+        """Vision turn: an image arrives together with a question — ONE
+        brain, same model, same critic, same memory path. Multimodal parts
+        flow through the provider chain; never a second engine."""
+        if not image_b64:
+            return
+        with self._lock:
+            if self._busy:
+                self._notify("Zerion is busy with a task — send the image after it settles.",
+                             level="warning")
+                return
+            self._busy = True
+        bus.emit("turn", {"phase": "start", "origin": "vision"})
+        started = time.monotonic()
+        try:
+            bus.emit("chat", {"role": "user", "text": f"📷 {name}" + (f" — {caption}" if caption else ""),
+                              "kind": "vision"})
+            self._state("analyzing", "reading image")
+            bus.emit("workspace", {"mode": "vision", "source": "image"})
+
+            text = (caption or "").strip() or (
+                "Analyze this image and say exactly what you see.")
+            memory_for_prompt = minimal_memory_for_prompt(load_memory())
+            retrieved = self.knowledge.retrieve_context(text, limit=5)
+            if retrieved:
+                memory_for_prompt["retrieved_knowledge"] = retrieved
+
+            llm_output = get_llm_output(
+                user_text=text, memory_block=memory_for_prompt,
+                image_b64=image_b64, image_mime=image_mime)
+            intent = llm_output.get("intent", "chat")
+            response = llm_output.get("text")
+
+            if config.ENABLE_SELF_CRITIC and intent == "chat" and response:
+                try:
+                    from cognition.reasoning import CognitiveReasoningEngine
+                    confidence = CognitiveReasoningEngine().reason(text, []).confidence
+                except Exception:
+                    confidence = 0.6
+                try:
+                    critique = self_critic.review(text, response, confidence)
+                    if critique.should_improve:
+                        response = self_critic.improve(text, response, critique)
+                except Exception:
+                    pass
+
+            memory_update = llm_output.get("memory_update")
+            if memory_update and isinstance(memory_update, dict):
+                update_memory(memory_update)
+                bus.emit("memory_update", {"keys": list(memory_update.keys())})
+
+            self.state.set_last_user_text(text)
+            self.state.set_last_ai_response(response or "")
+            if response:
+                self._state("speaking")
+                self._say(response, kind="vision")
+                self._state("success")
+            else:
+                self._state("error", "empty vision answer")
+        except Exception as e:
+            log.error(f"vision turn failed: {e}")
+            self._state("error", str(e)[:120])
+            self._say(f"Vision turn error: {e}", kind="error")
+        finally:
+            bus.emit("turn", {"phase": "end", "origin": "vision",
+                              "seconds": round(time.monotonic() - started, 3)})
+            self._state("idle")
+            with self._lock:
+                self._busy = False
+
     # ------------------------------------------------------------------
     # intent dispatch — port of main.py's handle_intent
     # ------------------------------------------------------------------

@@ -19,7 +19,8 @@ class GeminiProvider(Provider):
     def is_configured(self) -> bool:
         return bool(config.GEMINI_API_KEY)
 
-    def call(self, system_prompt: str, user_prompt: str, timeout: int) -> str:
+    def call(self, system_prompt: str, user_prompt: str, timeout: int,
+             image_b64: str | None = None, image_mime: str | None = None) -> str:
         if not self.is_configured():
             raise ProviderError("GEMINI_API_KEY is not set")
 
@@ -29,9 +30,13 @@ class GeminiProvider(Provider):
             raise ProviderError(f"Gemini network unavailable: {exc}")
         headers = {"Content-Type": "application/json"}
         params = {"key": config.GEMINI_API_KEY}
+        user_parts = [{"text": user_prompt}]
+        if image_b64:
+            user_parts.insert(0, {"inline_data": {"mime_type": image_mime or "image/jpeg",
+                                                   "data": image_b64}})
         payload = {
             "system_instruction": {"parts": [{"text": system_prompt}]},
-            "contents": [{"role": "user", "parts": [{"text": user_prompt}]}],
+            "contents": [{"role": "user", "parts": user_parts}],
             "generationConfig": {"temperature": 0.2, "maxOutputTokens": 500},
         }
 
