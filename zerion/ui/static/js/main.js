@@ -66,6 +66,10 @@ async function boot() {
   window.__zerionBus = { on };
   on("hello", () => maybeShowWelcome());
 
+  // boot-complete marker: the inline watchdog in index.html quiets only when
+  // modules actually finished loading (a blank page now explains itself)
+  window.__Z_BOOTED = true;
+
   // header panel buttons
   document.getElementById("btn-explorer").addEventListener("click", () => toggle("explorer"));
   document.getElementById("btn-logs").addEventListener("click", () => toggle("logs"));

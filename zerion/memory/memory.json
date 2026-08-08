@@ -1,6 +1,10 @@
 {
   "identity": {},
-  "preferences": {},
+  "preferences": {
+    "personality": {
+      "value": "normal"
+    }
+  },
   "relationships": {},
   "emotional_state": {}
 }

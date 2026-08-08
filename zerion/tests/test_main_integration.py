@@ -242,7 +242,9 @@ class MainPipelineE2ETests(unittest.TestCase):
                 raise ProviderError("GEMINI_API_KEY is not set.")
         ui = self._run_loop(["hello", "exit"], NoKeyProvider())
         out = "\n".join(ui.ai_lines())
-        self.assertIn("system error", out)  # llm.py's graceful fallback text
+        # contract upgrade: missing-key errors now say exactly how to fix it
+        self.assertIn("No AI key configured", out)  # llm.py's guided fallback
+        self.assertIn("GEMINI_API_KEY", out)
         self.assertNotIn("Traceback", json.dumps(ui.outputs))
 
     def test_command_palette_and_interrupt_and_mute(self):

@@ -13,7 +13,11 @@ const DEFAULT_SETTINGS = {
   textScale: 1,               // 0.9 | 1 | 1.1 | 1.25
   animations: "full",         // full | reduced | off
   fxQuality: "auto",          // auto | high | low
-  autoFullscreen: false,
+  // fullscreen-by-default on phone-class viewports (most value there);
+  // desktops keep windowed default. a persisted user choice always wins.
+  autoFullscreen: (typeof window !== "undefined") &&
+    (Math.min(window.innerWidth, window.innerHeight) <= 620 ||
+     (typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches)),
   voiceOutput: true,          // browser TTS for AI replies
   voiceName: "",              // speechSynthesis voice URI ("" = default)
   voiceRate: 1,

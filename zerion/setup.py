@@ -118,6 +118,27 @@ def run(argv=None) -> int:
 
     env = ensure_env()
     print(".env:", env)
+    # interactive key setup when we're on a real terminal and no key exists —
+    # never echoes, never auto-sends; stored in .env only
+    try:
+        import config as _cfg
+        if sys.stdin.isatty() and not _cfg.GEMINI_API_KEY:
+            print()
+            print("Gemini API key is not configured (Zerion answers stay offline).")
+            print("Get one free at https://aistudio.google.com/apikey")
+            key = input("Paste GEMINI_API_KEY (or press Enter to skip): ").strip()
+            if key:
+                path = ROOT / ".env"
+                lines = path.read_text(encoding="utf8").splitlines() if path.exists() else []
+                lines = [l for l in lines if not l.startswith("GEMINI_API_KEY=")]
+                lines.append(f"GEMINI_API_KEY={key}")
+                path.write_text("\n".join(lines) + "\n", encoding="utf8")
+                import importlib
+                importlib.reload(_cfg)
+                print("Key saved to .env:",
+                      "working" if _cfg.GEMINI_API_KEY == key else "check .env")
+    except Exception as e:
+        print("Key setup skipped:", type(e).__name__)
 
     missing_dirs = [d for d in REQUIRED_DIRS if not (ROOT / d).is_dir()]
     print("Project structure:", "OK" if not missing_dirs else "missing: " + ", ".join(missing_dirs))

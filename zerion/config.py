@@ -41,15 +41,19 @@ def _env_float(name: str, default: float, minimum: float | None = None,
         return default
     return value
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 try:
     from dotenv import load_dotenv
-    load_dotenv()
+    # Anchor the .env at the project root so Zerion works from ANY cwd —
+    # the historical cwd-only load silently dropped keys when launched from
+    # another directory (the classic "Zerion is offline" false mystery).
+    load_dotenv(os.path.join(BASE_DIR, ".env"))
+    load_dotenv()  # cwd .env still wins for ad-hoc overrides when different
 except ImportError:
     # python-dotenv is optional; if it's missing we just rely on real
     # environment variables (export FOO=bar before running).
     pass
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # ---------------------------------------------------------------------------
 # Gemini-only provider selection

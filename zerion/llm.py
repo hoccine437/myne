@@ -183,6 +183,13 @@ def get_llm_output(user_text: str, memory_block: dict = None,
         content = api.call_llm(rendered_system_prompt, user_prompt, **extra)
     except Exception as e:
         log.error(f"LLM call failed: {e}")
+        message = str(e)
+        if "GEMINI_API_KEY" in message or "not set" in message.lower():
+            return _fallback(
+                "No AI key configured — add GEMINI_API_KEY to the .env file in the "
+                "Zerion folder (or run `python setup.py` and enter it when asked), "
+                "then restart. Everything offline (tools, memory, agents, commands) "
+                "keeps working meanwhile.")
         return _fallback("I ran into a system error reaching the AI provider.")
 
     parsed = safe_json_parse(content)

@@ -230,6 +230,35 @@
 </div>
 
 <noscript><div style="color:#cfe;font-family:sans-serif;padding:2rem">Zerion requires JavaScript.</div></noscript>
+<div id="boot-fatal" style="display:none;position:fixed;inset:auto 0 0 0;z-index:9999;background:#2a1218;color:#ffd9dd;font:13px/1.5 sans-serif;padding:10px 14px;white-space:pre-wrap"></div>
+<script>
+/* Boot watchdog + fatal surface: if the module graph fails, the user gets
+   an actionable message instead of a dead white page. Plain inline JS so it
+   runs even when ES modules don't parse. */
+(function () {
+  window.__zFatal = function (msg) {
+    var el = document.getElementById("boot-fatal");
+    if (!el) return;
+    el.style.display = "block";
+    el.textContent = "Zerion UI could not start cleanly.\n" + msg +
+      "\n\nFix: run `python -m runtime --check` or `python setup.py` in the project folder.";
+  };
+  window.addEventListener("error", function (ev) {
+    if (window.__Z_BOOTED) return;
+    window.__zFatal("Script error: " + (ev && ev.message ? ev.message : ev));
+  });
+  window.addEventListener("unhandledrejection", function (ev) {
+    if (window.__Z_BOOTED) return;
+    var r = ev && (ev.reason && (ev.reason.message || ev.reason)) || "promise rejection";
+    window.__zFatal("Startup failed: " + r);
+  });
+  setTimeout(function () {
+    if (!window.__Z_BOOTED) {
+      window.__zFatal("Interface did not finish loading (modules or WebSocket unreachable).");
+    }
+  }, 8000);
+})();
+</script>
 <script type="module" src="/static/js/main.js"></script>
 </body>
 </html>

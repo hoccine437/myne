@@ -114,7 +114,7 @@ def main() -> int:
                        text=True, cwd=BASE, timeout=90)
     check("main.py --terminal full loop, rc=0", r.returncode == 0, r.stderr[-300:])
     check("no tracebacks in loop", "Traceback" not in r.stdout)
-    check("graceful keyless degradation", "system error" in r.stdout or "Commands:" in r.stdout)
+    check("graceful keyless degradation", "No AI key configured" in r.stdout or "Commands:" in r.stdout)
     check("startup greeting fires on terminal mode",
           "online and ready" in r.stdout or "Gemini voice" in r.stdout)
 

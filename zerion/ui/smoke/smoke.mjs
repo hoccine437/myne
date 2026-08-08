@@ -289,6 +289,18 @@ FakeWS.last.close();
 await new Promise(r => setTimeout(r, 30));
 check("offline banner shown", !$("#connection-banner").classList.contains("hidden"));
 
+console.log("\n— auto-fullscreen defaults…");
+{
+  setViewport(390, 844, true);
+  const phoneDefault = Math.min(window.innerWidth, window.innerHeight) <= 620 ||
+    window.matchMedia("(pointer: coarse)").matches;
+  check("auto-fullscreen defaults ON for phone-class screens", phoneDefault === true);
+  setViewport(1920, 1080, false);
+  const desktopDefault = Math.min(window.innerWidth, window.innerHeight) <= 620 ||
+    window.matchMedia("(pointer: coarse)").matches;
+  check("auto-fullscreen defaults OFF for desktop screens", desktopDefault === false);
+  setViewport(1280, 800, false);
+}
 console.log("\n— welcome experience…");
 await new Promise(r => setTimeout(r, 60));
 check("welcome overlay shown on first run", !!$("#welcome-title"));

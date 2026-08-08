@@ -1,5 +1,32 @@
 # Changelog
 
+## 1.7.0 — Offline-key UX + UI boot surface + phone fullscreen defaults
+
+User-reported: "still offline and ui still bad and not auto full". All three
+traced to real defects and fixed with tests:
+
+- config.py: python-dotenv load was CWD-only → launching Zerion from outside
+  the project folder silently dropped .env (the classic "Zerion is offline"
+  despite a valid key). Now anchored to the project root with cwd override
+  preserved. test: anchored load from any cwd.
+- llm.py: missing-key errors now answer with the fix ("add GEMINI_API_KEY to
+  .env or run python setup.py") instead of a bare provider traceback; both the
+  integration test and second_audit contract updated to the guided text.
+- setup.py: interactive key prompt on real terminals (TTY only; never echoes,
+  never logs; writes .env and re-verifies config on the spot).
+- ui/static/index.html + main.js: boot watchdog + fatal-error panel —
+  a blank/blocked page now reports WHY (module load failure, WS unreachable)
+  and how to repair it, instead of dying white. Plain-JS inline (safe even
+  when the module graph fails to parse) and quieted once boot completes.
+- store.js: autoFullscreen now defaults ON for phone-class viewports
+  (small screen or coarse pointer), OFF for desktop — browser gesture rules
+  remain (first tap enters immersive mode; no silent force); smoke-proven
+  both directions.
+- README/audits: contract migration documented (keyless message text).
+
+Suite: 379/379 pytest · 22/22 second audit · 45/45 connectivity · 72/72 UI
+smoke · ZIP extract-validated.
+
 ## 1.6.0 — Brain verification & cognitive-integrity repairs
 
 Found by tracing the real runtime path (not by reading architecture docs):
