@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.0.0 — single-screen AI-OS UI deepening
+- Core orb: full mandated state vocabulary (ready/thinking/analyzing/
+  executing/listening/speaking/searching/coding/learning/self-upgrading/
+  warning/offline/focus-mode/error/success). Orbital tool markers while a
+  tool executes; linked stream halos while agents work; offline dims the
+  Core instead of only showing a banner.
+- Focus Mode is real now: floating bar with the live task, completed/total
+  steps, and a STOP button that calls the Core's cancel path (no fake pause).
+- Phone workspace mode auto-surfaces on body activity and settles back to
+  conversation when finished (no manual switching).
+- Genuine data: storage telemetry landed in System Status; GPU intentionally
+  absent unless detected; session emits analyzing/executing/warning correctly.
+- 70 UI smoke checks, 198 backend tests, 45 connectivity checks all green.
+
 ## 1.0.0 — phone becomes first-class physical body
 - New phone body layer: phone/state.py (live PhoneState with TTL refresh;
   honest None where unprobed; permission posture; current-action tracking;
