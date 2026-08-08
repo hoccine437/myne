@@ -63,6 +63,7 @@ KNOWN_DORMANT_PREFIXES = (
     "setup",           # first-run bootstrap CLI (own entry point)
     "second_audit",        # release-gate audit tool (own entry point, dev-only)
     "connectivity_audit",  # final-gate connectivity audit (own entry point, dev-only)
+    "arch_map",            # reconciliation protocol measurement harness (dev)
 )
 
 

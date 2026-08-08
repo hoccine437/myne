@@ -275,6 +275,9 @@ DEV_TOOLS = {
     "UI_ACCEPTANCE.json": "audit-generated acceptance matrix",
     "FINAL_MATRIX.json": "release-phase verification matrix",
     "RELEASE_REPORT.json": "machine-readable release report",
+    "arch_map.py": "reconciliation-protocol measurement harness (dev)",
+    "ARCHITECTURE_MAP.json": "arch_map.py output (evidence + map)",
+    "GAP_MATRIX.json": "arch_map.py output (gap rows)",
 }
 
 RUNTIME_STATE_PREFIXES = ("runtime/run/", "knowledge/zerion_knowledge")
@@ -701,7 +704,7 @@ def audit_entrypoint_authority(main_direct=None):
         if '__name__ == "__main__"' in p.read_text(encoding="utf-8", errors="ignore"):
             entry_blocks.append(rel)
     allowed = {"main.py", "runtime/__main__.py", "ui/server.py", "setup.py",
-               "second_audit.py", "connectivity_audit.py"}
+               "second_audit.py", "connectivity_audit.py", "arch_map.py"}
     unexpected = sorted(r for r in set(entry_blocks) - allowed
                         if not r.startswith("tests/test_"))
     check("no hidden production entry points (CLI files all classified)",
@@ -794,7 +797,7 @@ def main() -> int:
         and not m.startswith("tests")
         and not m.startswith(("skills", "evolution", "memory.long_term",
                               "testing", "constitution.evolution"))
-        and m not in ("setup", "second_audit", "connectivity_audit")
+        and m not in ("setup", "second_audit", "connectivity_audit", "arch_map")
     ]
     check("every production python module reachable from main/ UI / runtime entries / dynamic tools",
           not orphan_candidates, "; ".join(orphan_candidates[:12]))

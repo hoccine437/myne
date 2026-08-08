@@ -1,0 +1,394 @@
+[
+  {
+    "component": "cognition/intent_understanding",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "cognition/context_builder",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "cognition/reasoning_engine",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "cognition/planning",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "cognition/confidence_system",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "cognition/self_critic",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "cognition/reflection",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "cognition/meta_cognition",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "memory/working_session",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "memory/short_term",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "memory/long_term",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "memory/episodic",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "memory/semantic_knowledge",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "memory/experience",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "agents/pool_runtime",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "agents/types_registry",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "agents/category_map",
+    "expected": "live runtime path",
+    "actual": "PARTIALLY_LIVE",
+    "status": "\u25d0 PARTIAL",
+    "gap": "missing named types get mapped to researcher/coder/verifier/controller/monitor; no fake capacities invented",
+    "action": "see evidence: missing named types get mapped to researcher/coder/verifier/controller/monitor; no fake capacities invented"
+  },
+  {
+    "component": "workflow/engine",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "workflow/verification",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "tools_skills/tool_registry",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "tools_skills/tool_execution_gate",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "tools_skills/skill_registry",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "phone/adapter",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "phone/dispatch_permissions",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "phone/device_state",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "phone/body_manager",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "os_control/exec_tools",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "os_control/filesystem",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "os_control/system_monitor",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "voice/stt",
+    "expected": "live runtime path",
+    "actual": "PARTIALLY_LIVE",
+    "status": "\u25d0 PARTIAL",
+    "gap": "outbound path full; mic capture is browser-side by design",
+    "action": "see evidence: outbound path full; mic capture is browser-side by design"
+  },
+  {
+    "component": "voice/tts",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "vision/camera",
+    "expected": "live runtime path",
+    "actual": "PARTIALLY_LIVE",
+    "status": "\u25d0 PARTIAL",
+    "gap": "capability exists; physical camera execution needs hardware (not verified)",
+    "action": "see evidence: capability exists; physical camera execution needs hardware (not verified)"
+  },
+  {
+    "component": "vision/ui_viewer",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "vision/ocr_objects",
+    "expected": "live runtime path",
+    "actual": "MISSING",
+    "status": "\u2717 MISSING",
+    "gap": "no OCR/object API exists in the Core; never faked \u2014 UI shows 'awaiting Core analysis events'",
+    "action": "document-only by design; no fake impl"
+  },
+  {
+    "component": "observability/health_monitor",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "observability/heartbeat",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "observability/structured_logging",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "observability/leak_trend",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "self_evolution/lifecycle",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "self_evolution/governance",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "finance/subsystem",
+    "expected": "live runtime path",
+    "actual": "MISSING",
+    "status": "\u2717 MISSING",
+    "gap": "no trading engine exists in the Core; UI trading panel is inert-unless-data and never fabricates values",
+    "action": "document-only by design; no fake impl"
+  },
+  {
+    "component": "offline_online/local_first",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "offline_online/online_augmentation",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "ui/single_screen",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "ui/runtime_truthfulness",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "entry_points/main_py",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "entry_points/ui_server_module",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "entry_points/runtime_service",
+    "expected": "live runtime path",
+    "actual": "LIVE",
+    "status": "\u2713 COMPLETE",
+    "gap": "",
+    "action": ""
+  },
+  {
+    "component": "entry_points/dev_tools",
+    "expected": "live runtime path",
+    "actual": "DEAD",
+    "status": "\u25cb DEAD",
+    "gap": "classified DEVELOPMENT-ONLY (outside production path)",
+    "action": "see evidence: classified DEVELOPMENT-ONLY (outside production path)"
+  }
+]
