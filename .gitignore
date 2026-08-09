@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.env
+.venv/
+node_modules/
+zerion/memory/*.bak
+.last_run_tmp*
+zerion/knowledge/*.db
+zerion/knowledge/*.db-journal
+zerion/knowledge/*.db-wal
+zerion/runtime/run/
+ZERION_FINAL.zip
+Zerion-Final-Release.zip
