@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.8.0 — UI: blue interactive starfield replaces the ball
+
+User request: no ball — a dense field of blue stars, close together, that
+interacts with pointer position and moves with Zerion's state and voice.
+
+- modules/orb.js rewritten around a Starfield renderer (same public API:
+  initOrb/setState/setAgents/setTools/setAmplitude — zero callers changed):
+  3 parallax depth layers, constellation links between near stars via a
+  spatial grid, pointer gravity + ice-white proximity highlights, idle drift
+  with edge wrap, state-driven motion (thinking=inward swirl, speaking=
+  center waves driven by live voice amplitude, analyzing/searching=scan
+  band, success=blue spark burst, error=fast jitter), all on a #000 field.
+- workspace.css: orb-stage is black by default (canvas-edge flashes safe).
+- smoke: +2 auto-fullscreen checks (1.7.0) + starfield API probe → 74/74.
+
+Gates: 379/379 pytest · 22/22 second audit · 45/45 connectivity · 74/74
+UI smoke · ZIP extract-validated.
+
 ## 1.7.0 — Offline-key UX + UI boot surface + phone fullscreen defaults
 
 User-reported: "still offline and ui still bad and not auto full". All three

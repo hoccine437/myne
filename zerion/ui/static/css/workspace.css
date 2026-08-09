@@ -7,6 +7,7 @@
   position: relative; min-height: 0;
   border-radius: var(--r-lg);
   overflow: hidden;
+  background: #000;   /* starfield paints black; canvas-edge flashes stay black */
 }
 #orb-canvas { width: 100%; height: 100%; }
 .orb-caption {

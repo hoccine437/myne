@@ -142,6 +142,12 @@ pushServer("core_state", { state: "thinking", detail: "contacting the model" });
 pushServer("core_state", { state: "speaking" });
 pushServer("core_state", { state: "idle" });
 await new Promise(r => setTimeout(r, 30));
+check("orb canvas mounted", !!$("#orb-canvas"));
+check("starfield exposes live API (state/agents/tools/amp)",
+      typeof window.__zerionOrb?.setState === "function" &&
+      typeof window.__zerionOrb?.setAgents === "function" &&
+      typeof window.__zerionOrb?.setTools === "function" &&
+      typeof window.__zerionOrb?.setAmplitude === "function");
 check("state pill reflects state", ["Idle", "Speaking"].includes($("#core-state-label")?.textContent) || $("#core-state-label")?.textContent.length > 0);
 
 console.log("\n— chat…");
