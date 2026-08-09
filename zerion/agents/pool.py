@@ -245,6 +245,7 @@ class AgentPool:
                 self._inflight -= 1
 
     def _execute(self, agent: AgentInstance) -> None:
+        for s in ("initialized",): agent._record_state(s)  # engine marks real lifecycle anyway
         agent.status = "running"
         agent._record_state("executing")
         atype = get_type(agent.type_name)
@@ -254,12 +255,18 @@ class AgentPool:
                 tool = str(task.get("tool") or "")
                 if tool not in atype.allowed_tools:
                     agent.status = "failed"
-                    agent.error = f"tool {tool!r} is not in the {atype.name} whitelist"
+                    agent.error = f"task_tool {tool!r} is not in the {atype.name} whitelist"
                 else:
-                    result = tool_manager.execute(tool, task.get("parameters") or {})
-                    agent.status = "completed" if result.success else "failed"
-                    agent.result = {"message": result.message, "data": result.data}
-                    agent.error = result.error or None
+                    # agents NEVER call tools directly — the MCP gateway is
+                    # the boundary (policy+timeout+retry+audit+translate)
+                    from mcp.gateway import gateway
+                    gres = gateway.call_tool(tool, task.get("parameters") or {},
+                                             caller="agent", agent_type=atype.name)
+                    agent.status = "completed" if gres.ok else "failed"
+                    payload = gres.data if isinstance(gres.data, dict) else {}
+                    agent.result = {"message": payload.get("message") or str(gres.data or gres.error or ""),
+                                    "data": payload.get("data")}
+                    agent.error = gres.error or None
             elif "query" in task and atype.can_search_memory:
                 from knowledge.manager import KnowledgeManager
                 found = KnowledgeManager().retrieve_context(str(task["query"]), limit=5)

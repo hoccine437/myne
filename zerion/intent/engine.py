@@ -182,77 +182,8 @@ def process(user_text: str, memory: dict):
 
 
 def _maybe_orchestrate(user_text: str, classification, memory: dict):
-    """Deterministic specialist consult before paying for the LLM.
-
-    Engagement gates (ALL must hold):
-      - config.ORCHESTRATION_ENABLED
-      - intent is CHAT (no tool matched, no planner signal, no command,
-        no memory recall) — specialist lanes must never pre-empt the
-        supervised tool path
-      - orchestrator's own classify() finds 2+ specialist types — a bare
-        single-domain mention is not a multi-agent task
-
-    Outcome gates (any one):
-      - lanes produced usable evidence AND the critic accepted → answer
-        directly with the aggregate (zero LLM cost, honest provenance)
-      - lanes produced evidence BUT the critic wants revision → inject it
-        into the prompt memory as explicitly-uncertain context and let the
-        LLM synthesize (no answer replacement)
-      - no usable evidence → None (pure fall-through; nothing changes)
-    """
-    if not config.ORCHESTRATION_ENABLED:
-        return None
-    if classification is None or classification.intent is not Intent.CHAT:
-        return None
-
-    from agents.orchestrator import orchestrator as _orch
-    from agents.orchestrator import classify as orch_classify
-
-    types, _reason = orch_classify(user_text)
-    if len(types) < 2:
-        return None
-
-    result = _orch.run(user_text)
-    if not result.get("orchestrated"):
-        return None
-
-    lanes = result.get("lanes") or {}
-    meaningful = [t for t, c in lanes.items()
-                  if (c.get("result") or "").strip()
-                  and _NO_EVIDENCE not in str(c.get("result"))]
-    if not meaningful:
-        return None
-
-    aggregate = result.get("aggregate", "")
-    # topic verification: records must actually mention what was asked —
-    # protects the LLM baseline from off-topic retrieval noise
-    if not _evidence_on_topic(user_text, aggregate):
-        return None
-    verdict = (result.get("critic") or {}).get("verdict")
-    if verdict != "accept":
-        # evidence exists but failed internal review — it may inform, never
-        # impersonate, the answer: hand it to the model marked as such
-        try:
-            memory["orchestrated_evidence"] = (
-                f"unverified specialist-lane findings (confidence "
-                f"{result.get('confidence')}):\n{aggregate[:800]}")
-        except Exception:
-            pass
-        return None
-
-    headline = (
-        f"[orchestrated: {', '.join(result.get('agents', []))} — "
-        f"critic accepted, confidence {result.get('confidence')}]"
-    )
-    return {
-        "text": f"{headline}\n{aggregate[:1200]}",
-        "handled_by": "orchestrator",
-        "tool_used": "agent_orchestrate",
-        "orchestration": {
-            "task_id": result.get("task_id"),
-            "agents": result.get("agents"),
-            "verdict": verdict,
-            "confidence": result.get("confidence"),
-            "finished_ms": result.get("finished_ms"),
-        },
-    }
+    """The orchestration consult lives in core/workflow_orchestrator.py —
+    one owner, engine-wide call sites unchanged. This thin wrapper keeps
+    the intent layer's phase order explicit."""
+    from core.workflow_orchestrator import consult_agents
+    return consult_agents(user_text, classification, memory)

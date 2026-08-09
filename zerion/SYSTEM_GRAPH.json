@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-09 14:27:05",
+ "generated": "2026-08-09 15:44:57",
  "nodes": [
   {
    "file": ".env",
@@ -761,6 +761,17 @@
    }
   },
   {
+   "file": "agents/engine.py",
+   "module": "agents.engine",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
    "file": "agents/messages.py",
    "module": "agents.messages",
    "class": "DYNAMICALLY CONNECTED",
@@ -984,7 +995,7 @@
    "file": "comms/__init__.py",
    "module": "comms",
    "class": "DYNAMICALLY CONNECTED",
-   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
    "reachable": {
     "main": true,
     "ui": true,
@@ -1006,7 +1017,7 @@
    "file": "comms/audit.py",
    "module": "comms.audit",
    "class": "DYNAMICALLY CONNECTED",
-   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
    "reachable": {
     "main": true,
     "ui": true,
@@ -1457,7 +1468,29 @@
    "file": "core/__init__.py",
    "module": "core",
    "class": "DYNAMICALLY CONNECTED",
-   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "core/bootstrap.py",
+   "module": "core.bootstrap",
+   "class": "DIRECTLY CONNECTED",
+   "why": "static import by main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "core/events.py",
+   "module": "core.events",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
    "reachable": {
     "main": true,
     "ui": true,
@@ -1468,7 +1501,18 @@
    "file": "core/logging.py",
    "module": "core.logging",
    "class": "DYNAMICALLY CONNECTED",
-   "why": "imported by discovered tool tree (host: tools.autopilot_tools)",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "core/state_manager.py",
+   "module": "core.state_manager",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
    "reachable": {
     "main": true,
     "ui": true,
@@ -1480,6 +1524,17 @@
    "module": "core.turn_pipeline",
    "class": "DIRECTLY CONNECTED",
    "why": "static import by main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "core/workflow_orchestrator.py",
+   "module": "core.workflow_orchestrator",
+   "class": "INDIRECTLY CONNECTED",
+   "why": "transitive import under main.py",
    "reachable": {
     "main": true,
     "ui": true,
@@ -1916,28 +1971,6 @@
    }
   },
   {
-   "file": "knowledge/zerion_knowledge.db-shm",
-   "module": null,
-   "class": "OPTIONAL / PLUGIN",
-   "why": "generated runtime/local state (gitignored; never packaged)",
-   "reachable": {
-    "main": false,
-    "ui": false,
-    "runtime": false
-   }
-  },
-  {
-   "file": "knowledge/zerion_knowledge.db-wal",
-   "module": null,
-   "class": "OPTIONAL / PLUGIN",
-   "why": "generated runtime/local state (gitignored; never packaged)",
-   "reachable": {
-    "main": false,
-    "ui": false,
-    "runtime": false
-   }
-  },
-  {
    "file": "learning/__init__.py",
    "module": "learning",
    "class": "DYNAMICALLY CONNECTED",
@@ -2144,6 +2177,105 @@
     "main": true,
     "ui": true,
     "runtime": true
+   }
+  },
+  {
+   "file": "mcp/__init__.py",
+   "module": "mcp",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "mcp/gateway.py",
+   "module": "mcp.gateway",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "mcp/servers.py",
+   "module": "mcp.servers",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "mcp/servers/__init__.py",
+   "module": "mcp.servers",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "mcp/servers/comm.py",
+   "module": "mcp.servers.comm",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "mcp/gateway.py: server discovery (pkgutil)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "mcp/servers/file.py",
+   "module": "mcp.servers.file",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "mcp/gateway.py: server discovery (pkgutil)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "mcp/servers/knowledge.py",
+   "module": "mcp.servers.knowledge",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "mcp/gateway.py: server discovery (pkgutil)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "mcp/servers/system.py",
+   "module": "mcp.servers.system",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "mcp/gateway.py: server discovery (pkgutil)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "mcp/servers/web.py",
+   "module": "mcp.servers.web",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "mcp/gateway.py: server discovery (pkgutil)",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
    }
   },
   {
@@ -2952,6 +3084,17 @@
   {
    "file": "tests/demo_self_teaching.py",
    "module": "tests.demo_self_teaching",
+   "class": "TEST-ONLY",
+   "why": "test harness",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "tests/test_architecture_migration.py",
+   "module": "tests.test_architecture_migration",
    "class": "TEST-ONLY",
    "why": "test harness",
    "reachable": {
@@ -4137,6 +4280,26 @@
    "to": "agents.types"
   },
   {
+   "from": "agents.engine",
+   "to": "agents"
+  },
+  {
+   "from": "agents.engine",
+   "to": "agents.service"
+  },
+  {
+   "from": "agents.engine",
+   "to": "agents.types"
+  },
+  {
+   "from": "agents.engine",
+   "to": "core"
+  },
+  {
+   "from": "agents.engine",
+   "to": "core.events"
+  },
+  {
    "from": "agents.messages",
    "to": "agents"
   },
@@ -4179,6 +4342,10 @@
   {
    "from": "agents.pool",
    "to": "knowledge.manager"
+  },
+  {
+   "from": "agents.pool",
+   "to": "mcp.gateway"
   },
   {
    "from": "agents.pool",
@@ -5129,12 +5296,92 @@
    "to": "constitution.constitution"
   },
   {
+   "from": "core.bootstrap",
+   "to": "agents"
+  },
+  {
+   "from": "core.bootstrap",
+   "to": "config"
+  },
+  {
+   "from": "core.bootstrap",
+   "to": "constitution.constitution"
+  },
+  {
+   "from": "core.bootstrap",
+   "to": "core"
+  },
+  {
+   "from": "core.bootstrap",
+   "to": "tools.manager"
+  },
+  {
+   "from": "core.events",
+   "to": "core"
+  },
+  {
    "from": "core.logging",
    "to": "core"
   },
   {
+   "from": "core.state_manager",
+   "to": "agents.engine"
+  },
+  {
+   "from": "core.state_manager",
+   "to": "comms"
+  },
+  {
+   "from": "core.state_manager",
+   "to": "comms.overrides"
+  },
+  {
+   "from": "core.state_manager",
+   "to": "comms.store"
+  },
+  {
+   "from": "core.state_manager",
+   "to": "core"
+  },
+  {
+   "from": "core.state_manager",
+   "to": "planner"
+  },
+  {
+   "from": "core.state_manager",
+   "to": "planner.planner"
+  },
+  {
+   "from": "core.state_manager",
+   "to": "tools.manager"
+  },
+  {
    "from": "core.turn_pipeline",
    "to": "core"
+  },
+  {
+   "from": "core.workflow_orchestrator",
+   "to": "agents.orchestrator"
+  },
+  {
+   "from": "core.workflow_orchestrator",
+   "to": "config"
+  },
+  {
+   "from": "core.workflow_orchestrator",
+   "to": "core"
+  },
+  {
+   "from": "core.workflow_orchestrator",
+   "to": "core.events"
+  },
+  {
+   "from": "core.workflow_orchestrator",
+   "to": "intent.engine"
+  },
+  {
+   "from": "core.workflow_orchestrator",
+   "to": "intent.models"
   },
   {
    "from": "evolution",
@@ -5474,11 +5721,11 @@
   },
   {
    "from": "intent.engine",
-   "to": "agents.orchestrator"
+   "to": "config"
   },
   {
    "from": "intent.engine",
-   "to": "config"
+   "to": "core.workflow_orchestrator"
   },
   {
    "from": "intent.engine",
@@ -5543,6 +5790,10 @@
   {
    "from": "intent.multilingual",
    "to": "intent"
+  },
+  {
+   "from": "intent.session_state",
+   "to": "core.state_manager"
   },
   {
    "from": "intent.session_state",
@@ -5838,6 +6089,10 @@
   },
   {
    "from": "main",
+   "to": "core.bootstrap"
+  },
+  {
+   "from": "main",
    "to": "core.logging"
   },
   {
@@ -5919,6 +6174,102 @@
   {
    "from": "main",
    "to": "ui.server"
+  },
+  {
+   "from": "mcp.gateway",
+   "to": "comms"
+  },
+  {
+   "from": "mcp.gateway",
+   "to": "comms.audit"
+  },
+  {
+   "from": "mcp.gateway",
+   "to": "constitution.policy"
+  },
+  {
+   "from": "mcp.gateway",
+   "to": "core"
+  },
+  {
+   "from": "mcp.gateway",
+   "to": "core.logging"
+  },
+  {
+   "from": "mcp.gateway",
+   "to": "mcp"
+  },
+  {
+   "from": "mcp.gateway",
+   "to": "mcp.servers"
+  },
+  {
+   "from": "mcp.servers",
+   "to": "mcp"
+  },
+  {
+   "from": "mcp.servers.comm",
+   "to": "comms.inbox"
+  },
+  {
+   "from": "mcp.servers.comm",
+   "to": "comms.registry"
+  },
+  {
+   "from": "mcp.servers.comm",
+   "to": "mcp"
+  },
+  {
+   "from": "mcp.servers.comm",
+   "to": "mcp.servers"
+  },
+  {
+   "from": "mcp.servers.file",
+   "to": "mcp"
+  },
+  {
+   "from": "mcp.servers.file",
+   "to": "mcp.servers"
+  },
+  {
+   "from": "mcp.servers.file",
+   "to": "tools.manager"
+  },
+  {
+   "from": "mcp.servers.knowledge",
+   "to": "knowledge.manager"
+  },
+  {
+   "from": "mcp.servers.knowledge",
+   "to": "mcp"
+  },
+  {
+   "from": "mcp.servers.knowledge",
+   "to": "mcp.servers"
+  },
+  {
+   "from": "mcp.servers.system",
+   "to": "mcp"
+  },
+  {
+   "from": "mcp.servers.system",
+   "to": "mcp.servers"
+  },
+  {
+   "from": "mcp.servers.system",
+   "to": "tools.manager"
+  },
+  {
+   "from": "mcp.servers.web",
+   "to": "mcp"
+  },
+  {
+   "from": "mcp.servers.web",
+   "to": "mcp.servers"
+  },
+  {
+   "from": "mcp.servers.web",
+   "to": "tools.manager"
   },
   {
    "from": "memory.coordinator",
@@ -6266,6 +6617,10 @@
   },
   {
    "from": "planner.planner",
+   "to": "core.events"
+  },
+  {
+   "from": "planner.planner",
    "to": "core.logging"
   },
   {
@@ -6594,6 +6949,10 @@
   },
   {
    "from": "runtime.service",
+   "to": "core.events"
+  },
+  {
+   "from": "runtime.service",
    "to": "core.logging"
   },
   {
@@ -6611,6 +6970,10 @@
   {
    "from": "runtime.service",
    "to": "learning.retention"
+  },
+  {
+   "from": "runtime.service",
+   "to": "mcp.gateway"
   },
   {
    "from": "runtime.service",
@@ -6759,6 +7122,70 @@
   {
    "from": "tests.demo_self_teaching",
    "to": "learning.controller"
+  },
+  {
+   "from": "tests.test_architecture_migration",
+   "to": "agents.engine"
+  },
+  {
+   "from": "tests.test_architecture_migration",
+   "to": "comms"
+  },
+  {
+   "from": "tests.test_architecture_migration",
+   "to": "comms.audit"
+  },
+  {
+   "from": "tests.test_architecture_migration",
+   "to": "comms.store"
+  },
+  {
+   "from": "tests.test_architecture_migration",
+   "to": "core"
+  },
+  {
+   "from": "tests.test_architecture_migration",
+   "to": "core.bootstrap"
+  },
+  {
+   "from": "tests.test_architecture_migration",
+   "to": "core.events"
+  },
+  {
+   "from": "tests.test_architecture_migration",
+   "to": "core.state_manager"
+  },
+  {
+   "from": "tests.test_architecture_migration",
+   "to": "intent.engine"
+  },
+  {
+   "from": "tests.test_architecture_migration",
+   "to": "knowledge.database"
+  },
+  {
+   "from": "tests.test_architecture_migration",
+   "to": "main"
+  },
+  {
+   "from": "tests.test_architecture_migration",
+   "to": "mcp.gateway"
+  },
+  {
+   "from": "tests.test_architecture_migration",
+   "to": "runtime.health"
+  },
+  {
+   "from": "tests.test_architecture_migration",
+   "to": "runtime.logging"
+  },
+  {
+   "from": "tests.test_architecture_migration",
+   "to": "runtime.service"
+  },
+  {
+   "from": "tests.test_architecture_migration",
+   "to": "tools.manager"
   },
   {
    "from": "tests.test_autopilot",
@@ -8278,6 +8705,10 @@
   },
   {
    "from": "tools.manager",
+   "to": "core.events"
+  },
+  {
+   "from": "tools.manager",
    "to": "tools"
   },
   {
@@ -8426,11 +8857,15 @@
   },
   {
    "from": "ui.server",
-   "to": "constitution.constitution"
+   "to": "core"
   },
   {
    "from": "ui.server",
-   "to": "core"
+   "to": "core.bootstrap"
+  },
+  {
+   "from": "ui.server",
+   "to": "core.events"
   },
   {
    "from": "ui.server",

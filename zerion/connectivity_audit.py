@@ -366,6 +366,8 @@ def classify_all():
             cls, why = "LEGACY", "intentionally retained compat surface"
         elif mod and mod in tool_members:
             cls, why = "DYNAMICALLY CONNECTED", "tools/registry.py: pkgutil.iter_modules discovery"
+        elif mod and mod.startswith("mcp.servers."):
+            cls, why = "DYNAMICALLY CONNECTED", "mcp/gateway.py: server discovery (pkgutil)"
         elif mod and mod in r_tools:
             # discovered via a dynamic tool's import tree — name the host tool
             host = next((t for t in sorted(tool_members) if mod in reachable(edges, t)), None)
@@ -807,7 +809,8 @@ def main() -> int:
         if m not in r_dynamic
         and not m.startswith("tests")
         and not m.startswith(("skills", "evolution", "memory.long_term",
-                              "testing", "constitution.evolution"))
+                              "testing", "constitution.evolution",
+                              "mcp.servers"))  # gateway-discovered (pkgutil)
         and m not in ("setup", "second_audit", "connectivity_audit", "arch_map",
                       "readiness_audit")
     ]

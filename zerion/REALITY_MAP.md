@@ -1190,3 +1190,12 @@ policy), gemini_health tool, 24/7 resource probe + agent reaper + 3000-tick
 soak test (runaway guard proven). Suite 401/401; readiness_audit.computed
 92.3% READY-WITH-LIMITATIONS; phone/device rows remain UNVERIFIED itemized.
 
+
+## 27h. ARCHITECTURE COMPLETION (2026-08-09)
+
+New subsystems (all runtime-proven by tests/test_architecture_migration.py):
+core/bootstrap (one startup for both entries), core/events (internal bus),
+core/state_manager (assembly on owners), core/workflow_orchestrator (owns
+route consults), agents/engine (lifecycle+registry+plugins), mcp/* (gateway
++ 5 real adapters + policy + audit). Agent lanes route through the gateway;
+main.py untouched in behavior (bootstrap call, protected-lock re-anchored).

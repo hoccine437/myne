@@ -43,7 +43,6 @@ from starlette.staticfiles import StaticFiles
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
 import config
-from constitution.constitution import ConstitutionEngine
 from core import logging as core_log
 from speech import speech_status
 from tools.manager import tool_manager
@@ -55,15 +54,14 @@ from ui.session import ZerionUISession
 STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
 
 # ---------------------------------------------------------------------------
-# Core startup (identical to main.py's main(): constitution first, then
-# configuration warnings) — done once, before serving.
+# Core startup (shared bootstrap — same contract as main.py and the 24/7
+# service); done once, before serving.
 # ---------------------------------------------------------------------------
 
-ConstitutionEngine.load()
-CONFIG_WARNINGS = config.validate()
-# Don't print configuration warnings at import: main.py's entry point already
-# reports them; standalone `python -m ui.server` prints them in main() below.
-# Loud at exactly one entry, quiet when embedded.
+from core.bootstrap import bootstrap
+
+_boot = bootstrap(mode="ui")
+CONFIG_WARNINGS = _boot.get("config_warnings") or []
 
 session = ZerionUISession()
 
@@ -138,12 +136,32 @@ async def lifespan(app: Starlette):
     sample_metrics()
     metrics_task = asyncio.create_task(_metrics_loop())
     idle_task = asyncio.create_task(_idle_loop())
+    # internal core events → UI telemetry stream (health transitions,
+    # plan boundaries, agent lifecycle) so the panel shows real swings
+    def _ops_feed(ev):
+        if ev.type.split(".")[0] in ("health", "plan", "agent"):
+            bus.emit("notification", {
+                "level": "info" if "recovered" in ev.type or "started" in ev.type
+                         else "warning",
+                "text": f"{ev.type}: " +
+                        str(ev.payload.get("subsystem") or ev.payload.get("goal")
+                            or ev.payload.get("type") or "")[:140]})
+    try:
+        from core.events import bus as _core_events
+        _core_events.subscribe(_ops_feed)
+    except Exception:
+        pass
     _startup_greeting()
     try:
         yield
     finally:
         for task in (metrics_task, idle_task):
             task.cancel()
+        try:
+            from core.events import bus as _core_events
+            _core_events.unsubscribe(_ops_feed)
+        except Exception:
+            pass
 
 
 # The 24/7 service (runtime/service.py) owns the READY→greeting sequence

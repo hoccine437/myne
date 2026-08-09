@@ -147,7 +147,12 @@ class ImportSweepTests(unittest.TestCase):
         # as reachable from main through the Tool Manager.
         tool_modules = [m for m in known
                         if m.startswith("tools.") and m.split(".")[1] not in ("base", "manager", "registry")]
-        main_reach = _reachable(edges, "main", *tool_modules)
+        # mcp servers ride the same discovery discipline through the gateway
+        # (agents call them via mcp.gateway; they are registry-loaded, so the
+        # static sweep needs the same treatment)
+        mcp_server_modules = [m for m in known
+                              if m.startswith("mcp.servers.")]
+        main_reach = _reachable(edges, "main", *tool_modules, *mcp_server_modules)
         unexpected = [
             m for m in sorted(known - main_reach)
             if not any(m.startswith(prefix) for prefix in KNOWN_DORMANT_PREFIXES)

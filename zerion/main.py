@@ -612,8 +612,9 @@ def main():
         return
 
     # Load and integrity-check once at startup; all normal requests reuse cache.
-    ConstitutionEngine.load()
-    for warning in config.validate():
+    from core.bootstrap import bootstrap
+    _boot_report = bootstrap("terminal" if "--terminal" in args else "ui")
+    for warning in _boot_report.get("config_warnings") or []:
         print(f"[configuration] {warning}")
 
     if "--terminal" in args or "--legacy" in args:

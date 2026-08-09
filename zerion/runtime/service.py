@@ -502,6 +502,22 @@ class ZerionService:
             enabled=(os.name == "posix"),
             provenance="/proc/self RSS baseline ×3 or rcfg.MAX_RSS_MB"))
 
+        # --- MCP gateway (capability boundary liveness) -------------------
+        def probe_mcp():
+            try:
+                from mcp.gateway import gateway
+                h = gateway.health()
+                if h.get("state") != "healthy":
+                    return h.get("error") or "gateway unhealthy"
+                if h.get("capabilities", 0) < 8:
+                    return f"capability surface thin ({h.get('capabilities')})"
+                return None
+            except Exception as e:
+                return f"mcp probe failed: {e}"
+        self.monitor.register(Subsystem(
+            "mcp", probe=probe_mcp, recover=None,
+            provenance="mcp.gateway registry + capability count"))
+
         # --- communication layer: connector health, never fatal -------------
         def probe_comm():
             if not config.COMM_ENABLED:
@@ -622,6 +638,17 @@ class ZerionService:
 
     def _on_subsystem_state_change(self, sub: Subsystem,
                                    old: HealthState, new: HealthState) -> None:
+        # internal event bus record (decoupled from the UI): every transition
+        try:
+            from core.events import bus as _events
+            _events.emit("health.degraded" if new in (HealthState.DEGRADED,
+                                                      HealthState.FAILED)
+                         else ("health.recovered" if new == HealthState.HEALTHY
+                               else "health.changed"),
+                         {"subsystem": sub.name, "from": old.value,
+                          "to": new.value, "error": sub.last_error or ""})
+        except Exception:
+            pass
         if self._bus is None:
             return
         level = ("info" if new == HealthState.HEALTHY

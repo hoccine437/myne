@@ -94,14 +94,25 @@ class ToolManager:
         self._pending_confirmation = None
 
         try:
+            from core.events import bus as _core_events
+            _core_events.emit("tool.called", {"tool": name})
             result = tool.execute(parameters)
             if not isinstance(result, ToolResult):
                 return ToolResult.fail(
                     error="invalid_tool_result",
                     message=f"'{name}' returned an invalid result type.",
                 )
+            if not result.success and result.error != "confirmation_required":
+                _core_events.emit("tool.failed",
+                                  {"tool": name, "error": result.error})
             return result
         except Exception as e:
+            try:
+                from core.events import bus as _core_events
+                _core_events.emit("tool.failed",
+                                  {"tool": name, "error": str(e)[:120]})
+            except Exception:
+                pass
             return ToolResult.fail(
                 error="execution_failed",
                 message=f"'{name}' failed to run: {e}",

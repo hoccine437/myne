@@ -163,49 +163,55 @@
   },
   {
     "file": "runtime/service.py",
-    "line": 637,
+    "line": 651,
     "kind": "bare-pass",
     "text": "check context before deleting"
   },
   {
     "file": "runtime/service.py",
-    "line": 661,
+    "line": 664,
     "kind": "bare-pass",
     "text": "check context before deleting"
   },
   {
     "file": "runtime/service.py",
-    "line": 672,
+    "line": 688,
     "kind": "bare-pass",
     "text": "check context before deleting"
   },
   {
     "file": "runtime/service.py",
-    "line": 736,
+    "line": 699,
     "kind": "bare-pass",
     "text": "check context before deleting"
   },
   {
     "file": "runtime/service.py",
-    "line": 775,
+    "line": 763,
     "kind": "bare-pass",
     "text": "check context before deleting"
   },
   {
     "file": "runtime/service.py",
-    "line": 784,
+    "line": 802,
     "kind": "bare-pass",
     "text": "check context before deleting"
   },
   {
     "file": "runtime/service.py",
-    "line": 800,
+    "line": 811,
     "kind": "bare-pass",
     "text": "check context before deleting"
   },
   {
     "file": "runtime/service.py",
-    "line": 828,
+    "line": 827,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "runtime/service.py",
+    "line": 855,
     "kind": "bare-pass",
     "text": "check context before deleting"
   },
@@ -313,31 +319,43 @@
   },
   {
     "file": "ui/server.py",
-    "line": 228,
+    "line": 153,
     "kind": "bare-pass",
     "text": "check context before deleting"
   },
   {
     "file": "ui/server.py",
-    "line": 239,
+    "line": 164,
     "kind": "bare-pass",
     "text": "check context before deleting"
   },
   {
     "file": "ui/server.py",
-    "line": 283,
+    "line": 246,
     "kind": "bare-pass",
     "text": "check context before deleting"
   },
   {
     "file": "ui/server.py",
-    "line": 352,
+    "line": 257,
     "kind": "bare-pass",
     "text": "check context before deleting"
   },
   {
     "file": "ui/server.py",
-    "line": 766,
+    "line": 301,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "ui/server.py",
+    "line": 370,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "ui/server.py",
+    "line": 784,
     "kind": "bare-pass",
     "text": "check context before deleting"
   },

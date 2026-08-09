@@ -17,7 +17,12 @@ shape is stable once background tasks are added later.
 
 
 def snapshot(session, tool_manager, planning_engine, action_history) -> dict:
-    """Assemble a point-in-time view of everything session-related."""
+    """Assemble a point-in-time view of everything session-related.
+
+    Extended with the state manager's assembly (agents/planner/comm state)
+    — one read API, one owner of the merge, no duplicated reads."""
+    from core.state_manager import state_manager
+    runtime_state = state_manager.snapshot()
     goal_summary = planning_engine.goal_manager.summary()
 
     return {
@@ -32,4 +37,5 @@ def snapshot(session, tool_manager, planning_engine, action_history) -> dict:
         "background_jobs": [],  # reserved for future background-task system
         "recent_actions": action_history.recent(limit=5),
         "action_totals": action_history.summary(),
+        "system_state": runtime_state,   # agents/planner/comm state via StateManager
     }

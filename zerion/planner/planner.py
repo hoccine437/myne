@@ -119,9 +119,20 @@ def handle_request(user_text: str, minimal_memory: dict, recent_history: str):
     planner_state.set_active(plan)
 
     try:
+        from core.events import bus as _events
+        _events.emit("plan.started", {"goal": plan.goal, "tasks": len(plan.tasks)})
+    except Exception:
+        pass
+
+    try:
         summary = execute_plan(plan, debug=DEBUG)
     except ExecutionPaused as e:
         _debug_log(plan)
+        try:
+            from core.events import bus as _events
+            _events.emit("plan.paused", {"goal": plan.goal})
+        except Exception:
+            pass
         return {
             "paused": True,
             "goal": plan.goal,

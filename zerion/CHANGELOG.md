@@ -1,5 +1,28 @@
 # Changelog
 
+## 2.0.0 — Architecture completion (MCP + engine + orchestrator + bootstrap)
+
+Migration captures (files): MIGRATION_REPORT.md. Runtime highlights:
+
+- core/bootstrap.py — one startup contract (constitution+config+warmups) used
+  by main.py and any host process (protected files re-anchored).
+- core/events.py — internal event bus (tool.called/failed, agent started/
+  stopped/failed, plan.started/completed/paused, health transitions); the UI
+  lifespan mirrors a filtered feed.
+- core/workflow_orchestrator.py — owns the specialist-consult route (moved
+  from intent/engine.py without changing a single phase contract).
+- core/state_manager.py — memory≠state≠context: assembly-only views and one
+  cancel_pending() stop gesture.
+- agents/engine.py — real lifecycle (discovered→…→stopped) + registry +
+  runtime plugin types via register_type (no main.py edits to add specialists).
+- mcp/* — policy-gated in-process gateway: file/web/system/knowledge/comm
+  adapters; callers (agents) CANNOT reach raw tools — pool lanes go through
+  (read-kind only for agents; everything else still via manager+confirmation).
+- runtime/service.py — mcp probe + health transitions→events.
+- ui/server.py — internal ops feed into the client panel.
+Gates: 415/415 pytest · 22/22 second · 45/45 connectivity · 74/74 smoke ·
+49/43 arch · readiness recomputed 92.3% READY-WITH-LIMITATIONS.
+
 ## 1.9.0 — Repair mission: harder exec, smarter planner, verified health
 
 Mandated findings re-verified (both already fixed in earlier phases; runtime
