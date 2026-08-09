@@ -183,12 +183,40 @@ MAX_HISTORY = _env_int("MAX_HISTORY", 5, minimum=0)
 # ---------------------------------------------------------------------------
 # Planning engine
 # ---------------------------------------------------------------------------
-# The Planner adds one extra LLM call per turn (to decide simple vs.
-# multi-step) before the normal chat call. On a rate-limited free-tier
-# model this roughly doubles API usage per turn, so it's opt-in.
+# Two-layer gate. PLANNER_ENABLED (bool) is the live toggle (UI settings and
+# tests write it). PLANNER_MODE is the routing policy from env:
+#   "on"   — every classification-driven planning signal goes to the LLM
+#            decomposer (legacy eager behavior),
+#   "off"  — never plan,
+#   "auto" — DEFAULT: plan only when the classifier actually detects a
+#            multi-step request (needs_planning), i.e. complexity escalation
+#            is automatic but trivial turns stay free. (mission §9)
 PLANNER_ENABLED = os.getenv("PLANNER_ENABLED", "false").strip().lower() in (
     "1", "true", "yes", "on"
 )
+_PLANNER_MODE_ENV = os.getenv("PLANNER_MODE", "").strip().lower()
+PLANNER_MODE = _PLANNER_MODE_ENV or ("on" if PLANNER_ENABLED else "auto")
+
+
+def planner_active(needs_planning: bool) -> bool:
+    """The one routing rule for the whole turn pipeline (main.py and
+    ui/session.py call this; never read PLANNER_* directly).
+
+    Semantics:
+      PLANNER_MODE=off  → never plan
+      PLANNER_MODE=on   → always plan on planner-shaped classification
+      PLANNER_MODE=auto (default) → plan only when the classifier saw a
+                         multi-step request. Complexity routing is automatic;
+                         TRIVIAL turns never pay the extra LLM call (the
+                         classifier computes needs_planning for free). The
+                         legacy PLANNER_ENABLED toggle keeps its historical
+                         meaning (eager) only in the 'on' mode contract.
+    """
+    if PLANNER_MODE == "off":
+        return False
+    if PLANNER_MODE == "on":
+        return True
+    return bool(needs_planning)
 
 # Skip the decomposition call entirely for very short messages (greetings,
 # one-word replies) — these are essentially never multi-step requests, so

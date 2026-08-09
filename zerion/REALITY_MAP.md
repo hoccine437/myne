@@ -1180,3 +1180,13 @@ has no phone.
 ```
 
 — END OF MAP (no fixes applied; second-validation batteries remain green; one probe defect + debug-print debris reported verbatim) —
+
+## 27g. REPAIR-MISSION CLOSE-OUT (2026-08-09)
+
+Re-verified, already-correct rows: agent probe (canonical alias), tts debug
+prints (absent). New since: auto planner escalation (default), evidence-based
+plan completion, hardened exec containment, memory coordinator (single write
+policy), gemini_health tool, 24/7 resource probe + agent reaper + 3000-tick
+soak test (runaway guard proven). Suite 401/401; readiness_audit.computed
+92.3% READY-WITH-LIMITATIONS; phone/device rows remain UNVERIFIED itemized.
+

@@ -406,7 +406,7 @@ def run_loop(ui):
         # word-count heuristic with real classification signal. Still
         # gated by PLANNER_ENABLED since it costs one extra LLM call.
         plan_outcome = None
-        if config.PLANNER_ENABLED and classification.needs_planning:
+        if config.planner_active(classification.needs_planning):
             try:
                 plan_outcome = planning_engine.handle_request(user_text, memory_for_prompt, recent_history)
             except Exception as e:

@@ -109,3 +109,17 @@ measured (recorded, not estimated):
 Thermal/battery posture on phone: nothing in idle burns CPU except the
 90s idle maintenance tick and (when the 24/7 service runs) 15s health probes
 — event-driven wait between duties (no busy loops).
+
+
+## 2026-08-09 repairs (1.9.0)
+
+- The planner now escalates AUTOMATICALLY on complexity (PLANNER_MODE=auto,
+  default): classifier-seen multi-step requests engage the decomposer; trivial
+  turns stay free. main.py + ui/session.py call `config.planner_active(...)`.
+- Executor: evidence-based completion (expected_result mismatch ⇒ failure).
+- exec tools: PGID kill on timeout, cwd locked to project, env scrubbed.
+- learning writes route through memory/coordinator.py (single write policy).
+- tools: +gemini_health (UNVERIFIED when the key is absent — never faked).
+
+All covered by tests/test_exec_hardening.py, test_planner_mode.py,
+test_runtime_hardening.py, test_brain_verification.py.

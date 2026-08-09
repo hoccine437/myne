@@ -1,6 +1,6 @@
 # ZERION READINESS REPORT
 
-Generated: 2026-08-08 21:44:27 · checks: 34 · elapsed 40.9s
+Generated: 2026-08-09 14:27:05 · checks: 34 · elapsed 56.0s
 
 ## Scores (computed, evidence-weighted)
 

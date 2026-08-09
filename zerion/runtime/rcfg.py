@@ -48,6 +48,12 @@ NETWORK_CHECK_INTERVAL = _int("ZERION_NETWORK_CHECK_INTERVAL", 300, minimum=60)
 # --- recovery policy ------------------------------------------------------
 RECOVERY_BACKOFF_BASE = _float("ZERION_BACKOFF_BASE", 2.0, minimum=0.5)
 RECOVERY_BACKOFF_MAX = _float("ZERION_BACKOFF_MAX", 120.0, minimum=5.0)
+
+# resource guardrail for 24/7: process RSS ceiling (MB) at which the
+# resources probe reports DEGRADED (matches a mid-range Android target).
+MAX_RSS_MB = _float("ZERION_MAX_RSS_MB", 700.0, minimum=128.0)
+# agent reaper cadence (sweep finished agents every N maintenance ticks)
+AGENT_REAP_EVERY = _int("ZERION_AGENT_REAP_EVERY", 1, minimum=1)
 MAX_RECOVERY_ATTEMPTS = _int("ZERION_MAX_RECOVERY_ATTEMPTS", 4, minimum=1)
 RESTART_BUDGET = _int("ZERION_RESTART_BUDGET", 6, minimum=1)      # per window…
 RESTART_WINDOW = _int("ZERION_RESTART_WINDOW", 3600, minimum=60)  # …seconds

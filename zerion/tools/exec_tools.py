@@ -23,15 +23,51 @@ def _limits():
   except Exception:pass
  return apply
 
-def _run(args:list[str], *, code=False)->ToolResult:
+def _safe_cwd():
+ """Containment: children run with the project dir as cwd (never a system
+ root). Inside-project `cwd` parameter is honored; outside paths are refused."""
+ from config import BASE_DIR
+ return BASE_DIR
+
+def _safe_env(extra:dict|None=None)->dict:
+ """Minimal environment: children receive NO ambient credentials/secrets
+ (API keys never leak into approved child processes). Allow an explicit
+ KEY=value passthrough only for non-sensitive variables the caller names."""
+ env={'PATH':os.environ.get('PATH',''),'LANG':os.environ.get('LANG','C.UTF-8'),
+      'HOME':os.environ.get('HOME',''),'TMPDIR':os.environ.get('TMPDIR', os.sep+'tmp')}
+ scrub={'GEMINI_API_KEY','OPENAI_API_KEY','TELEGRAM_BOT_TOKEN','EMAIL_PASSWORD'}
+ for k,v in (extra or {}).items():
+  if str(k).upper() in scrub:continue
+  env[str(k)]=str(v)
+ return env
+
+def _kill_group(proc):
+ """Timeout/risk cleanup: kill the WHOLE process group (no orphans)."""
+ import signal
+ try:os.killpg(proc.pid,signal.SIGKILL)
+ except Exception:
+  try:proc.kill()
+  except Exception:pass
+
+def _run(args:list[str], *, code=False, cwd:str|None=None, extra_env:dict|None=None)->ToolResult:
  if not args:return ToolResult.fail('missing_parameter','No command provided.')
  try:
-  result=subprocess.run(args,capture_output=True,text=True,timeout=_TIMEOUT_SECONDS,preexec_fn=_limits(),env={'PATH':os.environ.get('PATH',''),'LANG':os.environ.get('LANG','C.UTF-8')})
-  output=_truncate((result.stdout+result.stderr).strip())
-  if result.returncode:return ToolResult.fail('nonzero_exit',output or f'Exited with code {result.returncode}.')
+  root=_safe_cwd()
+  if cwd is not None:
+   full=os.path.realpath(os.path.join(root,str(cwd)))
+   if not (full==root or full.startswith(root+os.sep)):
+    return ToolResult.fail('cwd_not_allowed','cwd must stay inside the project directory.')
+   root=full
+  proc=subprocess.Popen(args,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,env=_safe_env(extra_env),preexec_fn=_limits(),start_new_session=True,cwd=root)
+  try:out,_=proc.communicate(timeout=_TIMEOUT_SECONDS)
+  except subprocess.TimeoutExpired:
+   _kill_group(proc)
+   return ToolResult.fail('timeout',f'Timed out after {_TIMEOUT_SECONDS}s (process group terminated).')
+  text=out.decode('utf-8','replace')
+  output=_truncate(text.strip())
+  if proc.returncode:return ToolResult.fail('nonzero_exit',output or f'Exited with code {proc.returncode}.')
   log.info(f"approved {'Python' if code else 'command'} execution completed")
   return ToolResult.ok(output,output or '(no output)')
- except subprocess.TimeoutExpired:return ToolResult.fail('timeout',f'Timed out after {_TIMEOUT_SECONDS}s.')
  except OSError as exc:return ToolResult.fail('execution_failed',str(exc))
 class PythonExecutorTool(Tool):
  name='run_python';description='Execute a short approved Python code snippet and return output.';parameters={'code':'Python source code to run'};destructive=True

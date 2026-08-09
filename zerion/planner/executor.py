@@ -21,6 +21,7 @@ per-task, to keep this lightweight):
 
 from planner.models import TaskState
 from planner.verifier import verify_task
+from tools.base import ToolResult
 from tools.manager import tool_manager
 
 
@@ -76,15 +77,31 @@ def execute_plan(plan, debug: bool = False) -> dict:
 
         task.result = result
 
+        # evidence-based completion: a tool that "succeeded" but produced
+        # output contradicting the task's declared `expected_result` never
+        # counts as done (mission §8: never claim success without evidence)
+        expectation = (task.expected_result or "").strip()
+        if result.success and expectation and expectation.lower() not in (
+                (result.message or "") + " " + str(result.data or "")).lower():
+            result = ToolResult.fail(
+                "expectation_mismatch",
+                f"Task {task.id} finished but did not produce the expected "
+                f"evidence ({expectation[:80]!r} missing). Observed: "
+                f"{(result.message or '')[:120]!r}")
+            task.result = result
+
         if result.success:
             task.state = TaskState.COMPLETED
             if debug:
                 print(f"[planner] task {task.id} completed: {result.message[:80]}")
             continue
 
-        # Failure path
+        # Failure path (classify → maybe retry → mark → verify-driven choice)
         if task.attempts < 2:
             task.state = TaskState.PENDING  # retry once
+            if debug:
+                print(f"[planner] task {task.id} failed, retrying: {result.message[:80]}")
+            continue
             if debug:
                 print(f"[planner] task {task.id} failed, retrying: {result.message[:80]}")
             continue

@@ -21,5 +21,11 @@ class LearningEngine:
      if critique.should_improve:
       importance=.45;confidence=max(.3,confidence-.15);tags=['task-output','critic-flagged']
    except Exception:pass
-   self.knowledge.store(result,'summary',tags,importance,confidence,layer='knowledge')
+   # route via the Memory Coordinator (single write-policy point)
+   try:
+    from memory.coordinator import coordinator
+    coordinator.store('task.summary', result, category='summary', tags=tags,
+                      importance=importance, confidence=confidence, layer='knowledge')
+   except Exception:
+    self.knowledge.store(result,'summary',tags,importance,confidence,layer='knowledge')
   return r

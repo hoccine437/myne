@@ -1,5 +1,34 @@
 # Changelog
 
+## 1.9.0 — Repair mission: harder exec, smarter planner, verified health
+
+Mandated findings re-verified (both already fixed in earlier phases; runtime
+evidence attached): agent-pool probe imports the canonical alias
+(agents/__init__) — service probes healthy; ui/tts.py has zero stderr prints.
+
+Repairs this phase (all covered by new tests):
+- planner automatic escalation: config.planner_active() with PLANNER_MODE
+  (off|auto|on); default auto — complexity-gated planning ON, trivial turns
+  still free. Legacy PLANNER_ENABLED contract preserved; main.py + ui/session
+  call the new gate; protected.lock re-anchored.
+- planner/executor.py: evidence-based completion — a task that succeeds but
+  cannot produce its declared expected_result is FAILED (verify-driven).
+- tools/exec_tools.py: real containment (PGID kill on timeout, cwd locked to
+  project tree, ambient credentials scrubbed from child env, rlimits,
+  output caps) — no claim of full OS sandboxing on Termux (documented).
+- memory/coordinator.py: one write-routing policy store; learning engine now
+  routes through it (persona to JSON, operational to the knowledge DB).
+- tools/system_tools.py: +gemini_health (UNVERIFIED without key by design;
+  opt-in live round-trip behind ZERION_LIVE_LLM_CHECK=1 / live=true).
+- runtime/service.py: resources subsystem (RSS baseline ×3 watch + rcfg cap)
+  and the agent pool reaper wired into maintenance (stale cleanup).
+- runtime/rcfg.py: ZERION_MAX_RSS_MB, ZERION_AGENT_REAP_EVERY.
+- readiness_audit.py: smoke check parse no longer hard-codes a count.
+- tests: +test_exec_hardening, +test_planner_mode, +test_runtime_hardening
+  (incl. agent-probe regression + 3000-tick runaway-guard soak proof). 401/401.
+
+Suite: 401/401 pytest · audits green · readiness 92.3% READY-WITH-LIMITATIONS.
+
 ## 1.8.0 — UI: blue interactive starfield replaces the ball
 
 User request: no ball — a dense field of blue stars, close together, that

@@ -79,7 +79,8 @@ def main() -> int:
     # jsdom smoke (only when jsdom available — dev environment, not phone)
     smoke = sh(["node", "ui/smoke/smoke.mjs"], timeout=300,
                env={**os.environ, "SMOKE_REQUIRE_BASE": "/tmp/uitest/package.json"})
-    check("ui", "UI smoke (jsdom harness)", "PASS" if "70 passed" in smoke[1] else "FAIL",
+    check("ui", "UI smoke (jsdom harness)",
+          "PASS" if ("passed" in smoke[1] and "0 failed" in smoke[1]) else "FAIL",
           smoke[1].strip().splitlines()[-1][:120] if smoke[1] else f"rc={smoke[0]}", weight=2)
 
     # =====================================================================

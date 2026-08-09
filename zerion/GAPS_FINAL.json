@@ -163,49 +163,49 @@
   },
   {
     "file": "runtime/service.py",
-    "line": 600,
+    "line": 637,
     "kind": "bare-pass",
     "text": "check context before deleting"
   },
   {
     "file": "runtime/service.py",
-    "line": 624,
+    "line": 661,
     "kind": "bare-pass",
     "text": "check context before deleting"
   },
   {
     "file": "runtime/service.py",
-    "line": 635,
+    "line": 672,
     "kind": "bare-pass",
     "text": "check context before deleting"
   },
   {
     "file": "runtime/service.py",
-    "line": 699,
+    "line": 736,
     "kind": "bare-pass",
     "text": "check context before deleting"
   },
   {
     "file": "runtime/service.py",
-    "line": 738,
+    "line": 775,
     "kind": "bare-pass",
     "text": "check context before deleting"
   },
   {
     "file": "runtime/service.py",
-    "line": 747,
+    "line": 784,
     "kind": "bare-pass",
     "text": "check context before deleting"
   },
   {
     "file": "runtime/service.py",
-    "line": 763,
+    "line": 800,
     "kind": "bare-pass",
     "text": "check context before deleting"
   },
   {
     "file": "runtime/service.py",
-    "line": 791,
+    "line": 828,
     "kind": "bare-pass",
     "text": "check context before deleting"
   },

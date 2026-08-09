@@ -475,6 +475,33 @@ class ZerionService:
             "agents", probe=probe_agents, recover=None,
             provenance="agents.service pool capacity + failure posture"))
 
+        # --- resources: leak/watch guard (RSS growth + fd count) -----------
+        _rss0 = [0.0]
+
+        def probe_resources():
+            try:
+                import os
+                with open("/proc/self/status", encoding="utf-8") as f:
+                    rss_kb = next((int(l.split()[1]) for l in f
+                                   if l.startswith("VmRSS:")), 0)
+            except Exception:
+                return None  # non-Linux host: nothing to watch (disabled rows stay)
+            rss_mb = rss_kb / 1024.0
+            if not _rss0[0]:
+                _rss0[0] = rss_mb
+            baseline = max(_rss0[0], 1.0)
+            cap = rcfg.MAX_RSS_MB
+            if rss_mb > cap:
+                return f"memory {rss_mb:.0f}MB over cap {cap:.0f}MB"
+            if rss_mb > baseline * 3.0 and rss_mb > 256:
+                return (f"memory grew from {baseline:.0f}MB to {rss_mb:.0f}MB "
+                        f"(3x watch threshold)")
+            return None
+        self.monitor.register(Subsystem(
+            "resources", probe=probe_resources, recover=None,
+            enabled=(os.name == "posix"),
+            provenance="/proc/self RSS baseline ×3 or rcfg.MAX_RSS_MB"))
+
         # --- communication layer: connector health, never fatal -------------
         def probe_comm():
             if not config.COMM_ENABLED:
@@ -561,6 +588,16 @@ class ZerionService:
                                   f"{pulse['workflows']} workflow(s) fired")
             except Exception as e:
                 self.log.warning("comm.poll.error", "comm", f"deferred: {e}")
+        # agent reaper: sweep finished agents so the tracked table is bounded
+        # on 24/7 duty (was implemented but never wired — now it runs on the
+        # maintenance cadence; zero effect at zero occupancy)
+        try:
+            from agents import agent_pool
+            reaped = agent_pool.reap()
+            if reaped:
+                self.log.debug("agents.reap", "agents", f"reaped {reaped} finished")
+        except Exception as e:
+            self.log.warning("agents.reap.error", "agents", f"deferred: {e}")
 
     # ------------------------------------------------------------------
     # reload, escalation, callbacks

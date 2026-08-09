@@ -205,3 +205,47 @@ class SystemInfoTool(Tool):
             return ToolResult.ok(data=data, message=msg)
         except Exception as e:
             return ToolResult.fail(error="query_failed", message=str(e))
+
+
+class GeminiHealthTool(Tool):
+    """Live provider verification that answers UNVERIFIED honestly when the
+    key is absent — never fakes a green check (mission §20)."""
+    name = "gemini_health"
+    description = ("Verify Gemini provider configuration and (only with "
+                   "ZERION_LIVE_LLM_CHECK=1 or live=true) run a real "
+                   "authenticated minimal round-trip. Without a key the "
+                   "status is UNVERIFIED, never pretended green.")
+    parameters = {"live": "optional bool — run a real tiny call (needs key + net)"}
+    destructive = False
+
+    def available(self):
+        return True
+
+    def execute(self, parameters: dict):
+        import os
+        import config
+        from providers.router import _get_provider
+        p = _get_provider()
+        if not p.is_configured():
+            return ToolResult.ok(
+                data={"status": "UNVERIFIED"},
+                message="UNVERIFIED - GEMINI_API_KEY is not set. Configure it "
+                        "(setup.py or .env), then re-run.")
+        live = bool((parameters or {}).get("live")) or \
+            os.environ.get("ZERION_LIVE_LLM_CHECK", "").strip().lower() in ("1", "true", "yes")
+        if not live:
+            return ToolResult.ok(
+                data={"status": "configured-not-live"},
+                message="Key configured. Live round-trip is opt-in "
+                        "(ZERION_LIVE_LLM_CHECK=1 or live=true) to avoid quota burn.")
+        try:
+            answer = p.call("You are a health probe. Reply with exactly: ok",
+                            "ping", timeout=min(10, config.REQUEST_TIMEOUT))
+            ok = bool(answer and answer.strip())
+            return ToolResult.ok(
+                data={"status": "VERIFIED" if ok else "FAIL"},
+                message=f"Gemini live round-trip "
+                        f"{'OK' if ok else 'empty answer'}: {(answer or '')[:40]}")
+        except Exception as e:
+            return ToolResult.fail("roundtrip_failed",
+                                   f"Gemini live check failed: {e}")

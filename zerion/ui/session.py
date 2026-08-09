@@ -568,7 +568,7 @@ class ZerionUISession:
 
         # --- AI Planner (gated exactly like main.py) --------------------
         plan_outcome = None
-        if config.PLANNER_ENABLED and classification.needs_planning:
+        if config.planner_active(classification.needs_planning):
             self._agent("AI Planner", "active", "decomposing goal")
             bus.emit("workspace", {"mode": "automation", "source": "planner"})
             t0 = time.monotonic()
