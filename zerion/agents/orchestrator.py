@@ -149,8 +149,13 @@ class Orchestrator:
     """One canonical orchestrator; subordinate to the Constitution because
     every sub-agent action passes through the pool → Tool Manager gates."""
 
-    def __init__(self, pool: AgentPool = None):
-        self.pool = pool or default_pool
+    def __init__(self, pool=None):
+        # The Agent Engine is the lifecycle authority. `Orchestrator(pool)`
+        # with a raw AgentPool still works (engine wraps it — tests); with no
+        # pool it uses the canonical engine singleton.
+        from agents.engine import AgentEngine, engine as _engine
+        self.pool = (pool if isinstance(pool, AgentEngine)
+                     else (AgentEngine(pool) if pool is not None else _engine))
         self.lifecycle = Lifecycle()
         self.history: list[AgentMessage] = []
 

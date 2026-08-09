@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-09 15:44:57",
+ "generated": "2026-08-09 16:58:12",
  "nodes": [
   {
    "file": ".env",
@@ -17,6 +17,17 @@
    "module": null,
    "class": "INDIRECTLY CONNECTED",
    "why": "consumed by production code or configuration",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "ARCHITECTURE_COMPLETENESS.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
    "reachable": {
     "main": false,
     "ui": false,
@@ -355,6 +366,17 @@
   },
   {
    "file": "MEMORY_INTELLIGENCE_V1.md",
+   "module": null,
+   "class": "DEVELOPMENT-ONLY",
+   "why": "documentation",
+   "reachable": {
+    "main": false,
+    "ui": false,
+    "runtime": false
+   }
+  },
+  {
+   "file": "MIGRATION_REPORT.md",
    "module": null,
    "class": "DEVELOPMENT-ONLY",
    "why": "documentation",
@@ -763,8 +785,8 @@
   {
    "file": "agents/engine.py",
    "module": "agents.engine",
-   "class": "INDIRECTLY CONNECTED",
-   "why": "transitive import under main.py",
+   "class": "DYNAMICALLY CONNECTED",
+   "why": "imported by discovered tool tree (host: tools.agent_tools)",
    "reachable": {
     "main": true,
     "ui": true,
@@ -1522,6 +1544,17 @@
   {
    "file": "core/turn_pipeline.py",
    "module": "core.turn_pipeline",
+   "class": "DIRECTLY CONNECTED",
+   "why": "static import by main.py",
+   "reachable": {
+    "main": true,
+    "ui": true,
+    "runtime": true
+   }
+  },
+  {
+   "file": "core/turn_runner.py",
+   "module": "core.turn_runner",
    "class": "DIRECTLY CONNECTED",
    "why": "static import by main.py",
    "reachable": {
@@ -4309,6 +4342,10 @@
   },
   {
    "from": "agents.orchestrator",
+   "to": "agents.engine"
+  },
+  {
+   "from": "agents.orchestrator",
    "to": "agents.messages"
   },
   {
@@ -5153,7 +5190,7 @@
   },
   {
    "from": "comms.workflow",
-   "to": "agents.service"
+   "to": "agents.engine"
   },
   {
    "from": "comms.workflow",
@@ -5358,6 +5395,26 @@
   {
    "from": "core.turn_pipeline",
    "to": "core"
+  },
+  {
+   "from": "core.turn_runner",
+   "to": "config"
+  },
+  {
+   "from": "core.turn_runner",
+   "to": "core"
+  },
+  {
+   "from": "core.turn_runner",
+   "to": "core.logging"
+  },
+  {
+   "from": "core.turn_runner",
+   "to": "core.turn_pipeline"
+  },
+  {
+   "from": "core.turn_runner",
+   "to": "intelligence.critic"
   },
   {
    "from": "core.workflow_orchestrator",
@@ -6098,6 +6155,10 @@
   {
    "from": "main",
    "to": "core.turn_pipeline"
+  },
+  {
+   "from": "main",
+   "to": "core.turn_runner"
   },
   {
    "from": "main",
@@ -8505,7 +8566,7 @@
   },
   {
    "from": "tools.agent_tools",
-   "to": "agents.service"
+   "to": "agents.engine"
   },
   {
    "from": "tools.agent_tools",
@@ -8946,6 +9007,10 @@
   {
    "from": "ui.session",
    "to": "core.turn_pipeline"
+  },
+  {
+   "from": "ui.session",
+   "to": "core.turn_runner"
   },
   {
    "from": "ui.session",

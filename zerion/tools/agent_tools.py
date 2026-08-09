@@ -7,7 +7,7 @@ not on the agent type's whitelist (whitelists never contain destructive
 tools — those stay on the human-confirmed path).
 """
 
-from agents.service import pool
+from agents.engine import engine
 from agents.types import AGENT_TYPES
 from tools.base import Tool, ToolResult
 
@@ -46,7 +46,7 @@ class AgentDelegateTool(Tool):
                 error="invalid_task",
                 message="task must be a dict with 'tool' (+parameters) or 'query'.")
 
-        result = pool.spawn(agent_type, task, wait=wait)
+        result = engine.spawn(agent_type, task, wait=wait)
         if not result.get("ok"):
             return ToolResult.fail(error=str(result.get("error", "failed")),
                                    message=str(result.get("message", "agent delegation failed")))
@@ -72,6 +72,6 @@ class AgentStatusTool(Tool):
         return True
 
     def execute(self, parameters: dict) -> ToolResult:
-        stats = pool.stats()
+        stats = engine.stats()
         return ToolResult.ok(data=stats,
                              message=f"agents: {stats['tracked']} tracked, capacity {stats['capacity']}")

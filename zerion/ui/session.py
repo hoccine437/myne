@@ -81,7 +81,115 @@ _VISION_MARKERS = (
 )
 
 
-def _workspace_for(classification, user_text: str) -> str:
+# ---------------------------------------------------------------------------
+# canonical turn lifecycle wiring (core/turn_runner.TurnRunner owns the
+# sequence; this file keeps only the UI-side adapters + the busy/terminal
+# channel mechanics that are genuinely front-end concerns)
+# ---------------------------------------------------------------------------
+
+
+class _UiTurnSink:
+    """Maps canonical-lifecycle surface calls onto THIS session's existing
+    bus events — byte-for-byte the same event shapes the UI already shows."""
+
+    def __init__(self, session: "ZerionUISession"):
+        self._s = session
+        self._pending_origin = None
+
+    def say(self, text: str, kind: str = "") -> None:
+        self._s._say(text, kind=kind)
+
+    def write(self, text: str) -> None:
+        self._s._say(text)
+
+    def speak(self, text: str) -> None:
+        # the web UI does client-side TTS / token; nothing else to do here
+        pass
+
+    def state(self, state: str, detail: str = "") -> None:
+        self._s._state(state, detail)
+
+    def stage(self, name, status, detail=None, duration=None) -> None:
+        self._s._stage(name, status, detail or {}, duration)
+
+    def decision(self, source: str, text: str) -> None:
+        self._s._decision(source, text)
+
+    def notify(self, text: str, level: str = "info") -> None:
+        self._s._notify(text, level=level)
+
+    def log(self, level: str, text: str) -> None:
+        bus.emit("log", {"level": level, "text": text})
+
+    def confirm_required(self, payload: dict) -> None:
+        if payload.get("pending"):
+            self._s._set_pending_origin("pipeline")
+            bus.emit("confirm_required", {**payload, "source": payload.get("source", "pipeline")})
+            self._s._decision("Constitution",
+                              "Consequential action is waiting for approval.")
+        else:
+            bus.emit("confirm_required", {"pending": False})
+            self._s._clear_pending_origin()
+
+    def phone_state(self, snap) -> None:
+        bus.emit("phone_state", snap)
+
+    def workspace(self, mode: str, source: str, confidence=None) -> None:
+        bus.emit("workspace", {"mode": mode, "source": source,
+                               "confidence": confidence})
+
+    def focus(self, payload: dict) -> None:
+        bus.emit("focus", payload)
+
+    def workflow(self, reason: str) -> None:
+        self._s._emit_workflow(reason)
+
+    def goal(self) -> None:
+        self._s._emit_goal()
+
+    def agent_row(self, name: str, state: str, detail: str = "") -> None:
+        self._s._agent(name, state, detail)
+
+    def tool_event(self, phase: str, tool: str, result, via: str = "",
+                   destructive: bool = False, parameters: dict | None = None,
+                   message: str = "") -> None:
+        payload = {"phase": phase, "tool": tool}
+        if result is not None:
+            payload["success"] = result.success
+            payload["error"] = result.error or ""
+            payload.setdefault("output", result.message[:600] if result.message else "")
+        if via:
+            payload["via"] = via
+        if parameters:
+            payload["parameters"] = parameters
+        if message:
+            payload["message"] = message
+        bus.emit("tool", payload)
+
+    def memory_update(self, memory_update: dict) -> None:
+        bus.emit("memory_update", {"keys": list(memory_update.keys())})
+
+    def no_desktop_actions(self) -> str:
+        return ("I can't perform desktop actions in this interface, "
+                "but I can still chat and help with information.")
+
+    def on_interrupt_reason(self) -> str:
+        return ("Session ended on this device — the Core stays ready. "
+                "Reconnect or send another message to resume.")
+
+    def post_classification(self, classification, text: str, cls: dict) -> None:
+        workspace = _workspace_for(classification, text)
+        if workspace in WORKSPACES:
+            bus.emit("workspace", {"mode": workspace, "source": "classification",
+                                   "confidence": cls.get("confidence")})
+        if classification.intent == Intent.PLANNER or (cls.get("estimated_tool_count") or 0) >= 2:
+            bus.emit("focus", {"active": True, "reason": "multi-step task",
+                               "task": text[:120]})
+
+
+
+
+def _workspace_for(classification, user_text: str) -> str:  
     """Derive the adaptive-workspace mode from the Core's own
     classification + tool-routing signals. Pure presentation mapping."""
     intent = classification.intent
@@ -320,349 +428,40 @@ class ZerionUISession:
         except Exception as e:
             bus.emit("log", {"level": "WARNING", "text": f"idle maintenance deferred: {e}"})
 
+# ------------------------------------------------------------------
+    # the turn — canonical lifecycle delegate (core/turn_runner.py)
     # ------------------------------------------------------------------
-    # the turn — mirrors main.py:run_loop branch-for-branch
-    # ------------------------------------------------------------------
+
+
 
     def _run_turn(self, user_text: str, origin: str) -> None:
-        text = user_text.strip()
-        lowered = text.lower()
-        session = self.state
-
-        # secret-material guard (§9/§27): while an authentication challenge
-        # awaits the user's code, the raw input is NEVER echoed to the event
-        # stream — not the live feed, not the replay buffer, not any log
-        try:
-            from intent import commands as _cmd_guard
-            if _cmd_guard.pending_secret_input():
-                bus.emit("chat", {"role": "user", "text": "••••••",
-                                  "kind": "auth-masked"})
-            else:
-                bus.emit("chat", {"role": "user", "text": text, "kind": origin})
-        except Exception:
-            bus.emit("chat", {"role": "user", "text": text, "kind": origin})
-
-        # --- interrupt words: the web equivalent of quitting the loop ---
-        if is_interrupt(lowered):
-            self._say("Session ended on this device — the Core stays ready. "
-                      "Reconnect or send another message to resume.")
-            return
-
-        # --- mute: reset session ---------------------------------------
-        if lowered == "mute":
-            session.reset()
-            self._decision("Session", "Session context cleared (mute).")
-            self._say("Context cleared. Fresh session.")
-            return
-
-        # --- pending phone approval ------------------------------------
-        if self.pending_phone is not None:
-            if is_confirm_answer(lowered):
-                goal, intent = self.pending_phone
-                self._agent("Tool Manager", "active", "phone dispatch (approved)")
-                result = self.phone.body.dispatch(goal, intent, approved=True)
-                self._say(result.message)
-                bus.emit("phone_state", self.phone.body.snapshot())
-            else:
-                self._say("Cancelled — no phone action was performed.")
-            self.pending_phone = None
-            return
-
-        # --- pending phone-missing-info --------------------------------
-        if self.pending_phone_missing is not None:
-            goal_text, extracted_phone = self.pending_phone_missing
-            retry_text = f"{goal_text} {text}".strip()
-            extracted_phone = self.phone.extractor.extract(retry_text) or extracted_phone
-            if extracted_phone.missing:
-                self._say("Still missing: " + ", ".join(extracted_phone.missing)
-                          + ". Reply with that, or say 'cancel'.")
-                if lowered == "cancel":
-                    self.pending_phone_missing = None
-                    self._say("Cancelled.")
-                else:
-                    self.pending_phone_missing = (goal_text, extracted_phone)
-                return
-            self.pending_phone_missing = None
-            result = self.phone.body.dispatch(retry_text, extracted_phone, approved=False)
-            if "Approval required" in result.message:
-                self.pending_phone = (retry_text, extracted_phone)
-                self._ask_confirmation(result.message + " Reply 'confirm' to proceed.")
-            else:
-                self._say(result.message)
-            return
-
-        # --- fresh phone intent ----------------------------------------
-        extracted_phone = self.phone.extractor.extract(text)
-        if extracted_phone is not None:
-            self._agent("Tool Manager", "active", "phone intent")
-            if extracted_phone.missing:
-                self.pending_phone_missing = (text, extracted_phone)
-                self._say("Missing required information: " + ", ".join(extracted_phone.missing) + ".")
-                return
-            result = self.phone.body.dispatch(text, extracted_phone, approved=False)
-            if "Approval required" in result.message:
-                self.pending_phone = (text, extracted_phone)
-                self._ask_confirmation(result.message + " Reply 'confirm' to proceed.")
-            else:
-                self._say(result.message)
-            bus.emit("phone_state", self.phone.body.snapshot())
-            return
-
-        # --- command palette: fully local, unchanged --------------------
-        if command_palette.is_command(text):
-            self._agent("Intent Engine", "active", "command palette")
-            memory_snapshot = minimal_memory_for_prompt(load_memory())
-            output = command_palette.handle(text, session, memory_snapshot)
-            self._say(output, kind="command")
-            self._emit_goal()
-            return
-
-        # --- paused-plan confirmation (before single-tool confirmation)--
-        if planning_engine.has_paused_plan():
-            self._agent("AI Planner", "active", "paused plan decision")
-            if is_confirm_answer(lowered):
-                pending_tool_result = None
-                if tool_manager.has_pending_confirmation():
-                    pending_tool_result = tool_manager.confirm_pending()
-                bus.emit("confirm_required", {"pending": False})
-                self._clear_pending_origin()
-                if pending_tool_result is None:
-                    self._say("Nothing to confirm right now.")
-                    return
-                self._emit_workflow("resumed")
-                outcome = planning_engine.resume_paused_plan(pending_tool_result)
-                if outcome.get("paused"):
-                    self._emit_workflow("paused")
-                    self._ask_confirmation(outcome.get(
-                        "confirmation_message", "Another step needs confirmation."))
-                else:
-                    self._emit_workflow("finished")
-                    self._emit_goal()
-                    self._render_plan_summary(outcome)
-            else:
-                tool_manager.cancel_pending_confirmation()
-                planning_engine.cancel_paused_plan()
-                bus.emit("confirm_required", {"pending": False})
-                self._clear_pending_origin()
-                self._emit_workflow("cancelled")
-                self._emit_goal()
-                self._say("Cancelled — no changes were made.")
-                self._decision("Policy", "User declined pending plan step; changes cancelled.")
-            return
-
-        # --- single destructive-tool confirmation -----------------------
-        if tool_manager.has_pending_confirmation():
-            self._agent("Constitution", "active", "approval decision")
-            if is_confirm_answer(lowered):
-                result = tool_manager.confirm_pending()
-                bus.emit("confirm_required", {"pending": False})
-                self._clear_pending_origin()
-                msg = result.message or ("Done." if result.success else "That didn't work.")
-                self._say(msg, kind="tool")
-                self._state("success" if result.success else "error",
-                            "" if result.success else (result.error or "tool failed"))
-            else:
-                tool_manager.cancel_pending_confirmation()
-                bus.emit("confirm_required", {"pending": False})
-                self._clear_pending_origin()
-                self._say("Cancelled — no changes were made.")
-                self._decision("Policy", "User declined destructive action; cancelled.")
-            return
-
-        # --- mid-clarification: this input answers the pending question -
-        if session.get_current_question():
-            param = session.get_current_question()
-            session.update_parameters({param: text})
-            session.clear_current_question()
-            original_text = session.get_last_user_text()
-            text = f"{original_text}\n{param}: {text}" if original_text else text
-            user_text = text
-
-        session.set_last_user_text(text)
-
-        # --- context build: memory → knowledge → cognition → capability →
-        #     reasoning → runtime intelligence (same order as main.py) ---
-        t0 = time.monotonic()
-        self._agent("Knowledge", "active", "retrieving context")
-        self._state("analyzing", "assembling reasoning context")
-        long_term_memory = load_memory()
-        memory_for_prompt = minimal_memory_for_prompt(long_term_memory)
-        retrieved = self.knowledge.retrieve_context(text, limit=5)
-        if retrieved:
-            memory_for_prompt["retrieved_knowledge"] = retrieved
-        cognitive_context = self.cognition.prepare(text)
-        memory_for_prompt["reasoning_mode"] = cognitive_context.mode.name
-        memory_for_prompt["reasoning_rules"] = "; ".join(cognitive_context.mode.rules)
-        if cognitive_context.gap:
-            memory_for_prompt["knowledge_gap"] = cognitive_context.gap.question
-        capability_context = self.capabilities.prepare(text)
-        reasoning_result = self.reasoning.reason(text, list(capability_context.records))
-        memory_for_prompt["reasoning_strategy"] = reasoning_result.strategy
-        memory_for_prompt["reasoning_confidence"] = f"{reasoning_result.confidence:.2f}"
-        if reasoning_result.inferences:
-            memory_for_prompt["revisable_hypotheses"] = "; ".join(
-                item.statement for item in reasoning_result.inferences)
-        memory_for_prompt["capability_strategy"] = capability_context.strategy
-        if capability_context.gap:
-            memory_for_prompt["capability_gap"] = capability_context.gap.missing
-        elif capability_context.records:
-            memory_for_prompt["capability_experience"] = "\n".join(
-                r["content"] for r in capability_context.records[:3])
-        self._agent("Runtime Intel", "active", "composition & simulation")
-        runtime_context = self.runtime_intelligence.prepare(text, list(capability_context.records))
-        memory_for_prompt["capability_composition"] = runtime_context["composition"]["strategy"]
-        if runtime_context["prior_projects"]:
-            memory_for_prompt["project_continuity"] = runtime_context["prior_projects"][0]["content"]
-        self._stage("context", "done", {
-            "reasoning_mode": cognitive_context.mode.name,
-            "reasoning_strategy": reasoning_result.strategy,
-            "reasoning_confidence": round(reasoning_result.confidence, 3),
-            "retrieved": bool(retrieved),
-        }, duration=time.monotonic() - t0)
-
-        history_lines = session.get_history_for_prompt()
-        recent_history = "\n".join(history_lines.split("\n")[-5:])
-        if recent_history:
-            memory_for_prompt["recent_conversation"] = recent_history
-
-        if session.has_pending_intent():
-            memory_for_prompt["_pending_intent"] = session.pending_intent
-            memory_for_prompt["_collected_params"] = str(session.get_parameters())
-
-        # --- Intent Engine: classify (+ Fast Planner), zero LLM cost ----
-        self._agent("Intent Engine", "active")
-        t0 = time.monotonic()
-        classification, fast_result = classify_and_fast_handle(text, memory_for_prompt)
-        try:
-            cls = classification.to_dict()
-        except Exception:
-            cls = {"intent": str(classification.intent), "confidence": None}
-        self._stage("intent", "done", cls, duration=time.monotonic() - t0)
-
-        # Adaptive workspace follows the Core's own classification.
-        workspace = _workspace_for(classification, text)
-        if workspace in WORKSPACES:
-            bus.emit("workspace", {"mode": workspace, "source": "classification",
-                                   "confidence": cls.get("confidence")})
-
-        # Focus mode: multi-step work collapses peripheral UI, and the focus
-        # bar carries the actual task + progress so the user sees the work.
-        if classification.intent == Intent.PLANNER or (cls.get("estimated_tool_count") or 0) >= 2:
-            bus.emit("focus", {"active": True, "reason": "multi-step task",
-                               "task": text[:120]})
-
-        if fast_result is not None:
-            if fast_result.get("tool_used"):
-                self._agent("Fast Planner", "active", f"tool: {fast_result['tool_used']}")
-                self._state("executing", f"fast tool {fast_result['tool_used']}")
-                bus.emit("tool", {"phase": "end", "tool": fast_result["tool_used"],
-                                  "success": True, "via": "fast_planner"})
-            else:
-                self._agent("Fast Planner", "active", "answered locally, no LLM call")
-            self._state("speaking")
-            reply = fast_result.get("text", "")
-            session.set_last_ai_response(reply)
-            self._say(reply)
-            self._decision("Intent Engine", "Fast Planner answered with zero LLM cost.")
-            return
-
-        # --- AI Planner (gated exactly like main.py) --------------------
-        plan_outcome = None
-        if config.planner_active(classification.needs_planning):
-            self._agent("AI Planner", "active", "decomposing goal")
-            bus.emit("workspace", {"mode": "automation", "source": "planner"})
-            t0 = time.monotonic()
-            try:
-                plan_outcome = planning_engine.handle_request(text, memory_for_prompt, recent_history)
-            except Exception as e:
-                bus.emit("log", {"level": "WARNING",
-                                 "text": f"planner error, falling back to normal chat: {e}"})
-                plan_outcome = None
-            self._stage("planner", "done" if plan_outcome else "skipped",
-                        {"outcome": bool(plan_outcome)}, duration=time.monotonic() - t0)
-
-        if plan_outcome is not None:
-            session.set_last_ai_response(plan_outcome.get("goal", ""))
-            self._emit_goal()
-            if plan_outcome.get("paused"):
-                self._emit_workflow("paused")
-                self._ask_confirmation(plan_outcome.get(
-                    "confirmation_message", "This step needs confirmation."))
-            else:
-                self._emit_workflow("finished")
-                self._state("success")
-                self._state("warning" if not plan_outcome.get("all_succeeded") else "success",
-                        "partial failure" if not plan_outcome.get("all_succeeded") else "")
-            self._render_plan_summary(plan_outcome)
-            return
-
-        # --- LLM (main.py's ui.start_speaking → core_state: thinking) ---
-        self._state("thinking", "contacting the model")
-        t0 = time.monotonic()
-        started_at = t0
-        try:
-            llm_output = get_llm_output(user_text=text, memory_block=memory_for_prompt)
-        except Exception as e:
-            self._stage("llm", "error", {"error": str(e)})
-            self._state("error", "model unreachable")
-            self._say(f"AI ERROR: {e}", kind="error")
-            return
-        self._stage("llm", "done", {"intent": llm_output.get("intent", "chat")},
-                    duration=time.monotonic() - t0)
-
-        intent = llm_output.get("intent", "chat")
-        parameters = llm_output.get("parameters", {}) or {}
-        response = llm_output.get("text")
-        memory_update = llm_output.get("memory_update")
-
-        # --- Self-Critic (optional, same gate as main.py) ---------------
-        if config.ENABLE_SELF_CRITIC and intent == "chat" and response:
-            self._agent("Self-Critic", "active", "reviewing draft")
-            t0 = time.monotonic()
-            try:
-                critique = self_critic.review(text, response, reasoning_result.confidence)
-                if critique.should_improve:
-                    self._decision("Self-Critic",
-                                   "Revising response: " + "; ".join(critique.reasons))
-                    response = self_critic.improve(text, response, critique)
-                else:
-                    self._decision("Self-Critic", "Draft accepted without changes.")
-                self._stage("self_critic", "done", {
-                    "revised": bool(critique.should_improve),
-                    "reasons": list(getattr(critique, "reasons", []) or []),
-                }, duration=time.monotonic() - t0)
-            except Exception as critic_error:
-                bus.emit("log", {"level": "WARNING",
-                                 "text": f"self-critic deferred: {critic_error}"})
-
-        # --- memory + learning (mirrors main.py) -------------------------
-        if memory_update and isinstance(memory_update, dict):
-            self._state("updating", "writing long-term memory")
-            update_memory(memory_update)
-            bus.emit("memory_update", {"keys": list(memory_update.keys())})
-
-        try:
-            self._agent("Learning", "active", "recording experience")
-            self._state("learning", "consolidating experience")
-            self.learning.learn_task(text, response or "", elapsed=time.monotonic() - started_at)
-            self.capabilities.learn(text, "normal LLM response", bool(response),
-                                    .65 if response else .3)
-            self.runtime_intelligence.complete(text, response or "",
-                                               time.monotonic() - started_at,
-                                               list(capability_context.records))
-        except Exception as learning_error:
-            bus.emit("log", {"level": "WARNING", "text": f"learning deferred: {learning_error}"})
-
-        session.set_last_ai_response(response)
-
-        if intent and intent != "chat":
-            self._handle_intent(intent, parameters, response)
-        else:
-            if response:
-                self._state("speaking")
-                self._say(response)
-                self._state("success")
-        self._emit_goal()
+        """The canonical lifecycle lives in core/turn_runner.py. This method
+        wires the session's engines + the UI sink onto it; behavior and event
+        order are unchanged (the pipeline tests prove it)."""
+        from core.turn_runner import TurnRunner
+        if getattr(self, "_turn_runner", None) is None:
+            engines = {
+                "knowledge": self.knowledge,
+                "learning": self.learning,
+                "capabilities": self.capabilities,
+                "cognition": self.cognition,
+                "reasoning": self.reasoning,
+                "runtime_intelligence": self.runtime_intelligence,
+                "phone": self.phone,
+                "tool_manager": tool_manager,
+                "planner": planning_engine,
+                "command_palette": command_palette,
+                "intent_process": classify_and_fast_handle,
+                "load_memory": load_memory,
+                "update_memory": update_memory,
+                "minimal_memory_for_prompt": minimal_memory_for_prompt,
+                "llm_call": lambda text, mem: get_llm_output(user_text=text, memory_block=mem),
+            }
+            self._turn_runner = TurnRunner(
+                state=self.state, engines=engines, sink=_UiTurnSink(self),
+                pending={"phone": self.pending_phone,
+                         "phone_missing": self.pending_phone_missing})
+        self._turn_runner.run(user_text)
 
     def process_image(self, caption: str, image_b64: str, image_mime: str = "image/jpeg",
                       name: str = "image") -> None:

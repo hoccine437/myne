@@ -218,8 +218,8 @@ class WorkflowEngine:
                     "detail": result.message[:160]}
 
         if action == "call_agent":
-            from agents.service import pool
-            result = pool.spawn(str(params.get("type", "researcher")),
+            from agents.engine import engine
+            result = engine.spawn(str(params.get("type", "researcher")),
                                 {"query": str(params.get("query") or event.get("summary", ""))[:200]},
                                 wait=True)
             agent = result.get("agent") or {}

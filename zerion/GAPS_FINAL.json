@@ -1,7 +1,7 @@
 [
   {
     "file": "agents/orchestrator.py",
-    "line": 275,
+    "line": 280,
     "kind": "bare-pass",
     "text": "check context before deleting"
   },
@@ -361,7 +361,13 @@
   },
   {
     "file": "ui/session.py",
-    "line": 712,
+    "line": 107,
+    "kind": "bare-pass",
+    "text": "check context before deleting"
+  },
+  {
+    "file": "ui/session.py",
+    "line": 511,
     "kind": "bare-pass",
     "text": "check context before deleting"
   }

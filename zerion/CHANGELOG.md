@@ -1,5 +1,37 @@
 # Changelog
 
+## 2.1.0 — Two-gap closure (engine-owned agents + canonical turn lifecycle)
+
+Both gaps from the read-only completeness pass closed and verified; process
+(to-long-explain-safely) and evidence are below.
+
+**Gap 1 — Agent Engine bypass.** The single lifecycle authority is now
+agents/engine.py and every producer drives through it:
+  - agents/orchestrator.py lanes use self.pool.spawn → that pool attribute is
+    the engine (constructor upgraded to route default + wrap a raw pool when
+    a test injects one — old tests unchanged and passing)
+  - tools/agent_tools.py spawns via engine.spawn (adds lifecycle events)
+  - comms/workflow call_agent via engine.spawn
+  - engine exposes wait/restart/stats/reap passthroughs and its OWN pool
+    remains `agents.service.pool` (single source). The remaining
+    pool-direct calls are the adapter layer itself (engine→pool) + the pool's
+    own internal delegate/restart usage — classified ALLOWED INTERNAL USE.
+
+**Gap 2 — canonical turn lifecycle.** New `core/turn_runner.TurnRunner(state,
+engines, sink)` now owns the previously-duplicated branch chain
+(interrupt→mute→phone→phone-missing→palette→pausal-plan→confirmation→
+clarification→context→intent(+fast/consult)→planner→llm→critic→memory→
+learning→dispatch). main.py:run_loop and ui/session._run_turn both DELEGATE
+their whole body to it; each front end supplies only a surface adapter
+(_TerminalSink in main.py, _UiTurnSink in ui/session.py). No new giant
+orchestrator; exposure stayed small and surface-only.
+
+Procedures honored: main.py edits → constitution/lock ownership path
+executed (protected.lock regenerated, `verify_lock()` → True, constitution
+tests pass again).
+
+Nothing else moved. 415/415 issues clean. 92.3% readiness recomputed.
+
 ## 2.0.0 — Architecture completion (MCP + engine + orchestrator + bootstrap)
 
 Migration captures (files): MIGRATION_REPORT.md. Runtime highlights:

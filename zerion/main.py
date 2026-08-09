@@ -190,9 +190,89 @@ def handle_intent(intent: str, parameters: dict, response: str, ui, session: Ses
         speak(response)
 
 
+class _TerminalSink(object):
+    """Canonical-lifecycle surface for the built-in terminal front end.
+    Behavior-by-design: writes+speaks the assistant lines exactly as the
+    legacy loop did; structural telemetry (stages/decision rows/tool phasing)
+    is a UI concern and stays silent here (the same as it always was)."""
+
+    def __init__(self, ui):
+        self._ui = ui
+
+    def say(self, text: str, kind: str = "") -> None:
+        self._ui.write_log(f"AI: {text}")
+        # legacy terminal spoke assistant lines; palette/tool replies stay spoken too
+        if kind != "command":
+            speak(text or "")
+
+    def write(self, text: str) -> None:
+        self._ui.write_log(text)
+
+    def speak(self, text: str) -> None:
+        speak(text or "")
+
+    def state(self, state: str, detail: str = "") -> None:
+        if state == "thinking":
+            self._ui.start_speaking()
+        elif state in ("speaking", "success", "error", "idle"):
+            self._ui.stop_speaking()
+
+    def stage(self, name, status, detail=None, duration=None) -> None:
+        pass
+
+    def decision(self, source: str, text: str) -> None:
+        log.debug(f"decision[{source}]: {text}")
+
+    def notify(self, text: str, level: str = "info") -> None:
+        # legacy terminal stayed silent for bookkeeping notices
+        pass
+
+    def log(self, level: str, text: str) -> None:
+        # legacy loop printed parenthesized notices — keep that exact shape
+        message = text if str(text).startswith("(") else f"({text})"
+        print(message)
+
+    def confirm_required(self, payload: dict) -> None:
+        pass  # terminal confirmation is next-input based, as it always was
+
+    def phone_state(self, snap) -> None:
+        pass
+
+    def workspace(self, mode: str, source: str, confidence=None) -> None:
+        pass
+
+    def focus(self, payload: dict) -> None:
+        pass
+
+    def workflow(self, reason: str) -> None:
+        pass
+
+    def goal(self) -> None:
+        pass
+
+    def agent_row(self, name: str, state: str, detail: str = "") -> None:
+        pass
+
+    def tool_event(self, phase: str, tool: str, result, **kw) -> None:
+        pass
+
+    def memory_update(self, memory_update: dict) -> None:
+        pass
+
+    def post_classification(self, classification, text: str, cls: dict) -> None:
+        pass
+
+    def no_desktop_actions(self) -> str:
+        return ("I can't perform desktop actions in Mark-X Lite, "
+                "but I can still chat and help with information.")
+
+    def on_interrupt_reason(self) -> str:
+        return ""   # terminal prints its own "Goodbye." at loop break
+
+
 def run_loop(ui):
     session = SessionMemory()
-    # Phase 4 is additive: legacy memory and all existing engines remain intact.
+    # same engine set as before — identical instances, identical behavior
     knowledge = KnowledgeManager()
     learning = LearningEngine()
     capabilities = CapabilityEvolution()
@@ -201,23 +281,30 @@ def run_loop(ui):
     reasoning = CognitiveReasoningEngine()
     runtime_intelligence = RuntimeIntelligence()
     phone = PhoneIntelligence()
-    pending_phone = None
-    pending_phone_missing = None
 
     print("Mark-X Lite — type 'exit' to quit.")
     print(speech_status())
+
+    from core.turn_runner import TurnRunner
+    engines = {
+        "knowledge": knowledge, "learning": learning, "capabilities": capabilities,
+        "cognition": cognition, "reasoning": reasoning,
+        "runtime_intelligence": runtime_intelligence, "phone": phone,
+        "tool_manager": tool_manager, "planner": planning_engine,
+        "command_palette": command_palette,
+        "intent_process": classify_and_fast_handle,
+        "load_memory": load_memory, "update_memory": update_memory,
+        "minimal_memory_for_prompt": minimal_memory_for_prompt,
+        "llm_call": lambda text, mem: get_llm_output(user_text=text,
+                                                     memory_block=mem),
+    }
+    runner = TurnRunner(session, engines, _TerminalSink(ui))
 
     while True:
         user_text = ui.get_input()
 
         if not user_text or not user_text.strip():
-            # Idle work is bounded and automatically load-aware. Memory
-            # consolidation runs via BackgroundLearning (existing); weak
-            # capability reporting reuses the CapabilityQuality tracker
-            # RuntimeIntelligence already maintains every turn, so this
-            # doesn't duplicate BackgroundMaintenance's own consolidate()
-            # call -- it only adds the one thing that tracker doesn't
-            # already do: reporting the result somewhere visible.
+            # idle work is bounded and load-aware — unchanged legacy behavior
             maintenance_result = background.run_once()
             if maintenance_result:
                 log.debug(f"idle maintenance: {maintenance_result}")
@@ -226,257 +313,10 @@ def run_loop(ui):
                 log.debug(f"idle maintenance: weak capabilities: {', '.join(weak)}")
             continue
 
-        if user_text.strip().lower() in INTERRUPT_COMMANDS:
+        outcome = runner.run(user_text)
+        if outcome == "exit":
             print("Goodbye.")
             break
-
-        if user_text.strip().lower() == "mute":
-            session.reset()
-            continue
-
-        if pending_phone is not None:
-            if is_confirm_answer(user_text):
-                goal, intent = pending_phone
-                result = phone.dispatcher.dispatch(goal, intent, approved=True)
-                ui.write_log(f"AI: {result.message}")
-                speak(result.message)
-            else:
-                ui.write_log("AI: Cancelled — no phone action was performed.")
-            pending_phone = None
-            continue
-
-        if pending_phone_missing is not None:
-            # Previous turn was a phone intent missing required info (e.g.
-            # "call father" had no number). Treat this message as supplying
-            # it, rather than routing it to the LLM as ordinary chat --
-            # otherwise "confirm"/etc. here would fall through every pending
-            # state check below and hit the network unnecessarily.
-            goal_text, extracted_phone = pending_phone_missing
-            retry_text = f"{goal_text} {user_text}".strip()
-            extracted_phone = phone.extractor.extract(retry_text) or extracted_phone
-            if extracted_phone.missing:
-                ui.write_log(
-                    "AI: Still missing: " + ", ".join(extracted_phone.missing)
-                    + ". Reply with that, or say 'cancel'."
-                )
-                if user_text.strip().lower() == "cancel":
-                    pending_phone_missing = None
-                    ui.write_log("AI: Cancelled.")
-                else:
-                    pending_phone_missing = (goal_text, extracted_phone)
-                continue
-            pending_phone_missing = None
-            result = phone.dispatcher.dispatch(retry_text, extracted_phone, approved=False)
-            if "Approval required" in result.message:
-                pending_phone = (retry_text, extracted_phone)
-                ui.write_log(f"AI: {result.message} Reply 'confirm' to proceed.")
-            else:
-                ui.write_log(f"AI: {result.message}")
-            continue
-
-        extracted_phone = phone.extractor.extract(user_text)
-        if extracted_phone is not None:
-            if extracted_phone.missing:
-                pending_phone_missing = (user_text, extracted_phone)
-                ui.write_log("AI: Missing required information: " + ", ".join(extracted_phone.missing) + ".")
-                continue
-            result = phone.dispatcher.dispatch(user_text, extracted_phone, approved=False)
-            if "Approval required" in result.message:
-                pending_phone = (user_text, extracted_phone)
-                ui.write_log(f"AI: {result.message} Reply 'confirm' to proceed.")
-            else:
-                ui.write_log(f"AI: {result.message}")
-            continue
-
-        # Command palette: handled entirely locally, before anything else,
-        # so these always work even mid-confirmation or with no API key.
-        if command_palette.is_command(user_text):
-            memory_snapshot = minimal_memory_for_prompt(load_memory())
-            output = command_palette.handle(user_text, session, memory_snapshot)
-            ui.write_log(f"AI: {output}")
-            continue
-
-        # A multi-step plan is paused waiting on a destructive-tool
-        # confirmation partway through. Checked before the single-tool
-        # confirmation below, since a plan's confirmation takes priority
-        # over any stray pending single-tool call.
-        if planning_engine.has_paused_plan():
-            if is_confirm_answer(user_text):
-                pending_tool_result = None
-                if tool_manager.has_pending_confirmation():
-                    pending_tool_result = tool_manager.confirm_pending()
-                if pending_tool_result is None:
-                    ui.write_log("AI: Nothing to confirm right now.")
-                    continue
-                outcome = planning_engine.resume_paused_plan(pending_tool_result)
-                if outcome.get("paused"):
-                    ui.write_log(f"AI: {outcome.get('confirmation_message', 'Another step needs confirmation.')}")
-                    speak(outcome.get("confirmation_message", ""))
-                else:
-                    _render_plan_summary(outcome, ui)
-            else:
-                tool_manager.cancel_pending_confirmation()
-                planning_engine.cancel_paused_plan()
-                ui.write_log("AI: Cancelled — no changes were made.")
-                speak("Cancelled. No changes were made.")
-            continue
-
-        # A destructive tool (delete/move/run shell, etc.) is waiting on a
-        # yes/no before it will actually execute.
-        if tool_manager.has_pending_confirmation():
-            if is_confirm_answer(user_text):
-                result = tool_manager.confirm_pending()
-                msg = result.message or ("Done." if result.success else "That didn't work.")
-                ui.write_log(f"AI: {msg}")
-                speak(msg)
-            else:
-                tool_manager.cancel_pending_confirmation()
-                ui.write_log("AI: Cancelled — no changes were made.")
-                speak("Cancelled. No changes were made.")
-            continue
-
-        # If we're mid multi-step intent, treat this input as the answer
-        # to the last clarification question. The just-given answer is
-        # appended to the original request so both are visible to the LLM
-        # this turn (previously this discarded the user's new reply and
-        # resent only the original message).
-        if session.get_current_question():
-            param = session.get_current_question()
-            session.update_parameters({param: user_text})
-            session.clear_current_question()
-            original_text = session.get_last_user_text()
-            user_text = f"{original_text}\n{param}: {user_text}" if original_text else user_text
-
-        session.set_last_user_text(user_text)
-
-        long_term_memory = load_memory()
-        memory_for_prompt = minimal_memory_for_prompt(long_term_memory)
-        # Retrieval happens before planning/LLM. It is local SQLite + token
-        # semantic-overlap ranking, so it is safe on Termux without models.
-        retrieved = knowledge.retrieve_context(user_text, limit=5)
-        if retrieved:
-            memory_for_prompt["retrieved_knowledge"] = retrieved
-        # Goal-first cognition creates an ephemeral mode for this request.
-        # Legacy skills stay available as compatibility metadata, not control flow.
-        cognitive_context = cognition.prepare(user_text)
-        memory_for_prompt["reasoning_mode"] = cognitive_context.mode.name
-        memory_for_prompt["reasoning_rules"] = "; ".join(cognitive_context.mode.rules)
-        if cognitive_context.gap:
-            memory_for_prompt["knowledge_gap"] = cognitive_context.gap.question
-        capability_context = capabilities.prepare(user_text)
-        reasoning_result = reasoning.reason(user_text, list(capability_context.records))
-        memory_for_prompt["reasoning_strategy"] = reasoning_result.strategy
-        memory_for_prompt["reasoning_confidence"] = f"{reasoning_result.confidence:.2f}"
-        if reasoning_result.inferences:
-            memory_for_prompt["revisable_hypotheses"] = "; ".join(item.statement for item in reasoning_result.inferences)
-        memory_for_prompt["capability_strategy"] = capability_context.strategy
-        if capability_context.gap:
-            memory_for_prompt["capability_gap"] = capability_context.gap.missing
-        elif capability_context.records:
-            memory_for_prompt["capability_experience"] = "\n".join(r['content'] for r in capability_context.records[:3])
-        runtime_context = runtime_intelligence.prepare(user_text, list(capability_context.records))
-        memory_for_prompt["capability_composition"] = runtime_context["composition"]["strategy"]
-        if runtime_context["prior_projects"]:
-            memory_for_prompt["project_continuity"] = runtime_context["prior_projects"][0]["content"]
-
-        history_lines = session.get_history_for_prompt()
-        recent_history = "\n".join(history_lines.split("\n")[-5:])
-        if recent_history:
-            memory_for_prompt["recent_conversation"] = recent_history
-
-        if session.has_pending_intent():
-            memory_for_prompt["_pending_intent"] = session.pending_intent
-            memory_for_prompt["_collected_params"] = str(session.get_parameters())
-
-        # Intent Engine: classify (zero LLM cost) and try the Fast Planner
-        # (zero LLM cost for memory lookups and safe zero-parameter tool
-        # calls). If this fully answers the request, we're done for this
-        # turn with no LLM call at all.
-        classification, fast_result = classify_and_fast_handle(user_text, memory_for_prompt)
-
-        if fast_result is not None:
-            text = fast_result.get("text", "")
-            session.set_last_ai_response(text)
-            ui.write_log(f"AI: {text}")
-            speak(text)
-            continue
-
-        # Try the AI Planner only when the Intent Engine's classification
-        # actually signals a multi-step request -- replaces the previous
-        # word-count heuristic with real classification signal. Still
-        # gated by PLANNER_ENABLED since it costs one extra LLM call.
-        plan_outcome = None
-        if config.planner_active(classification.needs_planning):
-            try:
-                plan_outcome = planning_engine.handle_request(user_text, memory_for_prompt, recent_history)
-            except Exception as e:
-                print(f"(planner error, falling back to normal chat: {e})")
-                plan_outcome = None
-
-        if plan_outcome is not None:
-            session.set_last_ai_response(plan_outcome.get("goal", ""))
-            if plan_outcome.get("paused"):
-                ui.write_log(f"AI: {plan_outcome.get('confirmation_message', 'This step needs confirmation.')}")
-                speak(plan_outcome.get("confirmation_message", ""))
-            else:
-                _render_plan_summary(plan_outcome, ui)
-            continue
-
-        ui.start_speaking()
-        started_at = time.monotonic()
-        try:
-            llm_output = get_llm_output(user_text=user_text, memory_block=memory_for_prompt)
-        except Exception as e:
-            ui.stop_speaking()
-            ui.write_log(f"AI ERROR: {e}")
-            continue
-        ui.stop_speaking()
-
-        intent = llm_output.get("intent", "chat")
-        parameters = llm_output.get("parameters", {}) or {}
-        response = llm_output.get("text")
-        memory_update = llm_output.get("memory_update")
-
-        # Self-Critic: review the draft against this turn's reasoning
-        # confidence (already computed above) plus cheap structural
-        # checks, before anything is stored or sent. Only chat-intent
-        # replies are reviewed -- a tool/intent result isn't free text
-        # the critic can usefully rewrite. Fully optional: when
-        # config.ENABLE_SELF_CRITIC is False, this block is skipped
-        # entirely and the pipeline behaves exactly as it did before the
-        # critic existed. Non-fatal: any critic failure falls back to the
-        # original draft untouched. At most one review() and one
-        # improve() call per turn -- see intelligence/critic.py's module
-        # docstring for why this can never become a feedback loop.
-        if config.ENABLE_SELF_CRITIC and intent == "chat" and response:
-            try:
-                critique = self_critic.review(user_text, response, reasoning_result.confidence)
-                if critique.should_improve:
-                    log.info(f"self-critic: revising response ({'; '.join(critique.reasons)})")
-                    response = self_critic.improve(user_text, response, critique)
-            except Exception as critic_error:
-                print(f"(self-critic deferred: {critic_error})")
-
-        if memory_update and isinstance(memory_update, dict):
-            update_memory(memory_update)
-
-        # Store an experience and reflection after material completions.
-        # Failures are captured by exceptions; this path remains non-fatal.
-        try:
-            learning.learn_task(user_text, response or "", elapsed=time.monotonic() - started_at)
-            capabilities.learn(user_text, "normal LLM response", bool(response), .65 if response else .3)
-            runtime_intelligence.complete(user_text, response or "", time.monotonic() - started_at, list(capability_context.records))
-        except Exception as learning_error:
-            print(f"(learning deferred: {learning_error})")
-
-        session.set_last_ai_response(response)
-
-        if intent and intent != "chat":
-            handle_intent(intent, parameters, response, ui, session)
-        else:
-            if response:
-                ui.write_log(f"AI: {response}")
-                speak(response)
 
 
 # ---------------------------------------------------------------------------

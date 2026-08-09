@@ -294,8 +294,10 @@ def test_main_py_skips_critic_entirely_when_disabled():
     # This confirms that exact guard is present as source, so flipping the
     # flag off is guaranteed to skip review()/improve() calls entirely
     # rather than merely short-circuiting inside the critic.
-    main_src = Path(__file__).resolve().parents[1].joinpath("main.py").read_text(encoding="utf-8")
-    assert "config.ENABLE_SELF_CRITIC and intent" in main_src
+    tsrc = Path(__file__).resolve().parents[1].joinpath("core", "turn_runner.py").read_text(encoding="utf-8")
+    # the canonical lifecycle (both front ends run it) — the gate remains exact
+    assert "config.ENABLE_SELF_CRITIC and intent" in tsrc
+    assert "config.ENABLE_SELF_CRITIC and intent" in tsrc  # canonical lifecycle source
 
 
 if __name__ == "__main__":

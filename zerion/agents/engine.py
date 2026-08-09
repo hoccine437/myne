@@ -120,5 +120,26 @@ class AgentEngine:
                  "agent_id": h.agent_id})
         return {**out, "engine_handle": h.stages}
 
+    # -- delegated pass-throughs (the pool is the executor; the engine is
+    #    the lifecycle authority — these keep old producers compatible) ----
 
+    def wait(self, agent_id: str, timeout: float = 20.0) -> dict:
+        return self.pool.wait(agent_id, timeout)
+
+    def restart(self, agent_id: str) -> dict:
+        out = self.pool.restart(agent_id)
+        core_events.bus.emit("agent.started", {"type": None, "restart_of": agent_id})
+        return out
+
+    def stats(self) -> dict:
+        return self.pool.stats()
+
+    def reap(self) -> int:
+        return self.pool.reap()
+
+    def shutdown(self) -> None:
+        return self.pool.shutdown()
+
+
+# the process-wide engine — the single lifecycle authority
 engine = AgentEngine()

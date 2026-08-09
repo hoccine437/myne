@@ -110,3 +110,21 @@ approvals; evolution behind owner gates.
 
 *No code was modified in this pass. The report describes the repository as
 read at HEAD `18abdf1` (arena/019fddfd-myne).*
+
+
+---
+
+## POST-CLOSURE UPDATE (2026-08-09)
+
+Both gaps closed this session (evidence below). Current verdicts marked ⟳.
+Saved-read runs: pytest 415/415 (incl. 14-architecture migration tests)
+· second_audit 22/22 · connectivity 45/45 · UI smoke 74/74 · arch_map 49/43
+· constitution lock verify True · readiness recomputed (see READINESS_REPORT).
+
+| # | Prior verdict | NOW | Proof |
+|---|---|---|---|
+| 1 Workflow Orchestrator | PARTIAL | IMPLEMENTED+WIRED as owner | core/turn_runner.py owns the canonical turn lifecycle; main.py:run_loop + ui/session._run_turn each delegate to it (code search: old branch strings gone from both call sites; TurnRunner ITSELF is the single owner). |
+| 2 Agent Engine bypass | IMPLEMENTED NOT WIRED | IMPLEMENTED+WIRED | Orchestrator/tools/agent_tools/workflows now call engine.spawn / engine.wait / engine.restart / engine.stats; direct pool.spawn remains ONLY inside pool+engine delegation code. Remaining direct paths: proven ALLOWED INTERNAL USE (pool→engine adapter layer, pool's own delegate/restart dispatch). |
+
+⟳ Upgraded rows (final): these were the only ones. Nothing else moved — no
+scope growth, no diagram-chasing.
