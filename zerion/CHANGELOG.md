@@ -1,5 +1,22 @@
 # Changelog
 
+## 2.3.0 — Topic-specific learning and verification fix
+
+Fixed the production `learn <topic>` path: it now uses a bounded Gemini
+DomainTeacher (the same `GEMINI_API_KEY` as chat and voice) to create
+subject-specific lessons and recall checks. User-provided reference material
+can also be ingested offline. Generated/material knowledge remains
+UNVERIFIED until independent evidence or tested recall promotes it.
+
+The old callback-free path could run generic `a + b` arithmetic under labels
+such as `kali linux`, then report `mastery` even though no topic was learned.
+That path is now reserved for explicit deterministic experiments; production
+study no longer reports synthetic arithmetic as domain mastery. Truth callbacks
+are executed and their result, rather than callback presence, controls
+verification.
+
+Gates: 427/427 pytest · 22/22 second · 45/45 connectivity · 74/74 UI smoke.
+
 ## 2.2.0 — Bounded Think x10 protocol
 
 Added an explicit, evidence-aware ten-lens deliberation protocol for

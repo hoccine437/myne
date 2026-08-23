@@ -7,6 +7,7 @@ The experiment is a synthetic arithmetic domain ('dot-7' base-7 addition) —
 its teacher is real executed arithmetic, its exercises are generated, its
 failures/corrections are measured, its generalization probe uses unseen
 seeds. No judgment is inflated by a self-claim."""
+import json
 import os
 import sys
 import tempfile
@@ -207,6 +208,89 @@ class ProgressTests(unittest.TestCase):
     def _restore(self, orig):
         import knowledge.database as kdb
         kdb.Database.__init__.__defaults__ = orig
+
+
+class DomainTeacherTests(unittest.TestCase):
+    def test_gemini_teacher_stores_topic_specific_lesson_as_unverified(self):
+        tmp, orig = isolate_db()
+        import config
+        old_key = config.GEMINI_API_KEY
+        config.GEMINI_API_KEY = "test-key"
+        try:
+            from learning.controller import LearningController
+            payload = json.dumps({
+                "concepts": [{
+                    "name": "Linux permissions",
+                    "lesson": "Users, groups, and permission bits control access.",
+                    "checks": [{"question": "What do permissions control?", "answer": "Access."}],
+                }],
+                "uncertainties": ["Exact command flags depend on the installed version."],
+            })
+            with mock.patch("learning.teacher.api.call_llm", return_value=payload) as call:
+                report = LearningController().study_domain("kali linux")
+            self.assertEqual(report["finished_reason"], "studied-unverified")
+            self.assertEqual(report["knowledge_status"], "unverified")
+            self.assertEqual(report["final_level"]["mastery"], 0.0)
+            self.assertEqual(report["iterations"][0]["concept"], "Linux permissions")
+            self.assertEqual(report["iterations"][0]["verdict"], "unverified")
+            self.assertIn("kali linux", call.call_args.args[1])
+        finally:
+            config.GEMINI_API_KEY = old_key
+            tmp.cleanup()
+            import knowledge.database as kdb
+            kdb.Database.__init__.__defaults__ = orig
+
+    def test_user_material_can_be_ingested_without_key_but_stays_unverified(self):
+        tmp, orig = isolate_db()
+        import config
+        old_key = config.GEMINI_API_KEY
+        config.GEMINI_API_KEY = ""
+        try:
+            from learning.controller import LearningController
+            report = LearningController().study_domain(
+                "kali linux", source_text="A supplied lesson about permissions.")
+            self.assertEqual(report["finished_reason"], "studied-unverified")
+            self.assertEqual(report["lesson"]["source"], "user-material")
+            self.assertEqual(report["final_level"]["mastery"], 0.0)
+        finally:
+            config.GEMINI_API_KEY = old_key
+            tmp.cleanup()
+            import knowledge.database as kdb
+            kdb.Database.__init__.__defaults__ = orig
+
+
+class ProductionLearningGuardTests(unittest.TestCase):
+    def test_generic_topic_never_uses_arithmetic_as_topic_mastery(self):
+        tmp, orig = isolate_db()
+        try:
+            from learning.controller import LearningController
+            report = LearningController().learn_domain("kali linux")
+            self.assertEqual(report["finished_reason"], "needs-domain-evidence")
+            self.assertEqual(report["iterations"], [])
+            self.assertEqual(report["final_level"]["mastery"], 0.0)
+            self.assertEqual(report["final_level"]["verify_rate"], 0.0)
+            self.assertIn("domain-specific", report["message"])
+        finally:
+            tmp.cleanup()
+            import knowledge.database as kdb
+            kdb.Database.__init__.__defaults__ = orig
+
+    def test_truth_callback_is_executed_not_treated_as_a_boolean_flag(self):
+        tmp, orig = isolate_db()
+        try:
+            from learning.controller import LearningController
+            truth = mock.Mock(return_value=False)
+            report = LearningController().learn_domain(
+                "a real subject", practice_attempt_fn=lambda prompt: eval(prompt),
+                truth_fn=truth, max_iterations=1)
+            truth.assert_called_once()
+            self.assertEqual(report["evidence_checks"], 1)
+            self.assertEqual(report["iterations"][0]["verdict"], "contradicted")
+            self.assertEqual(report["final_level"]["mastery"], 0.0)
+        finally:
+            tmp.cleanup()
+            import knowledge.database as kdb
+            kdb.Database.__init__.__defaults__ = orig
 
 
 class FinalExperimentTests(unittest.TestCase):

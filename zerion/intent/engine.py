@@ -134,7 +134,7 @@ def process(user_text: str, memory: dict):
         fast_result = None
 
     # Learning triggers (learning/triggers.py): explicit "learn X" requests
-    # execute the bounded LearningController loop offline; repeated-failure
+    # start the topic-specific, evidence-gated study path; repeated-failure
     # patterns surface a logged signal. Never intercepts ordinary chat.
     if fast_result is None:
         try:

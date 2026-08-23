@@ -43,14 +43,95 @@ class LearningController:
         self.progress = ProgressModel()
 
     # ------------------------------------------------------------------
-    # the self-teaching loop
+    # provider-backed domain study
+
+    def study_domain(self, topic: str, known_concepts: list | None = None,
+                     source_text: str = "", source_url: str = "") -> dict:
+        """Acquire a real, topic-specific lesson through the same Gemini
+        provider used by chat.
+
+        This stores bounded lesson material and recall checks as UNVERIFIED
+        knowledge. It deliberately does not convert one model response into
+        mastery; an independent source, executable proof, or explicit quiz
+        evidence is still required for promotion.
+        """
+        from learning.teacher import DomainTeacher
+
+        topic = (topic or "").strip()
+        report = {
+            "topic": topic, "iterations": [], "errors": [],
+            "generalization": None, "mastery": [],
+            "knowledge_status": "unverified",
+            "learning_scope": "model-assisted-study",
+            "evidence_checks": 0, "uncertainties": [],
+            "finished_reason": None, "final_level": None,
+        }
+        if not topic:
+            report["finished_reason"] = "missing-topic"
+            report["message"] = "A topic is required."
+            return report
+
+        try:
+            lesson = DomainTeacher().generate(
+                topic, source_text=source_text, source_url=source_url,
+                known_concepts=list(known_concepts or []))
+        except Exception as error:
+            report["finished_reason"] = (
+                "needs-domain-evidence" if "GEMINI_API_KEY" in str(error)
+                else "teacher-unavailable")
+            report["message"] = (
+                f"A topic-specific teacher could not be reached: {error}. "
+                "Provide GEMINI_API_KEY or topic evidence/source material; "
+                "no topic knowledge was stored or marked as mastered."
+            )
+            return report
+
+        concepts = lesson["concepts"]
+        obj = self.progress.open(
+            topic, unknown_concepts=[item["name"] for item in concepts])
+        report["uncertainties"] = lesson.get("uncertainties", [])
+        for item in concepts:
+            content = f"{item['name']}: {item['lesson']}"
+            record_id = self.acquisition.acquire(
+                content, source=lesson.get("source", "gemini-teacher"),
+                domain=topic)
+            checks = item.get("checks", [])
+            report["iterations"].append({
+                "concept": item["name"], "record_id": record_id,
+                "checks": len(checks), "correct": None,
+                "verdict": "unverified", "confidence": 0.3,
+            })
+
+        report["lesson"] = {
+            "concepts": concepts,
+            "source": lesson.get("source"),
+            "source_url": lesson.get("source_url", ""),
+        }
+        report["finished_reason"] = "studied-unverified"
+        report["message"] = (
+            f"Generated {len(concepts)} topic-specific lesson(s) for {topic!r}. "
+            "Material is stored as UNVERIFIED; run independent recall/evidence "
+            "before claiming mastery."
+        )
+        self.progress._persist(obj, event="study-unverified")
+        report["final_level"] = self.progress.level_summary(obj)
+        return report
+
+    # ------------------------------------------------------------------
+    # the deterministic/callback-driven learning loop
 
     def learn_domain(self, topic: str, known_concepts: list | None = None,
                      practice_attempt_fn=None, truth_fn=None,
                      system_listener=None, max_iterations: int = _DEFAULT_MAX_ITER) -> dict:
-        """The guided loop. truth_fn(concept)->TruthEngine outcome mapping;
-        practice_attempt_fn(prompt)->answer: the subject's exercise attempts
-        get evaluated against real results, not asserted correctness.
+        """Run the bounded evidence-gated learning loop.
+
+        ``practice_attempt_fn(prompt)->answer`` must be a subject-specific
+        teacher/exercise adapter. ``truth_fn(prompt)`` is optional for the
+        synthetic practice path but, when supplied, is actually called and
+        its explicit result controls VERIFIED promotion. Without a
+        subject-specific practice callback this method only creates a study
+        plan and returns ``needs-domain-evidence``; it never pretends that a
+        generic arithmetic exercise taught the requested domain.
 
         Returns a full report (the final experiment's honest audit trail)."""
         started = time.time()
@@ -77,7 +158,27 @@ class LearningController:
 
         report = {"run_id": run_id, "topic": topic, "iterations": [],
                   "mastery": [], "errors": [], "generalization": None,
-                  "finished_reason": None, "final_level": None}
+                  "finished_reason": None, "final_level": None,
+                  "knowledge_status": "unverified",
+                  "learning_scope": "domain-evidence-required",
+                  "evidence_checks": 0}
+
+        # The production trigger does not have a domain teacher or a
+        # subject-specific exercise callback. The old default silently ran
+        # arithmetic (`a + b`) for every topic, so `learn kali linux` could
+        # report mastery after passing math while learning nothing about
+        # Kali. Refuse that false positive; the synthetic math loop remains
+        # available to tests/experiments when an explicit callback is passed.
+        if practice_attempt_fn is None:
+            report["finished_reason"] = "needs-domain-evidence"
+            report["message"] = (
+                f"No domain-specific learning evidence was supplied for {topic!r}. "
+                "Provide source material or a subject-specific teacher/exercise "
+                "before Zerion can claim it learned the topic."
+            )
+            self.progress._persist(obj, event="needs-domain-evidence")
+            report["final_level"] = self.progress.level_summary(obj)
+            return report
 
         iterations = 0
         while iterations < max_iterations:
@@ -103,15 +204,45 @@ class LearningController:
                 result.level = level
             self.progress.note_practice(obj, result)
 
-            # feedback → verdict on the record + errors
-            evidence = [result.correct and "support" or "contradict"]
-            verdict = self.verify.evaluate(rec_id, evidence, executable_proof=bool(truth_fn))
+            # feedback → verdict on the record + errors. A truth_fn is an
+            # actual check, not a truth-shaped flag: invoke it and normalize
+            # its result before allowing VERIFIED promotion.
+            truth_state = None
+            truth_verified = False
+            if truth_fn is not None:
+                report["evidence_checks"] += 1
+                try:
+                    truth_state = truth_fn(ex.prompt)
+                    truth_verified = self._truth_verified(truth_state)
+                except Exception as truth_error:
+                    truth_state = {"state": "uncertain", "error": str(truth_error)}
+            if isinstance(truth_state, dict):
+                state_name = str(truth_state.get("state", "")).lower()
+                evidence = (["support", "support"] if state_name == "supported"
+                            else ["support"] if truth_verified
+                            else ["contradict"] if truth_state is not None else
+                            [result.correct and "support" or "contradict"])
+            elif truth_state is not None:
+                state_name = str(truth_state).lower()
+                evidence = (["support", "support"] if state_name == "supported"
+                            else ["support"] if truth_verified
+                            else ["contradict"])
+            else:
+                evidence = [result.correct and "support" or "contradict"]
+            verdict = self.verify.evaluate(rec_id, evidence,
+                                           executable_proof=truth_verified)
             obj.confidence = verdict["confidence"]
             self.progress.note_verdict(obj, verdict["state"])
 
-            if result.correct:
-                # promote: level up one slot (never by self-assessment alone;
-                # evidence = result.correct)
+            # A practice answer can advance the local skill model. If a
+            # teacher/proof callback was supplied, its verdict must agree;
+            # otherwise a correct-looking answer is not topic mastery.
+            practice_pass = result.correct and (
+                truth_fn is None or verdict["state"] in ("supported", "verified")
+            )
+            if practice_pass:
+                # promote: level up one slot only after the exercise evidence
+                # (and any supplied truth evidence) passes.
                 idx = SKILL_LEVELS.index(level)
                 new_level = SKILL_LEVELS[min(idx + 1, len(SKILL_LEVELS) - 1)]
                 self.progress.note_skill(obj, concept, new_level)
@@ -123,9 +254,14 @@ class LearningController:
                 # record under the CONCEPT as well as the literal exercise —
                 # error memory is retrieved by "similar task", and the task
                 # future-me will recognize is the subject, not the operands
-                self.errors.record(f"{concept} — exercise: {ex.prompt}",
-                                   str(result.actual), str(ex.expected),
-                                   cmd, hint, solution="")
+                error_id = self.errors.record(
+                    f"{concept} — exercise: {ex.prompt}",
+                    str(result.actual), str(ex.expected),
+                    cmd, hint, solution="")
+                report["errors"].append({"concept": concept,
+                                         "exercise": ex.prompt,
+                                         "record_id": error_id,
+                                         "feedback": result.feedback})
                 self.progress.note_error(obj, result.feedback)
                 # backoff: review this failure soon
                 self.retention.note_fail(rec_id)
@@ -193,6 +329,17 @@ class LearningController:
 
     # ------------------------------------------------------------------
     # internals
+
+    @staticmethod
+    def _truth_verified(value) -> bool:
+        """Normalize a teacher/proof result without treating mere callback
+        presence as evidence. Only explicit verified/proof signals promote a
+        record; everything else remains uncertain or supported."""
+        if isinstance(value, dict):
+            state = str(value.get("state", "")).lower()
+            return state == "verified" or value.get("verified") is True or \
+                value.get("executable_proof") is True
+        return value is True
 
     def _cause_and_fix(self, ex, result) -> tuple[str, str]:
         """Cause classification from observable structure, nothing assumed."""

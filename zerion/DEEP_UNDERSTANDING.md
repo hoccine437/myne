@@ -38,6 +38,15 @@ The UI exposes the active depth as `x10 / 10 lenses / 19 capabilities`. The
 pipeline never emits private chain-of-thought. It emits only safe telemetry,
 confidence, evidence, and final user-facing output.
 
+## Domain learning
+
+`learn <topic>` is now topic-specific: with the shared Gemini key, the
+`DomainTeacher` generates a bounded lesson and recall checks; with supplied
+`source_text`, material can be ingested offline. Both paths store material as
+**UNVERIFIED** until independent evidence or tested recall promotes it. The
+old callback-free deterministic experiment remains available only to explicit
+experiments and no longer runs generic arithmetic under arbitrary topic names.
+
 ## Safety boundary
 
 Autonomy, principle formation, and self-evolution remain explicitly gated:

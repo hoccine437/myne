@@ -2,7 +2,7 @@
 """Learning tools: the conversation can trigger the LearningController
 through the existing Tool Manager — same path as everything else.
 
-learn_domain   — run the self-teaching loop (bounded, audited)
+learn_domain   — run topic-specific study (bounded, evidence-gated)
 learn_progress — multi-dimensional progress summary
 review_due     — spaced-recall due list
 """
@@ -25,12 +25,15 @@ def _ctrl() -> LearningController:
 
 class LearnDomainTool(Tool):
     name = "learn_domain"
-    description = ("Teach Zerion a domain through the self-teaching loop: assess → "
+    description = ("Study a domain through the evidence-gated learning loop: assess → "
                    "gaps → curriculum → practice → feedback → verify → generalize → "
-                   "record. Bounded (max 6 iterations per call), multi-dimensional "
-                   "progress, never self-verified without evidence.")
+                   "record. A subject-specific teacher/exercise or source evidence is "
+                   "required; generic arithmetic is never used as domain mastery. "
+                   "Bounded (max 6 iterations per call), never self-verified without evidence.")
     parameters = {"topic": "the domain to learn",
-                  "known_concepts": "optional list of already-known concepts"}
+                  "known_concepts": "optional list of already-known concepts",
+                  "source_text": "optional reference material to study",
+                  "source_url": "optional reference URL (orientation only unless fetched separately)"}
     destructive = False
 
     def available(self) -> bool: return True
@@ -39,12 +42,33 @@ class LearnDomainTool(Tool):
         topic = str((parameters or {}).get("topic", "")).strip()
         if not topic:
             return ToolResult.fail("missing_parameter", "No topic provided.")
-        known = (parameters or {}).get("known_concepts")
+        params = parameters or {}
+        known = params.get("known_concepts")
         try:
-            report = _ctrl().learn_domain(topic, known_concepts=list(known or []))
+            report = _ctrl().study_domain(
+                topic,
+                known_concepts=list(known or []),
+                source_text=str(params.get("source_text", "") or ""),
+                source_url=str(params.get("source_url", "") or ""),
+            )
         except Exception as e:
             return ToolResult.fail("learning_failed", str(e))
         level = report.get("final_level", {})
+        if report.get("finished_reason") in ("needs-domain-evidence", "teacher-unavailable"):
+            return ToolResult.ok(
+                data=report,
+                message=(f"Study request for {topic!r} was not marked as learned: "
+                         f"{report.get('message', 'a topic-specific teacher is required')} "
+                         "No mastery or verification claim was made."),
+            )
+        if report.get("finished_reason") == "studied-unverified":
+            checks = sum(i.get("checks", 0) for i in report.get("iterations", []))
+            return ToolResult.ok(
+                data=report,
+                message=(f"Studied {topic!r}: {len(report.get('iterations', []))} topic lesson(s) "
+                         f"and {checks} recall check(s) stored. Material remains UNVERIFIED; "
+                         "no mastery claim was made."),
+            )
         return ToolResult.ok(data=report,
                              message=(f"learned {topic}: mastery {level.get('mastery')} "
                                       f"verify-rate {level.get('verify_rate')} "

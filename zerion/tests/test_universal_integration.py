@@ -205,7 +205,8 @@ class TestLearningRuntime(unittest.TestCase):
         self.assertIsNotNone(fast)
         self.assertEqual(fast.get("handled_by"), "learning")
         self.assertEqual(fast.get("tool_used"), "learn_domain")
-        self.assertIn("Studied", fast["text"])
+        self.assertIn("not marked as learned", fast["text"])
+        self.assertEqual(fast["learning"]["finished_reason"], "needs-domain-evidence")
 
     def test_learn_trigger_never_hijacks_chat(self):
         from learning.triggers import evaluate
@@ -216,7 +217,8 @@ class TestLearningRuntime(unittest.TestCase):
         from intent import commands
         self.assertTrue(commands.is_command("/learn binary addition"))
         out = commands.handle("/learn binary addition", None, {})
-        self.assertIn("learned", out.lower())
+        self.assertIn("not marked as learned", out.lower())
+        self.assertIn("evidence", out.lower())
 
     def test_repeated_failure_signal(self):
         from intent.history import ActionHistory
