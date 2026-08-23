@@ -90,7 +90,8 @@ def _current_settings() -> dict:
         "voice_name": config.VOICE_NAME,
         "provider": config.LLM_PROVIDER,
         "serious_mode": personality.serious_active(),
-        "llm_configured": bool(config.GEMINI_API_KEY),
+        # Chat and voice are configured by the same single Gemini key.
+        "llm_configured": bool(config.get_gemini_api_key()),
         "tts_supported": config.gemini_tts_supported(),
         "speech_status": speech_status(),
         "voice_path": "server-gemini" if speech_status() == "Speech: Gemini voice ready."

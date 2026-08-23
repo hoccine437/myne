@@ -153,6 +153,31 @@ class GeminiVoiceTests(unittest.TestCase):
                 self.assertEqual(wf.getsampwidth(), 2)
                 self.assertEqual(wf.getnframes(), 2400)
 
+    def test_chat_and_voice_share_one_canonical_api_key(self):
+        """Text and TTS use different Gemini models, but must authenticate
+        with the same configured credential. This guards against a future
+        accidental VOICE_API_KEY split."""
+        import speech
+        shared_key = "  one-key-for-chat-and-voice  "
+        old_key = config.GEMINI_API_KEY
+        config.GEMINI_API_KEY = shared_key
+        payload_pcm = base64.b64encode(b"\x00" * 480).decode()
+        try:
+            with _NetPreflight(), mock.patch("requests.post") as post:
+                post.side_effect = [
+                    _resp(payload={"candidates": [{"content": {"parts": [{"text": "chat"}]}}]}),
+                    _resp(payload={"candidates": [{"content": {"parts": [
+                        {"inlineData": {"data": payload_pcm, "mimeType": "audio/L16"}}]}}]}),
+                ]
+                from providers.gemini import GeminiProvider
+                self.assertEqual(GeminiProvider().call("s", "u", timeout=5), "chat")
+                out_path = speech._generate_audio("voice")
+                self.assertTrue(out_path.endswith(".wav"))
+                used_keys = [call.kwargs["params"]["key"] for call in post.call_args_list]
+        finally:
+            config.GEMINI_API_KEY = old_key
+        self.assertEqual(used_keys, ["one-key-for-chat-and-voice", "one-key-for-chat-and-voice"])
+
     def test_tts_request_payload_contract(self):
         import speech
         payload_pcm = base64.b64encode(b"\x00" * 480).decode()

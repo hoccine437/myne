@@ -423,7 +423,7 @@ class ZerionService:
 
         # --- model availability ------------------------------------------
         def probe_model():
-            if not config.GEMINI_API_KEY:
+            if not config.get_gemini_api_key():
                 return "GEMINI_API_KEY not configured"
             now = time.monotonic()
             if now >= svc._next_network_check:

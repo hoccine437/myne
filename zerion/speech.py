@@ -64,7 +64,7 @@ def speech_status() -> str:
     """Return the single public startup speech state."""
     if not config.VOICE_ENABLED or config.VOICE_PROVIDER != "gemini":
         return "Speech: disabled."
-    if not config.GEMINI_API_KEY or not config.gemini_tts_supported() or not _detect_player():
+    if not config.get_gemini_api_key() or not config.gemini_tts_supported() or not _detect_player():
         return "Speech: disabled."
     return "Speech: Gemini voice ready."
 
@@ -131,14 +131,18 @@ def _generate_audio(text: str) -> str:
     """Call Gemini TTS and write a playable WAV file. Returns the file
     path, or "" on any failure (missing key, timeout, bad response, ...).
     Retries once on transient network errors."""
-    if not config.GEMINI_API_KEY:
+    # This is deliberately the same key accessor used by the text provider.
+    # Voice has a different Gemini model/response modality, not a different
+    # credential.
+    api_key = config.get_gemini_api_key()
+    if not api_key:
         return ""
     if not config.gemini_tts_supported():
         print(f"(Gemini TTS disabled: configured speech model {config.GEMINI_TTS_MODEL!r} is not explicitly TTS-capable)")
         return ""
 
     headers = {"Content-Type": "application/json"}
-    params = {"key": config.GEMINI_API_KEY}
+    params = {"key": api_key}
 
     # Natural-language style instruction, as Gemini TTS is "controllable" —
     # it reads style/pace cues from the prompt itself, not separate params.
@@ -290,7 +294,7 @@ def speak(text: str) -> None:
     if not text or not config.VOICE_ENABLED:
         return
 
-    if not config.GEMINI_API_KEY:
+    if not config.get_gemini_api_key():
         print("(Gemini speech disabled: GEMINI_API_KEY is not set)")
         return
     if not config.gemini_tts_supported():

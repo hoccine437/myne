@@ -17,11 +17,14 @@ class GeminiProvider(Provider):
     name = "gemini"
 
     def is_configured(self) -> bool:
-        return bool(config.GEMINI_API_KEY)
+        # Chat reads the same canonical credential as speech.py; there is no
+        # separate chat key or provider-specific secret.
+        return bool(config.get_gemini_api_key())
 
     def call(self, system_prompt: str, user_prompt: str, timeout: int,
              image_b64: str | None = None, image_mime: str | None = None) -> str:
-        if not self.is_configured():
+        api_key = config.get_gemini_api_key()
+        if not api_key:
             raise ProviderError("GEMINI_API_KEY is not set")
 
         try:
@@ -29,7 +32,7 @@ class GeminiProvider(Provider):
         except OSError as exc:
             raise ProviderError(f"Gemini network unavailable: {exc}")
         headers = {"Content-Type": "application/json"}
-        params = {"key": config.GEMINI_API_KEY}
+        params = {"key": api_key}
         user_parts = [{"text": user_prompt}]
         if image_b64:
             user_parts.insert(0, {"inline_data": {"mime_type": image_mime or "image/jpeg",

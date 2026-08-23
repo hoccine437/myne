@@ -44,6 +44,10 @@ Browser speechSynthesis exists ONLY as an explicitly labeled fallback —
 the voice-state chip says BROWSER VOICE and never pretends it's Gemini.
 Chip states: GEMINI VOICE · VOICE… · BROWSER VOICE · VOICE OFF · VOICE ERROR.
 
+The UI uses the same `GEMINI_API_KEY` as chat for Gemini TTS. Configure one
+key in `.env`; there is intentionally no separate `VOICE_API_KEY`, and the
+key itself is never sent to the browser.
+
 ## Architecture
 
 ```

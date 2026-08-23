@@ -60,7 +60,23 @@ except ImportError:
 # ---------------------------------------------------------------------------
 LLM_PROVIDER = "gemini"
 _SUPPORTED_PROVIDERS = ("gemini",)
+# One credential powers both Gemini text chat and Gemini voice/TTS.  Keep the
+# value in this module instead of introducing a second VOICE_API_KEY: the
+# provider and speech layers both call get_gemini_api_key() below.
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+
+
+def get_gemini_api_key() -> str:
+    """Return the single Gemini credential used by chat *and* voice.
+
+    Keeping this accessor in the central configuration module makes the
+    one-key contract explicit and gives runtime/tests a single seam to
+    replace without ever sending the secret to the UI or storing it in
+    application state.  Whitespace around a pasted .env value is harmless.
+    """
+    return str(GEMINI_API_KEY or "").strip()
+
+
 # Configurable only: runtime code never embeds a model identifier.
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3-flash-lite")
 GEMINI_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
@@ -284,7 +300,7 @@ def validate() -> list:
             f"falling back to gemini."
         )
 
-    if not GEMINI_API_KEY:
+    if not get_gemini_api_key():
         warnings.append("GEMINI_API_KEY is not set.")
     if not GEMINI_MODEL.strip():
         warnings.append("GEMINI_MODEL is empty.")
@@ -293,7 +309,7 @@ def validate() -> list:
         warnings.append(f"prompt.txt not found at {PROMPT_PATH}.")
     if VOICE_PROVIDER != "gemini":
         warnings.append(f"VOICE_PROVIDER must be gemini; got {VOICE_PROVIDER!r}.")
-    if VOICE_ENABLED and VOICE_PROVIDER == "gemini" and not GEMINI_API_KEY:
+    if VOICE_ENABLED and VOICE_PROVIDER == "gemini" and not get_gemini_api_key():
         warnings.append("VOICE_ENABLED is true but GEMINI_API_KEY is not set — speech is disabled.")
     if VOICE_ENABLED and VOICE_PROVIDER == "gemini" and not gemini_tts_supported():
         warnings.append(f"GEMINI_TTS_MODEL '{GEMINI_TTS_MODEL}' is not explicitly a TTS model — speech is disabled.")

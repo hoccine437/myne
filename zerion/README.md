@@ -13,7 +13,7 @@ hosts (no extra packages needed).
 
 - Chat with long-term memory (identity, preferences, relationships, mood)
 - Multi-turn clarification (asks a follow-up question when info is missing)
-- Two LLM providers: Gemini or retired provider (switch with one env var)
+- Gemini chat with optional Gemini voice/TTS output
 - Optional speech input/output — disabled by default, never required
 - Pure terminal UI — works over SSH, in Termux, in any TTY
 
@@ -25,30 +25,22 @@ pip install -r requirements.txt
 
 ## Configure
 
-Set your API key as an environment variable, or create a `.env` file in
-this folder:
+Set the one Gemini API key as an environment variable, or create a `.env`
+file in this folder:
 
-```bash
-# Pick one provider:
+```dotenv
 LLM_PROVIDER=gemini
 GEMINI_API_KEY=your_key_here
-OPENAI_API_KEY=your_openai_key_here
-
-# or:
-LLM_PROVIDER=gemini
-GEMINI_API_KEY=your_key_here
-
-# or:
-LLM_PROVIDER=gpt
-retired provider_API_KEY=your_key_here
-
-# or:
-LLM_PROVIDER=deepseek
-DEEPSEEK_API_KEY=your_key_here
+GEMINI_MODEL=gemini-3-flash-lite
+VOICE_ENABLED=true
+VOICE_PROVIDER=gemini
+GEMINI_TTS_MODEL=gemini-2.5-flash-preview-tts
 ```
 
-Switching providers is a config-only change — no code changes needed.
-See [`PHASE1.md`](PHASE1.md) for how the provider router works.
+`GEMINI_API_KEY` is shared by both chat and voice/TTS. Configure it once;
+there is no separate `VOICE_API_KEY` (and no second provider key) in this
+Gemini-only release. The key is read from `.env` without being exposed to the
+UI or written to application memory/audit events.
 
 ## Run
 
@@ -102,6 +94,11 @@ export GEMINI_API_KEY=your_key_here
 python main.py
 ```
 
+`GEMINI_API_KEY` is the single shared Gemini credential for both chat and
+voice/TTS. Set it once; Zerion does not use or expect a separate
+`VOICE_API_KEY`. Chat and voice may use different Gemini models, but they
+authenticate with this same key.
+
 You also need one command-line audio player on PATH:
 
 ```bash
@@ -133,13 +130,12 @@ api.py                backward-compatible shim over providers/router.py
 speech.py             optional Gemini-powered voice output
 main.py's main()     official entry: boots the Web UI by default (or the
                       built-in minimal terminal via --terminal)
-config.py             environment-based configuration, 4 providers
+config.py             environment-based Gemini chat + voice configuration
 core/
     logging.py          lightweight leveled/colored logging
-providers/              provider abstraction (see PHASE1.md)
-    router.py             single interface -- rest of the project never
-                           knows which provider is active
-    gemini.py, gpt.py
+providers/              Gemini provider abstraction
+    router.py             single interface for Gemini text requests
+    gemini.py             official Gemini REST transport
 prompt.txt             system prompt (unchanged from original)
 memory/
     memory_manager.py  atomic writes, automatic backup, corruption recovery

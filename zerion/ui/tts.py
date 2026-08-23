@@ -68,7 +68,9 @@ class TtsService:
             ready = False
         return {
             "gemini_ready": ready,
-            "configured": bool(config.GEMINI_API_KEY) and config.gemini_tts_supported(),
+            # The UI voice path intentionally shares the same canonical
+            # credential as chat; only the Gemini model/modalities differ.
+            "configured": bool(config.get_gemini_api_key()) and config.gemini_tts_supported(),
         }
 
     # ------------------------------------------------------------------

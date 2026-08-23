@@ -13,6 +13,11 @@ GEMINI_API_KEY=replace_with_key
 ```
 Charon remains the configured calm lower-register Gemini voice. Actual voice quality is API/provider dependent.
 
+`GEMINI_API_KEY` is the single credential for both Gemini chat and Gemini
+TTS. The text and voice paths select different Gemini models/modalities, but
+both read the key through `config.get_gemini_api_key()`; there is no separate
+`VOICE_API_KEY` setting.
+
 ## Failure behavior
 If Gemini TTS has no key, no player, an invalid TTS model, network failure, quota failure, or API failure, speech logs a clear Gemini reason and Zerion continues in text-only mode. No offline provider is attempted.
 

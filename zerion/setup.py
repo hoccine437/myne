@@ -74,7 +74,9 @@ def ensure_env() -> str:
     path = ROOT / ".env"
     if not path.exists():
         path.write_text(
-            "LLM_PROVIDER=gemini\nGEMINI_API_KEY=replace_with_key\n"
+            "LLM_PROVIDER=gemini\n"
+            "# Shared by Gemini chat and Gemini voice/TTS; keep one key only.\n"
+            "GEMINI_API_KEY=replace_with_key\n"
             "GEMINI_MODEL=gemini-3-flash-lite\nVOICE_ENABLED=true\n"
             "VOICE_PROVIDER=gemini\nVOICE_NAME=Charon\n",
             encoding="utf8")
@@ -122,7 +124,7 @@ def run(argv=None) -> int:
     # never echoes, never auto-sends; stored in .env only
     try:
         import config as _cfg
-        if sys.stdin.isatty() and not _cfg.GEMINI_API_KEY:
+        if sys.stdin.isatty() and not _cfg.get_gemini_api_key():
             print()
             print("Gemini API key is not configured (Zerion answers stay offline).")
             print("Get one free at https://aistudio.google.com/apikey")

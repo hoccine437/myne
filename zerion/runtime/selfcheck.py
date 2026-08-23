@@ -161,7 +161,7 @@ def run_checks(include_network: bool = True) -> dict:
 
     # --- models
     import config as _cfg
-    if _cfg.GEMINI_API_KEY:
+    if _cfg.get_gemini_api_key():
         rows.append(_row("models", "PASS",
                          f"gemini text={_cfg.GEMINI_MODEL} tts={_cfg.GEMINI_TTS_MODEL}"))
     else:
