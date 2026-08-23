@@ -266,6 +266,12 @@ LEGACY_ALL = LEGACY_COMPAT | {
     "skills/domains.py",
 }
 
+# Android/Termux is a supported production target. Shell launchers are
+# classified explicitly because the Python import graph cannot see them.
+ANDROID_ENTRYPOINTS = {
+    "android/termux-start.sh": "Android/Termux mobile launcher for the official entry point",
+}
+
 # Development/installer tooling (own entry points; never production)
 DEV_TOOLS = {
     "setup.py": "first-run bootstrap CLI",
@@ -344,7 +350,9 @@ def classify_all():
 
         js_reachable = str(p.resolve()) in js_reach if ext == ".js" else False
 
-        if rel in DEV_TOOLS:
+        if rel in ANDROID_ENTRYPOINTS:
+            cls, why = "DIRECTLY CONNECTED", ANDROID_ENTRYPOINTS[rel]
+        elif rel in DEV_TOOLS:
             cls, why = "DEVELOPMENT-ONLY", DEV_TOOLS[rel]
         elif is_test(rel):
             cls, why = "TEST-ONLY", "test harness"
