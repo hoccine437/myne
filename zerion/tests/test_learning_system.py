@@ -240,6 +240,33 @@ class DomainTeacherTests(unittest.TestCase):
             import knowledge.database as kdb
             kdb.Database.__init__.__defaults__ = orig
 
+    def test_android_can_ingest_a_public_topic_summary_without_key(self):
+        tmp, orig = isolate_db()
+        import config
+        old_key = config.GEMINI_API_KEY
+        old_prefix = os.environ.get("PREFIX")
+        config.GEMINI_API_KEY = ""
+        os.environ["PREFIX"] = "/data/data/com.termux/files/usr"
+        try:
+            from learning.controller import LearningController
+            from learning.source import SourceMaterial
+            with mock.patch("learning.source.fetch_topic", return_value=SourceMaterial(
+                    "Kali Linux is a Debian-based security distribution.",
+                    "https://en.wikipedia.org/wiki/Kali_Linux", "Kali Linux")):
+                report = LearningController().study_domain("kali linux")
+            self.assertEqual(report["finished_reason"], "studied-unverified")
+            self.assertEqual(report["lesson"]["source"], "user-material")
+            self.assertEqual(report["final_level"]["mastery"], 0.0)
+        finally:
+            config.GEMINI_API_KEY = old_key
+            if old_prefix is None:
+                os.environ.pop("PREFIX", None)
+            else:
+                os.environ["PREFIX"] = old_prefix
+            tmp.cleanup()
+            import knowledge.database as kdb
+            kdb.Database.__init__.__defaults__ = orig
+
     def test_user_material_can_be_ingested_without_key_but_stays_unverified(self):
         tmp, orig = isolate_db()
         import config

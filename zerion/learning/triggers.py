@@ -31,6 +31,8 @@ loop and ui/session.py's bridge) display them with zero contract change.
 
 from __future__ import annotations
 
+import re
+
 from core import logging as log
 
 # Explicit-study markers: the request must START with one of these, so
@@ -41,14 +43,25 @@ _LEARN_PREFIXES = ("learn ", "teach yourself ")
 REPEATED_FAILURE_MIN = 3
 
 
-def _topic_after_prefix(text: str) -> str | None:
+def _topic_and_source(text: str) -> tuple[str, str] | None:
     lowered = text.strip().lower()
     for prefix in _LEARN_PREFIXES:
         if lowered.startswith(prefix):
             topic = text.strip()[len(prefix):].strip()
+            match = re.match(r"^(.+?)\s+(?:from|using)\s+(https?://\S+)$", topic,
+                             flags=re.IGNORECASE)
+            if match:
+                topic, source_url = match.group(1).strip(), match.group(2).strip()
+            else:
+                source_url = ""
             if len(topic) >= 3:
-                return topic
+                return topic, source_url
     return None
+
+
+def _topic_after_prefix(text: str) -> str | None:
+    parsed = _topic_and_source(text)
+    return parsed[0] if parsed else None
 
 
 def evaluate(user_text: str, memory: dict | None = None) -> dict | None:
@@ -74,16 +87,17 @@ def evaluate(user_text: str, memory: dict | None = None) -> dict | None:
         pass  # the signal must never affect the conversation path
 
     # --- trigger 1: explicit user-commanded study -------------------------
-    topic = _topic_after_prefix(user_text)
-    if topic is None:
+    parsed_request = _topic_and_source(user_text)
+    if parsed_request is None:
         return None
+    topic, source_url = parsed_request
 
     try:
         from learning.controller import LearningController
         # Production study must use a topic-specific teacher. The old
         # callback-free learning loop was a synthetic arithmetic experiment,
         # not a Kali Linux (or any other domain) teacher.
-        report = LearningController().study_domain(topic)
+        report = LearningController().study_domain(topic, source_url=source_url)
     except Exception as e:
         return {"text": f"Learning session for '{topic}' could not run: {e}",
                 "handled_by": "learning", "tool_used": "learn_domain"}

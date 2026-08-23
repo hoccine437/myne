@@ -32,8 +32,8 @@ cp .env.example .env
 $EDITOR .env        # set GEMINI_API_KEY (required for LLM + Gemini voice)
 
 # 5. startup — choose ONE front door:
-python main.py                    # official entry — boots the Web UI (browser at :8765)
-python main.py --terminal         # minimal built-in REPL (no UI extras needed)
+./android/termux-start.sh       # Android Web UI (opens Android browser)
+ZERION_ANDROID_TERMINAL=1 ./android/termux-start.sh  # minimal phone REPL
 python -m ui.server --port 8765   # browser UI explicitly (same as default main.py)
 python -m runtime                 # 24/7 service (hosts the UI too)
 

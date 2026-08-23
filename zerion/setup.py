@@ -40,7 +40,7 @@ UI_REQUIRED = {"uvicorn": "uvicorn", "starlette": "starlette"}
 
 REQUIRED_DIRS = (
     "memory", "constitution", "providers", "tools", "skills", "agents",
-    "phone", "runtime", "ui", "tests", "comms", "security", "intent",
+    "phone", "runtime", "ui", "android", "tests", "comms", "security", "intent",
     "knowledge", "learning",
 )
 REQUIRED_FILES = ("main.py", "config.py", "prompt.txt", "VERSION", ".env.example")

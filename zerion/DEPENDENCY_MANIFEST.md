@@ -62,7 +62,7 @@ set; `REQUIRES TERMUX PACKAGE` = needs a `pkg install` step;
   "platform_environment_used_but_not_installable": [
     "PREFIX", "TERM", "DISPLAY", "ANDROID_ROOT", "ANDROID_DATA", "PATH"
   ],
-  "required_directories": [".", "memory", "knowledge", "runtime/run (created)", ".termux/boot (optional for autostart)"],
+  "required_directories": [".", "memory", "knowledge", "runtime/run (created)", "android", ".termux/boot (optional for autostart)"],
   "required_permissions": [
     "filesystem write in project dir (memory/knowledge/runtime stores)",
     "network egress to generativelanguage.googleapis.com (LLM/TTS)",

@@ -72,7 +72,8 @@ matching connector reports `disconnected` honestly — nothing pretends.
     python setup.py                 # installs layers, creates .env, verifies constitution
     # edit .env → GEMINI_API_KEY=...
     python -m runtime --check       # ZERION SYSTEM CHECK — all rows must be PASS/DEGRADED (with reasons)
-    python main.py                  # Web UI (or --terminal)
+    ./android/termux-start.sh       # Android Web UI
+    ZERION_ANDROID_TERMINAL=1 ./android/termux-start.sh  # terminal-only
 
 Verification step on the phone: `python -m runtime --check` and
 `python -m pytest tests/ -q`. A failing row prints exactly what to fix.

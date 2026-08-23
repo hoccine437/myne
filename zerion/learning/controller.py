@@ -11,8 +11,11 @@ paths are separate and gated upstream), no unverified storage."""
 
 from __future__ import annotations
 
+import os
 import time
 import uuid
+
+import config
 
 from learning.acquisition import AcquisitionLayer
 from learning.curriculum import CurriculumEngine
@@ -70,6 +73,22 @@ class LearningController:
             report["finished_reason"] = "missing-topic"
             report["message"] = "A topic is required."
             return report
+
+        # On Android/Termux, a no-key study request can still fetch a bounded
+        # public reference summary. Explicit URLs work on every platform;
+        # source text remains provenance-labelled and unverified.
+        if not source_text:
+            try:
+                from learning.source import fetch_topic, fetch_url
+                material = fetch_url(source_url) if source_url else None
+                if material is None and not config.get_gemini_api_key() and \
+                        "com.termux" in os.environ.get("PREFIX", ""):
+                    material = fetch_topic(topic)
+                if material is not None:
+                    source_text = material.text
+                    source_url = material.url
+            except Exception:
+                pass
 
         try:
             lesson = DomainTeacher().generate(
