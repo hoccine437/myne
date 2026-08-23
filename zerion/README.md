@@ -121,6 +121,26 @@ If the API key, network, or a player is unavailable, Mark-X Lite prints
 the reason and keeps working via text only — it will never crash because
 voice is missing.
 
+## Think x10
+
+Zerion defaults to a bounded **Think x10** protocol for model-backed turns:
+
+- ten explicit reasoning lenses (goal, constraints, evidence, memory,
+  alternatives, dependencies, capability fit, risk, verification, answer quality)
+- a larger but capped evidence/context window
+- deeper verified planning, up to ten bounded tasks when planning is needed
+- the existing critic and approval gates remain active
+
+This is not ten unbounded Gemini requests: the ten-lens pass is local prompt
+assembly, so simple local commands remain free and the model is never asked
+to expose private chain-of-thought. To use the previous lightweight budget:
+
+```dotenv
+THINKING_MODE=off
+```
+
+`THINKING_MULTIPLIER` accepts `1`–`10` and defaults to `10` in x10 mode.
+
 ## Project layout
 
 ```

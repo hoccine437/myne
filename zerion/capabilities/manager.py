@@ -2,12 +2,16 @@
 from __future__ import annotations
 import re
 from knowledge.manager import KnowledgeManager
+import config
 from .models import Capability,STAGES
 def _name(text):
  words=re.findall(r'[\w-]{3,}',text.lower())[:5];return '-'.join(words) or 'general-problem-solving'
 class CapabilityManager:
  def __init__(self,knowledge=None):self.knowledge=knowledge or KnowledgeManager()
- def find(self,goal,limit=6):return self.knowledge.searcher.search(goal,limit,['capability'])
+ def find(self,goal,limit=None):
+  if limit is None:
+   limit=config.thinking_scale(6,60)
+  return self.knowledge.searcher.search(goal,limit,['capability'])
  def acquire(self,goal,knowledge='',tags=None):
   name=_name(goal); return self.knowledge.store(knowledge or f'Capability candidate for: {goal}','capability',tags or name.split('-'),.55,.25,{'name':name,'stage':'learning','experience_count':0},'capability')
  def improve(self,goal,method,success,confidence=.5):

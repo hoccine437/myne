@@ -78,7 +78,8 @@ def ensure_env() -> str:
             "# Shared by Gemini chat and Gemini voice/TTS; keep one key only.\n"
             "GEMINI_API_KEY=replace_with_key\n"
             "GEMINI_MODEL=gemini-3-flash-lite\nVOICE_ENABLED=true\n"
-            "VOICE_PROVIDER=gemini\nVOICE_NAME=Charon\n",
+            "VOICE_PROVIDER=gemini\nVOICE_NAME=Charon\n"
+            "THINKING_MODE=x10\nTHINKING_MULTIPLIER=10\n",
             encoding="utf8")
         return "created"
     return "preserved"

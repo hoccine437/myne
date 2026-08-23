@@ -107,7 +107,12 @@ def handle_request(user_text: str, minimal_memory: dict, recent_history: str):
     try:
         context = build_context(user_text, minimal_memory, recent_history,
                                  current_goal=goal_manager.current_goal)
-        plan = decompose(context.user_text, context.available_tools)
+        plan = decompose(
+            context.user_text,
+            context.available_tools,
+            reasoning_context=context.memory,
+            recent_history=context.recent_history,
+        )
     except Exception as e:
         log.warning(f"planner context/decompose failed; falling back to normal chat: {e}")
         return None

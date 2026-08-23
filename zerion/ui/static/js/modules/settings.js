@@ -120,7 +120,8 @@ registerPanel("settings", {
     );
     const plannerRow = h("div", {}, "loading…");
     const criticRow = h("div", {}, "loading…");
-    coreGroup.append(plannerRow, criticRow);
+    const thinkingRow = h("div", {}, "loading…");
+    coreGroup.append(plannerRow, criticRow, thinkingRow);
     wrap.appendChild(coreGroup);
 
     api("/api/settings").then(cfg => {
@@ -135,6 +136,12 @@ registerPanel("settings", {
         cfg.self_critic_enabled, v => postJSON("/api/settings", { self_critic_enabled: v })
           .then(r => { store.core.serverSettings = r; })
           .catch(() => emit("toast", { text: "Couldn't update self-critic setting.", level: "error" }))));
+      clear(thinkingRow);
+      thinkingRow.replaceWith(h("div", { class: "setting-row" },
+        h("div", {}, h("div", {}, "Thinking depth"),
+          h("div", { class: "setting-desc" }, "bounded ten-lens reasoning protocol")),
+        h("span", { class: "mono", style: "font-size:12px" },
+          cfg.thinking_lenses ? `x${cfg.thinking_multiplier} / ${cfg.thinking_lenses} lenses` : "off")));
     }).catch(() => {
       plannerRow.textContent = "Core settings unavailable.";
     });

@@ -232,7 +232,7 @@ class ZerionUISession:
         self._busy = False
         self._pending_origin = None    # None | "pipeline" | "terminal"
         # --- same per-session state as main.py (the Core's own class) ---
-        self.state = SessionMemory(max_history=config.MAX_HISTORY)
+        self.state = SessionMemory(max_history=config.thinking_history_limit())
         # command_palette/session_state read ``session.pending_intent``
         # directly — expose it as a property (below), never a copy.
         # --- same engine wiring as main.py:run_loop ---
@@ -254,6 +254,7 @@ class ZerionUISession:
             "Self-Critic": {"state": "standby", "detail": "response review", "ts": None},
             "Learning": {"state": "standby", "detail": "experience capture", "ts": None},
             "Knowledge": {"state": "standby", "detail": "semantic retrieval", "ts": None},
+            "Deep Reasoner": {"state": "standby", "detail": "x10 ten-lens deliberation", "ts": None},
             "Runtime Intel": {"state": "standby", "detail": "composition & quality", "ts": None},
             "Tool Manager": {"state": "standby", "detail": "execution + approvals", "ts": None},
             "Constitution": {"state": "standby", "detail": "policy boundary", "ts": None},

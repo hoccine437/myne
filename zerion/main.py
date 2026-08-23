@@ -271,7 +271,9 @@ class _TerminalSink(object):
 
 
 def run_loop(ui):
-    session = SessionMemory()
+    # Think-x10 keeps a larger bounded conversational window; THINKING_MODE=off
+    # restores the configured lightweight MAX_HISTORY window.
+    session = SessionMemory(max_history=config.thinking_history_limit())
     # same engine set as before — identical instances, identical behavior
     knowledge = KnowledgeManager()
     learning = LearningEngine()

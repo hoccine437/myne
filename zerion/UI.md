@@ -48,6 +48,10 @@ The UI uses the same `GEMINI_API_KEY` as chat for Gemini TTS. Configure one
 key in `.env`; there is intentionally no separate `VOICE_API_KEY`, and the
 key itself is never sent to the browser.
 
+The Core settings panel also reports the active bounded Think x10 protocol:
+ten reasoning lenses plus expanded, capped context/planning. This adds no ten-
+request API fan-out and never displays private chain-of-thought.
+
 ## Architecture
 
 ```

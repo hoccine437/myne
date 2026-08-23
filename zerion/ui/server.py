@@ -89,6 +89,9 @@ def _current_settings() -> dict:
         "tts_model": config.GEMINI_TTS_MODEL,
         "voice_name": config.VOICE_NAME,
         "provider": config.LLM_PROVIDER,
+        "thinking_mode": config.THINKING_MODE,
+        "thinking_multiplier": config.THINKING_MULTIPLIER,
+        "thinking_lenses": 10 if config.thinking_enabled() else 0,
         "serious_mode": personality.serious_active(),
         # Chat and voice are configured by the same single Gemini key.
         "llm_configured": bool(config.get_gemini_api_key()),

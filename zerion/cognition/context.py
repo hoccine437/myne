@@ -14,13 +14,15 @@ contract change anywhere else."""
 
 from __future__ import annotations
 
+import config
+
 
 # ordered by importance for the model's behaviour each turn
 _PRIORITY = (
     "_pending_intent", "_collected_params",
     "retrieved_knowledge", "recent_conversation",
     "reasoning_mode", "reasoning_strategy", "reasoning_rules",
-    "revisable_hypotheses",
+    "deep_thinking_protocol", "revisable_hypotheses",
     "user_name", "favorite_color", "favorite_food", "favorite_music",
     "knowledge_gap", "capability_gap", "capability_experience",
     "capability_strategy", "capability_composition", "project_continuity",
@@ -28,8 +30,8 @@ _PRIORITY = (
 )
 
 _PER_KEY_MAX = 1200          # chars per individual field
-_TOTAL_BUDGET = 6000         # characters for the whole memory block
-_HARD_FALLBACK = 9000        # never exceed this even if misconfigured
+_TOTAL_BUDGET = 6000         # baseline characters for the whole memory block
+_HARD_FALLBACK = 60000       # x10 remains bounded even with large memory stores
 
 
 def assemble(memory_block: dict | None, budget: int | None = None) -> str:
@@ -38,7 +40,9 @@ def assemble(memory_block: dict | None, budget: int | None = None) -> str:
     provider prompt. Never drops the structure keys the runtime relies on."""
     if not memory_block:
         return ""
-    total_budget = budget or _TOTAL_BUDGET
+    # Explicit callers can request a smaller budget (tests/planner previews),
+    # while the final model prompt gets the active Think-x10 allowance.
+    total_budget = budget if budget is not None else config.thinking_context_budget()
     total_budget = max(1000, min(_HARD_FALLBACK, total_budget))
 
     items = []

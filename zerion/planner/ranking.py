@@ -13,6 +13,8 @@ same "don't spend an LLM call deciding relevance" principle the Fast
 Intent Classifier already uses elsewhere in this codebase.
 """
 
+import config
+
 _MAX_TOOLS_IN_CONTEXT = 12
 _MAX_HISTORY_LINES = 5
 _MAX_MEMORY_FIELDS = 8
@@ -35,7 +37,8 @@ def rank_tools(user_text: str, available_tools: list) -> list:
     as-is with no reordering -- ranking only matters once there's
     something to trim.
     """
-    if len(available_tools) <= _MAX_TOOLS_IN_CONTEXT:
+    max_tools = config.thinking_scale(_MAX_TOOLS_IN_CONTEXT, 50)
+    if len(available_tools) <= max_tools:
         return available_tools
 
     scored = []
@@ -45,7 +48,7 @@ def rank_tools(user_text: str, available_tools: list) -> list:
         scored.append((score, tool))
 
     scored.sort(key=lambda pair: pair[0], reverse=True)
-    ranked = [tool for score, tool in scored[:_MAX_TOOLS_IN_CONTEXT]]
+    ranked = [tool for score, tool in scored[:max_tools]]
     return ranked
 
 
@@ -84,4 +87,5 @@ def rank_history(recent_history: str) -> str:
     if not recent_history:
         return recent_history
     lines = recent_history.split("\n")
-    return "\n".join(lines[-_MAX_HISTORY_LINES:])
+    limit = config.thinking_scale(_MAX_HISTORY_LINES, 50)
+    return "\n".join(lines[-limit:]) if limit else ""

@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.2.0 — Bounded Think x10 protocol
+
+Added an explicit, evidence-aware ten-lens deliberation protocol for
+model-backed turns. The protocol expands the capped context/history and
+knowledge windows, gives complex plans up to ten bounded tasks with
+`expected_result` evidence, and reports the active depth in the UI. It is
+local prompt assembly — not ten unbounded provider calls — and never exposes
+private chain-of-thought. `THINKING_MODE=off` restores the lightweight path.
+
+Gates: 421/421 pytest · 22/22 second · 45/45 connectivity · 74/74 UI smoke ·
+Constitution lock verified.
+
 ## 2.1.0 — Two-gap closure (engine-owned agents + canonical turn lifecycle)
 
 Both gaps from the read-only completeness pass closed and verified; process

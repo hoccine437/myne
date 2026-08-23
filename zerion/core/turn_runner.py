@@ -237,7 +237,8 @@ class TurnRunner:
         self.sink.state("analyzing", "assembling reasoning context")
         long_term_memory = self.load_memory()
         memory_for_prompt = self.minimal_reducer(long_term_memory)
-        retrieved = self.knowledge.retrieve_context(text, limit=5)
+        retrieved = self.knowledge.retrieve_context(
+            text, limit=config.thinking_knowledge_limit())
         if retrieved:
             memory_for_prompt["retrieved_knowledge"] = retrieved
         cognitive_context = self.cognition.prepare(text)
@@ -273,7 +274,9 @@ class TurnRunner:
         }, duration=time.monotonic() - t0)
 
         history_lines = session.get_history_for_prompt()
-        recent_history = "\n".join(history_lines.split("\n")[-5:])
+        history_limit = config.thinking_history_limit()
+        recent_history = ("\n".join(history_lines.split("\n")[-history_limit:])
+                          if history_limit else "")
         if recent_history:
             memory_for_prompt["recent_conversation"] = recent_history
 
@@ -310,6 +313,25 @@ class TurnRunner:
             self.sink.decision("Intent Engine",
                                "Fast Planner answered with zero LLM cost.")
             return "continue"
+
+        # ---------------- deep thinking protocol ---------------------------
+        # This is a deterministic, local ten-lens brief. It strengthens the
+        # model prompt without multiplying provider calls or pretending that
+        # scratch reasoning is a user-visible answer.
+        deep_brief = None
+        try:
+            from cognition.deep_thinking import build_brief
+            deep_brief = build_brief(
+                text, cognitive_context, reasoning_result, retrieved,
+                capability_context.records, classification)
+            if deep_brief.enabled:
+                self.sink.agent_row("Deep Reasoner", "active",
+                                    f"x{deep_brief.multiplier} ten-lens review")
+                memory_for_prompt["deep_thinking_protocol"] = deep_brief.prompt_block()
+                self.sink.stage("deep_reasoning", "done", deep_brief.telemetry())
+        except Exception as deep_error:
+            # A quality helper can never block the normal turn.
+            self.sink.log("WARNING", f"deep reasoning deferred: {deep_error}")
 
         # ---------------- planner (new canonical gating) ------------------
         plan_outcome = None

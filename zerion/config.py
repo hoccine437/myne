@@ -15,7 +15,8 @@ import os
 _PARSE_WARNINGS: list[str] = []
 
 
-def _env_int(name: str, default: int, minimum: int | None = None) -> int:
+def _env_int(name: str, default: int, minimum: int | None = None,
+             maximum: int | None = None) -> int:
     raw = os.getenv(name, str(default)).strip()
     try:
         value = int(raw)
@@ -24,6 +25,9 @@ def _env_int(name: str, default: int, minimum: int | None = None) -> int:
         return default
     if minimum is not None and value < minimum:
         _PARSE_WARNINGS.append(f"{name}={value} is below {minimum}; using {default}.")
+        return default
+    if maximum is not None and value > maximum:
+        _PARSE_WARNINGS.append(f"{name}={value} is above {maximum}; using {default}.")
         return default
     return value
 
@@ -197,6 +201,51 @@ REQUEST_TIMEOUT = _env_int("REQUEST_TIMEOUT", 30, minimum=1)
 MAX_HISTORY = _env_int("MAX_HISTORY", 5, minimum=0)
 
 # ---------------------------------------------------------------------------
+# Deliberation depth
+# ---------------------------------------------------------------------------
+# Think-x10 is a bounded quality protocol, not ten unbounded API calls. It
+# expands the evidence/context budget, gives the planner room for verified
+# substeps, and injects ten explicit reasoning lenses before the final model
+# answer. This keeps simple local commands free while making model-backed
+# turns more deliberate. Set THINKING_MODE=off for the old lightweight path.
+_THINKING_MODE_ENV = os.getenv("THINKING_MODE", "x10").strip().lower()
+if _THINKING_MODE_ENV not in ("off", "x10"):
+    _PARSE_WARNINGS.append(
+        f"THINKING_MODE={_THINKING_MODE_ENV!r} is invalid; using 'x10'."
+    )
+THINKING_MODE = _THINKING_MODE_ENV if _THINKING_MODE_ENV in ("off", "x10") else "x10"
+THINKING_MULTIPLIER = _env_int("THINKING_MULTIPLIER", 10, minimum=1, maximum=10)
+
+
+def thinking_enabled() -> bool:
+    """Whether the explicit deep-deliberation protocol is active."""
+    return THINKING_MODE == "x10" and THINKING_MULTIPLIER > 1
+
+
+def thinking_scale(base: int, ceiling: int) -> int:
+    """Scale a bounded context/plan allowance without allowing runaway
+    memory, prompt, or task growth. ``off`` returns the original allowance."""
+    if not thinking_enabled():
+        return base
+    return min(ceiling, max(0, int(base)) * THINKING_MULTIPLIER)
+
+
+def thinking_context_budget() -> int:
+    return thinking_scale(6000, 60000)
+
+
+def thinking_history_limit() -> int:
+    return thinking_scale(MAX_HISTORY, 50)
+
+
+def thinking_knowledge_limit() -> int:
+    return thinking_scale(5, 50)
+
+
+def thinking_plan_max_tasks() -> int:
+    return thinking_scale(5, 10)
+
+# ---------------------------------------------------------------------------
 # Planning engine
 # ---------------------------------------------------------------------------
 # Two-layer gate. PLANNER_ENABLED (bool) is the live toggle (UI settings and
@@ -290,6 +339,7 @@ def validate() -> list:
         f"Text model: {GEMINI_MODEL}",
         f"Speech model: {GEMINI_TTS_MODEL}",
         f"TTS supported: {'YES' if gemini_tts_supported() else 'NO'}",
+        f"Thinking: {THINKING_MODE} (x{THINKING_MULTIPLIER})",
         f"Self-Critic: {'enabled' if ENABLE_SELF_CRITIC else 'disabled'}",
         f"Orchestration: {'enabled' if ORCHESTRATION_ENABLED else 'disabled'}",
     ])

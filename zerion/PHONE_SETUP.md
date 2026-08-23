@@ -38,7 +38,8 @@ test harness for the UI smoke test (smoke runs on CI/desktop).
 
 | Variable | Purpose | Required? |
 |---|---|---|
-| `GEMINI_API_KEY` | Gemini text + TTS | yes for AI answers/voice; local agent/tool paths work without it (offline) |
+| `GEMINI_API_KEY` | Gemini text + TTS | one shared key for AI answers and voice; local agent/tool paths work without it (offline) |
+| `THINKING_MODE` / `THINKING_MULTIPLIER` | bounded Think x10 quality protocol | defaults to `x10` / `10`; set `off` to reduce context/plan depth |
 | `EMAIL_HOST` `EMAIL_USER` `EMAIL_PASSWORD` | IMAP/SMTP connector | optional (email only) |
 | `TELEGRAM_BOT_TOKEN` | Telegram bot connector | optional (telegram only) |
 | `.env.example` (template) | copied to `.env` by setup | the phone never logs secrets; audit/telemetry scrub them |

@@ -18,6 +18,7 @@ so the common case has zero added latency.
 import json
 
 import api
+import config
 from llm import safe_json_parse as _safe_json_parse
 from planner.models import Plan, Task
 from tools.manager import tool_manager
@@ -36,8 +37,8 @@ For a COMPLEX request needing multiple ordered steps:
   "complex": true,
   "goal": "short description of the overall goal",
   "tasks": [
-    {{"id": 1, "description": "...", "tool_name": "tool_name_or_null", "parameters": {{}}, "depends_on": []}},
-    {{"id": 2, "description": "...", "tool_name": "tool_name_or_null", "parameters": {{}}, "depends_on": [1]}}
+    {{"id": 1, "description": "...", "tool_name": "tool_name_or_null", "parameters": {{}}, "depends_on": [], "expected_result": "observable evidence"}},
+    {{"id": 2, "description": "...", "tool_name": "tool_name_or_null", "parameters": {{}}, "depends_on": [1], "expected_result": "observable evidence"}}
   ]
 }}
 
@@ -48,7 +49,17 @@ always simple.
 - tool_name must be an exact name from the available tools list, or null if that step \
 is pure reasoning/response with no tool.
 - depends_on lists the ids of tasks that must finish first.
-- Keep plans short — 2 to 5 tasks. Do not over-decompose.
+- Keep plans bounded — 2 to {max_tasks} tasks. Do not over-decompose.
+- For each executable task, expected_result must describe evidence that can
+  actually be found in the tool result. Never infer completion without it.
+- Prefer independent tasks when dependencies are not real; preserve exact
+  dependencies when one step needs another's result.
+
+Relevant reasoning context:
+{context}
+
+Recent conversation:
+{history}
 
 Available tools:
 {tools}
@@ -57,7 +68,9 @@ User request: "{request}"
 """
 
 
-def decompose(user_text: str, available_tools: list) -> Plan:
+def decompose(user_text: str, available_tools: list,
+              reasoning_context: dict | None = None,
+              recent_history: str = "") -> Plan:
     """
     Decide if `user_text` needs multi-step planning. Returns a Plan —
     for simple requests, a Plan with zero tasks (caller should fall back
@@ -73,8 +86,19 @@ def decompose(user_text: str, available_tools: list) -> Plan:
     tools_desc = "\n".join(
         f"- {t['name']}: {t['description']}" for t in available_tools
     ) or "(none available)"
+    try:
+        from cognition.context import assemble
+        context_text = assemble(reasoning_context or {})
+    except Exception:
+        context_text = ""
 
-    prompt = _DECOMPOSE_PROMPT.format(tools=tools_desc, request=user_text)
+    prompt = _DECOMPOSE_PROMPT.format(
+        max_tasks=config.thinking_plan_max_tasks(),
+        context=context_text or "(no additional context)",
+        history=recent_history or "(no recent conversation)",
+        tools=tools_desc,
+        request=user_text,
+    )
 
     try:
         content = api.call_llm(
@@ -94,7 +118,7 @@ def decompose(user_text: str, available_tools: list) -> Plan:
         return Plan(goal="", tasks=[], created_from=user_text)
 
     tasks = []
-    for raw in raw_tasks:
+    for raw in raw_tasks[:config.thinking_plan_max_tasks()]:
         try:
             task_id = int(raw.get("id"))
             tool_name = raw.get("tool_name")
@@ -111,6 +135,7 @@ def decompose(user_text: str, available_tools: list) -> Plan:
                 tool_name=tool_name,
                 parameters=raw.get("parameters") or {},
                 depends_on=[int(d) for d in raw.get("depends_on", [])],
+                expected_result=str(raw.get("expected_result", "") or ""),
             ))
         except Exception:
             continue  # skip a malformed task rather than failing the whole plan

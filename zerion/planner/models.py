@@ -47,6 +47,7 @@ class Task:
             "tool_name": self.tool_name,
             "parameters": self.parameters,
             "depends_on": self.depends_on,
+            "expected_result": self.expected_result,
             "state": self.state.value,
         }
 
