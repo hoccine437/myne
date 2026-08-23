@@ -15,6 +15,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import config
+from cognition.deep_understanding import DeepUnderstandingProfile, build_profile
 
 
 @dataclass(frozen=True)
@@ -27,6 +28,7 @@ class DeepThinkingBrief:
     evidence_count: int
     capability_count: int
     confidence: float
+    understanding: DeepUnderstandingProfile | None = None
 
     @property
     def enabled(self) -> bool:
@@ -48,6 +50,9 @@ class DeepThinkingBrief:
             f"{self.confidence:.2f}",
         ]
         lines.extend(f"{index}. {lens}" for index, lens in enumerate(self.lenses, 1))
+        if self.understanding is not None:
+            lines.append("")
+            lines.append(self.understanding.prompt_block)
         return "\n".join(lines)
 
     def telemetry(self) -> dict:
@@ -58,6 +63,10 @@ class DeepThinkingBrief:
             "evidence": self.evidence_count,
             "capabilities": self.capability_count,
             "confidence": round(self.confidence, 3),
+            "understanding_capabilities": len(self.understanding.capabilities)
+            if self.understanding is not None else 0,
+            "understanding_wired": self.understanding.wired_count
+            if self.understanding is not None else 0,
         }
 
 
@@ -74,6 +83,7 @@ def build_brief(user_text: str, cognitive_context=None,
     if not config.thinking_enabled():
         return DeepThinkingBrief("disabled", 1, (), 0, 0, 0.0)
 
+    understanding = build_profile(user_text)
     mode = getattr(getattr(cognitive_context, "mode", None), "name", "general_reasoning")
     strategy = getattr(reasoning_result, "strategy", "") or ""
     confidence = float(getattr(reasoning_result, "confidence", 0.5) or 0.5)
@@ -104,4 +114,5 @@ def build_brief(user_text: str, cognitive_context=None,
         evidence_count=evidence_count,
         capability_count=capability_count,
         confidence=max(0.0, min(1.0, confidence)),
+        understanding=understanding,
     )

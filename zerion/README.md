@@ -140,6 +140,8 @@ THINKING_MODE=off
 ```
 
 `THINKING_MULTIPLIER` accepts `1`–`10` and defaults to `10` in x10 mode.
+See [`DEEP_UNDERSTANDING.md`](DEEP_UNDERSTANDING.md) for the full 19-capability
+contract and its honest WIRED/PARTIAL/OWNER-GATED status.
 
 ## Project layout
 

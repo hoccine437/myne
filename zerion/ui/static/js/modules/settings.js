@@ -141,7 +141,7 @@ registerPanel("settings", {
         h("div", {}, h("div", {}, "Thinking depth"),
           h("div", { class: "setting-desc" }, "bounded ten-lens reasoning protocol")),
         h("span", { class: "mono", style: "font-size:12px" },
-          cfg.thinking_lenses ? `x${cfg.thinking_multiplier} / ${cfg.thinking_lenses} lenses` : "off")));
+          cfg.thinking_lenses ? `x${cfg.thinking_multiplier} / ${cfg.thinking_lenses} lenses · ${cfg.understanding_capabilities || 0} capabilities` : "off")));
     }).catch(() => {
       plannerRow.textContent = "Core settings unavailable.";
     });

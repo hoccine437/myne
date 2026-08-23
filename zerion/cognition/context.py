@@ -57,9 +57,15 @@ def assemble(memory_block: dict | None, budget: int | None = None) -> str:
     out_lines = []
     used = 0
     for key, value in items:
+        # The x10 protocol contains the complete 19-capability contract; do
+        # not compress that contract away from the final model prompt. Other
+        # fields retain the normal per-field bound.
+        per_key_max = (6000 if config.thinking_enabled() and
+                       key in ("deep_thinking_protocol", "deep_understanding_protocol")
+                       else _PER_KEY_MAX)
         # hierarchical compression: trim long bodies to head+tail, never drop them
-        if len(value) > _PER_KEY_MAX:
-            keep = _PER_KEY_MAX // 2
+        if len(value) > per_key_max:
+            keep = per_key_max // 2
             value = value[:keep] + "\n…(compressed)…\n" + value[-keep:]
         line = f"{key}: {value}"
         if used + len(line) > total_budget:

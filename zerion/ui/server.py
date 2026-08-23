@@ -79,6 +79,7 @@ SETTABLE_CONFIG = {
 def _current_settings() -> dict:
     """Non-secret runtime settings for the client. Never includes keys."""
     import personality  # lazy: zero cost when not in the payload path
+    from cognition.deep_understanding import CAPABILITY_COUNT
     return {
         "planner_enabled": bool(config.PLANNER_ENABLED),
         "orchestration_enabled": bool(config.ORCHESTRATION_ENABLED),
@@ -92,6 +93,7 @@ def _current_settings() -> dict:
         "thinking_mode": config.THINKING_MODE,
         "thinking_multiplier": config.THINKING_MULTIPLIER,
         "thinking_lenses": 10 if config.thinking_enabled() else 0,
+        "understanding_capabilities": CAPABILITY_COUNT if config.thinking_enabled() else 0,
         "serious_mode": personality.serious_active(),
         # Chat and voice are configured by the same single Gemini key.
         "llm_configured": bool(config.get_gemini_api_key()),

@@ -118,6 +118,10 @@ class CognitionInfluenceTests(unittest.TestCase):
         self.assertIn("reasoning_strategy:", prompt)
         self.assertIn("reasoning_confidence:", prompt)
         self.assertIn("capability_strategy:", prompt)
+        self.assertIn("DEEP UNDERSTANDING CONTRACT", prompt)
+        from cognition.deep_understanding import CAPABILITY_NAMES
+        for name in CAPABILITY_NAMES:
+            self.assertIn(name, prompt)
 
     def test_hypothesis_scaffolding_reaches_prompt(self):
         _, rec = self.run_script(["why would my offline code answer wrong", "exit"])

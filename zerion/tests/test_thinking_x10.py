@@ -33,6 +33,49 @@ def test_x10_defaults_to_ten_lenses_without_provider_fanout():
     assert len(brief.lenses) == 10
     assert "Do not reveal chain-of-thought" in brief.prompt_block()
     assert brief.telemetry()["lenses"] == 10
+    assert brief.telemetry()["understanding_capabilities"] == 19
+
+
+def test_deep_understanding_contract_covers_all_requested_capabilities():
+    from cognition.deep_understanding import CAPABILITY_NAMES, build_profile
+
+    expected = (
+        "Independent Thinking", "Decision Making", "Priority Management",
+        "Critical Thinking", "Predictive Reasoning", "Adaptability",
+        "Continuous Learning", "Contextual Memory", "Emotional Intelligence",
+        "Realism", "Intellectual Courage", "Problem Solving", "Creativity",
+        "Autonomy", "Self-Verification", "Failure Learning",
+        "Interest Protection", "Principle Formation", "Self-Evolution",
+    )
+    profile = build_profile("urgent: compare options, then verify the safest plan")
+    assert CAPABILITY_NAMES == expected
+    assert tuple(c.name for c in profile.capabilities) == expected
+    assert len(profile.matrix()) == 19
+    assert "Self-Evolution" in profile.prompt_block
+    assert "do not claim consciousness" in profile.prompt_block.lower()
+    assert profile.decision_signal is True
+    assert profile.telemetry()["owner_gated"] >= 3
+
+
+def test_full_19_capability_contract_reaches_final_model_prompt():
+    from cognition.deep_thinking import build_brief
+    from cognition.deep_understanding import CAPABILITY_NAMES
+    import llm
+
+    brief = build_brief("solve this carefully")
+    captured = {}
+
+    def fake_call(system, user, **kwargs):
+        captured["user"] = user
+        return "A grounded answer."
+
+    with mock.patch.object(llm.api, "call_llm", side_effect=fake_call):
+        result = llm.get_llm_output(
+            "solve this carefully",
+            {"deep_thinking_protocol": brief.prompt_block()},
+        )
+    assert result["text"] == "A grounded answer."
+    assert all(name in captured["user"] for name in CAPABILITY_NAMES)
 
 
 def test_x10_expands_bounded_context_and_history_budgets():
